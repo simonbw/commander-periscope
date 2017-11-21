@@ -1,0 +1,69 @@
+/* TODO: Media query styles */
+.TeamList {
+    padding: 10px;
+    flex-grow: 1;
+    flex-basis: 0;
+    user-select: none;
+    display: flex;
+    flex-flow: column;
+}
+
+.TeamList.red {
+    border-right: 1px solid #EEE;
+}
+
+.TeamList.blue {
+    border-left: 1px solid #EEE;
+}
+
+.RoleCard {
+    border: 1px solid #EEE;
+    cursor: pointer;
+    padding: 10px;
+    margin: 10px;
+    min-width: 200px;
+    position: relative;
+}
+
+.red .RoleCard {
+    background: #FFAAAA;
+
+}
+
+.blue .RoleCard {
+    background: #AAAAFF;
+}
+
+.RoleCard.empty {
+    opacity: 0.5;
+}
+
+.RoleCard.empty:hover {
+    opacity: 0.75;
+}
+
+.RoleCard.ready {
+    background: #EEE;
+}
+
+.RoleCard.user {
+}
+
+.empty .UserName {
+    font-style: italic;
+}
+
+.RoleName {
+    display: block;
+}
+
+.UserName {
+    display: block;
+}
+
+.Unselect {
+    padding: 10px;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
