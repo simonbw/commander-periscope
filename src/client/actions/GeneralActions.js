@@ -3,6 +3,8 @@ export const SEND_MESSAGE = 'send_message';
 export const CONNECTED = 'connected';
 export const DISCONNECTED = 'disconnected';
 
+// TODO: Come up with some sort of strategy for dealing with pending and failed actions.
+
 // TODO: History and stuff
 export const changePage = (page) => ({
   type: CHANGE_PAGE,

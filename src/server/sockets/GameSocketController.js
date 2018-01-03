@@ -49,6 +49,8 @@ function attachPubsubHandlers(socket, gameId, position) {
       const actionType = `game_${eventName}`;
       
       // TODO: Real message handlers
+      // Try to send less information over the wire.
+      // We don't need to send everyone their full game state on every action.
       
       socket.emit('action', {
         type: 'game_update',
