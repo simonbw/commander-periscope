@@ -1,4 +1,5 @@
 import puppeteer from 'puppeteer';
+import { ALL_ROLES } from '../../src/common/Role';
 import expect from '../expect';
 import {
   clickReadyButton, closePageWithContext, createCustomLobby, expectNoErrors, expectPagesValid, extractGame,
@@ -85,35 +86,21 @@ describe('Integration', function () {
     
     // TODO: Test changing usernames
     
-    // for (let i = 0; i < 4; i++) {
-    //   await redTeam[i].click(`#red-${ALL_ROLES[i]}`);
-    //   await blueTeam[i].click(`#blue-${ALL_ROLES[i]}`);
-    // }
-    
-    await redTeam[0].click('#red-captain');
-    await redTeam[1].click('#red-first_mate');
-    await redTeam[2].click('#red-engineer');
-    await redTeam[3].click('#red-radio_operator');
-    
-    await blueTeam[0].click('#blue-captain');
-    await blueTeam[1].click('#blue-first_mate');
-    await blueTeam[2].click('#blue-engineer');
-    await blueTeam[3].click('#blue-radio_operator');
-    
-    expectNoErrors(pages);
+    for (let i = 0; i < 4; i++) {
+      await redTeam[i].click(`#red-${ALL_ROLES[i]}`);
+      await blueTeam[i].click(`#blue-${ALL_ROLES[i]}`);
+    }
     
     log(`all players have roles`);
+    expectNoErrors(pages);
     
     for (const page of pages) {
       await clickReadyButton(page);
-      await page.waitFor(50); // TODO: Why do we need this? We should be able to do these simultaneously
+      await page.waitFor(50); // TODO: Why do we need this? We should be able to do these simultaneously.
     }
     
-    expectNoErrors(pages);
-    
     log(`all players ready`);
-    
-    await redTeam[0].waitFor(1000);
+    expectNoErrors(pages);
     
     expect(await redTeam[0].$('#captain-page')).to.exist;
     expect(await redTeam[1].$('#first-mate-page')).to.exist;
@@ -125,9 +112,11 @@ describe('Integration', function () {
     expect(await blueTeam[3].$('#radio-operator-page')).to.exist;
     
     log(`all players on game pages`);
+    expectNoErrors(pages);
     
     await blueTeam[0].click('.Cell:nth-of-type(3)');
     await extractGame(blueTeam[0])
+    
     // TODO: Verify game started
     // TODO: Select Locations
     // TODO: Play game
