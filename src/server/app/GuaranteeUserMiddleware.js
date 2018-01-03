@@ -7,7 +7,6 @@ export default (req, res, next) => {
     req.userId = req.cookies.userId;
   } else {
     req.userId = shortid.generate();
-    console.log('Setting User ID', req.userId);
     res.cookie('userId', req.userId, { maxAge: COOKIE_AGE });
   }
   next();

@@ -27,11 +27,4 @@ module.exports = {
     }]
   },
   devtool: "inline-source-map",
-  devServer: {
-    port: 8081,
-    proxy: [{
-      context: ['/**'],
-      target: 'http://localhost:8080',
-    }]
-  }
 };

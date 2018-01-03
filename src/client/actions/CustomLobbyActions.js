@@ -1,21 +1,16 @@
+import {
+  CUSTOM_LOBBY_READY, CUSTOM_LOBBY_SELECT_ROLE, CUSTOM_LOBBY_SET_USERNAME, CUSTOM_LOBBY_UNREADY,
+  JOIN_CUSTOM_LOBBY, LEAVE_CUSTOM_LOBBY
+} from '../../common/Messages';
 import * as Page from '../models/Page';
 import { debounceAction } from './ActionUtils';
 import { changePage, sendMessage } from './GeneralActions';
-
-// Sent by server
-export const JOINED = 'custom_lobby_joined';
-export const PLAYER_ADDED = 'custom_lobby_player_added';
-export const PLAYER_LEFT = 'custom_lobby_player_left';
-export const PLAYER_READIED = 'custom_lobby_player_readied';
-export const PLAYER_UNREADIED = 'custom_lobby_player_unreadied';
-export const ROLE_SELECTED = 'custom_lobby_role_selected';
-export const PLAYER_SET_USERNAME = 'custom_lobby_player_set_username';
 
 export const createCustomLobby = () => {
   const username = window.localStorage.getItem('username') || undefined;
   return [
     changePage(Page.CUSTOM_LOBBY),
-    sendMessage('join_custom_lobby', { username })
+    sendMessage(JOIN_CUSTOM_LOBBY, { username })
   ];
 };
 
@@ -23,28 +18,30 @@ export const joinCustomLobby = (lobbyId) => {
   const username = window.localStorage.getItem('username') || undefined;
   return [
     changePage(Page.CUSTOM_LOBBY),
-    sendMessage('join_custom_lobby', { lobbyId, username })
+    sendMessage(JOIN_CUSTOM_LOBBY, { lobbyId, username })
   ];
 };
 
 export const leaveCustomLobby = () => ([
-  changePage(Page.CUSTOM_LOBBY),
-  sendMessage('leave_custom_lobby')
+  changePage(Page.CUSTOM_LOBBY), // TODO: Change url
+  sendMessage(LEAVE_CUSTOM_LOBBY)
 ]);
 
 export const selectRole = (role, team) => (
-  sendMessage('custom_lobby_select_role', { role, team })
+  sendMessage(CUSTOM_LOBBY_SELECT_ROLE, { role, team })
 );
 
-export const ready = () => (
-  sendMessage('custom_lobby_ready')
-);
+export const ready = () => {
+  return (
+    sendMessage(CUSTOM_LOBBY_READY)
+  );
+};
 
 export const unready = () => (
-  sendMessage('custom_lobby_unready')
+  sendMessage(CUSTOM_LOBBY_UNREADY)
 );
 
 export const setUsername = debounceAction((username) => {
   window.localStorage.setItem('username', username);
-  return sendMessage('custom_lobby_set_username', { username });
+  return sendMessage(CUSTOM_LOBBY_SET_USERNAME, { username });
 }, 200);

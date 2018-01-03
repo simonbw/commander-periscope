@@ -1,9 +1,9 @@
-const render = (scriptUrl, lobbyId) => (
-  `<!doctype html>
+export default (scriptUrl, lobbyId) => (
+  `<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Captain Sonar</title>
+    <title>Commander Periscope</title>
     <script>
       window._servedFromExpress = true;
       ${lobbyId ? `window._lobbyId = '${lobbyId}';` : ''}
@@ -15,5 +15,3 @@ const render = (scriptUrl, lobbyId) => (
   </body>
 </html>
 `);
-
-export default render;

@@ -1,8 +1,9 @@
 import React from 'react';
 
-const EngineerPage = () => (
-  <div>
+const EngineerPage = ({ game }) => (
+  <div id="engineer-page">
     Engineer Page
+    <pre>{JSON.stringify(game, null, 2)}</pre>
   </div>
 );
 

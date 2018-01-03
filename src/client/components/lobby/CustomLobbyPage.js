@@ -2,10 +2,10 @@ import classnames from 'classnames';
 import React from 'react';
 import { connect } from 'react-redux';
 import styles from '../../../../styles/CustomLobbyPage.css';
+import * as Team from '../../../common/Team';
 import * as CustomLobbyActions from '../../actions/CustomLobbyActions';
 import * as GeneralActions from '../../actions/GeneralActions';
 import * as Page from '../../models/Page';
-import * as Team from '../../models/Team';
 import TeamList from './TeamList';
 
 const CustomLobbyPage = ({ lobby, userId, selectRole, ready, unready, goToMainMenu, setUsername }) => {
@@ -13,7 +13,7 @@ const CustomLobbyPage = ({ lobby, userId, selectRole, ready, unready, goToMainMe
   if (lobbyId) {
     const userIsReady = lobby.get('readied').has(userId);
     return (
-      <div className={styles.CustomLobbyPage}>
+      <div id="custom-lobby-page" className={styles.CustomLobbyPage}>
         <pre>{JSON.stringify(lobby, null, 2)}</pre>
         <UsernameInput {...{ setUsername }}/>
         <h1 className={styles.LobbyId}>{String(lobbyId)}</h1>
@@ -36,6 +36,7 @@ const ReadyButton = ({ ready, unready, userIsReady }) => (
   <button
     className={classnames(styles.ReadyButton, { [styles.ready]: userIsReady })}
     onClick={userIsReady ? unready : ready}
+    id="ready-button"
   >
     {userIsReady ? 'Unready' : 'Ready'}
   </button>

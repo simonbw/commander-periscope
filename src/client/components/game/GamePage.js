@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import * as Role from '../../models/Role';
+import * as Role from '../../../common/Role';
+import { getPlayerPosition } from '../../../server/data/GameUtils';
 import CaptainPage from './CaptainPage';
 import EngineerPage from './EngineerPage';
 import FirstMatePage from './FirstMatePage';
@@ -17,13 +18,17 @@ const GamePage = ({ role, game }) => {
     case Role.RADIO_OPERATOR:
       return <RadioOperatorPage/>;
     default:
-      return <pre>{JSON.stringify(game, null, 2)}</pre>
+      return <div>
+        <span>Unknown role: "{role}"</span>
+        <pre>{JSON.stringify(game, null, 2)}</pre>
+      </div>
   }
 };
 
 export default connect(
   (state) => ({
-    game: state.get('game')
+    game: state.get('game'),
+    ...getPlayerPosition(state.getIn(['game', 'common', 'teams']), state.get('userId'))
   }),
   (dispatch) => ({})
 )(GamePage);

@@ -1,18 +1,20 @@
+import { CUSTOM_LOBBY_GAME_START, CUSTOM_LOBBY_JOINED } from '../../common/Messages';
 // Convert socket messages into actions
 import * as Page from '../models/Page';
 import { changePage, sendMessage } from './GeneralActions';
 
 export const messageToAction = (action) => {
   switch (action.type) {
-    case 'custom_lobby_game_start':
+    case CUSTOM_LOBBY_GAME_START: {
       const gameId = action.gameId;
       return [
         sendMessage('join_game', { gameId }),
         changePage(Page.GAME)
       ];
-    case 'custom_lobby_joined':
-      if (action.lobby.gameId) {
-        const gameId = action.lobby.gameId;
+    }
+    case CUSTOM_LOBBY_JOINED: {
+      const gameId = action.lobby.gameId;
+      if (gameId) {
         return [
           action,
           sendMessage('join_game', { gameId }),
@@ -20,7 +22,9 @@ export const messageToAction = (action) => {
         ]
       }
       return action;
-    default:
+    }
+    default: {
       return action;
+    }
   }
 };

@@ -1,8 +1,9 @@
 import classnames from 'classnames';
 import React from 'react';
 import styles from '../../../../styles/TeamList.css';
-import * as Role from '../../models/Role';
-import * as Team from '../../models/Team';
+import * as Role from '../../../common/Role';
+import { ALL_ROLES } from '../../../common/Role';
+import { BLUE, RED } from '../../../common/Team';
 
 const TeamList = ({ teamName, selectRole, lobby, userId }) => {
   const team = lobby.getIn(['teams', teamName]);
@@ -10,11 +11,11 @@ const TeamList = ({ teamName, selectRole, lobby, userId }) => {
     <div
       className={classnames(
         styles.TeamList,
-        { [styles.red]: teamName === Team.RED },
-        { [styles.blue]: teamName === Team.BLUE }
+        { [styles.red]: teamName === RED },
+        { [styles.blue]: teamName === BLUE }
       )}
     >
-      {Role.all.map((role) => {
+      {ALL_ROLES.map((role) => {
         const playerId = team.get(role);
         const isReady = playerId && lobby.hasIn(['readied', playerId]);
         const username = playerId && (lobby.getIn(['usernames', playerId]) || 'Anonymous');
@@ -24,7 +25,7 @@ const TeamList = ({ teamName, selectRole, lobby, userId }) => {
         return (
           <RoleCard
             key={role}
-            {...{ onSelect, unSelect, role, isUser, playerId, username, isReady }}
+            {...{ onSelect, unSelect, role, isUser, playerId, username, isReady, teamName }}
           />
         );
       })}
@@ -32,9 +33,10 @@ const TeamList = ({ teamName, selectRole, lobby, userId }) => {
   );
 };
 
-const RoleCard = ({ onSelect, unSelect, role, playerId, username, isUser, isReady }) => (
+const RoleCard = ({ onSelect, unSelect, role, playerId, username, isUser, isReady, teamName }) => (
   // TODO: Keyboard Navigation
   <div
+    id={`${teamName}-${role}`}
     onClick={() => {
       if (!playerId && !isUser) {
         onSelect();

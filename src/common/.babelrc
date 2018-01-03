@@ -1,0 +1,18 @@
+{
+  "presets": [
+    "react",
+    [
+      "env",
+      {
+        "targets": {
+          "node": "current"
+        }
+      }
+    ]
+  ],
+  "plugins": [
+    "transform-object-rest-spread",
+    "transform-react-jsx"
+  ],
+  "sourceMaps": "inline"
+}

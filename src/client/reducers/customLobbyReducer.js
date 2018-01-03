@@ -1,16 +1,19 @@
 import * as Immutable from 'immutable';
-import * as CustomLobbyActions from '../actions/CustomLobbyActions';
+import {
+  CUSTOM_LOBBY_JOINED, PLAYER_ADDED, PLAYER_LEFT, PLAYER_READIED, PLAYER_SET_USERNAME, PLAYER_UNREADIED,
+  ROLE_SELECTED
+} from '../../common/Messages';
 
 export default (state, action) => {
   state = state || Immutable.Map();
   switch (action.type) {
-    case CustomLobbyActions.JOINED:
-    case CustomLobbyActions.PLAYER_READIED:
-    case CustomLobbyActions.PLAYER_UNREADIED:
-    case CustomLobbyActions.PLAYER_ADDED:
-    case CustomLobbyActions.PLAYER_LEFT:
-    case CustomLobbyActions.ROLE_SELECTED:
-    case CustomLobbyActions.PLAYER_SET_USERNAME:
+    case CUSTOM_LOBBY_JOINED:
+    case PLAYER_READIED:
+    case PLAYER_UNREADIED:
+    case PLAYER_ADDED:
+    case PLAYER_LEFT:
+    case ROLE_SELECTED:
+    case PLAYER_SET_USERNAME:
       return jsonToLobby(action.lobby);
   }
   return state;

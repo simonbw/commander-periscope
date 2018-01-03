@@ -1,5 +1,7 @@
 import Immutable from 'immutable';
-import { deepFind } from '../util/ImmutableUtil';
+import { CAPTAIN, ENGINEER, FIRST_MATE, RADIO_OPERATOR } from '../../common/Role';
+import { deepFind } from '../../common/util/ImmutableUtil';
+import { GameStateError } from './GameStateError';
 
 export const getDataForUser = (game, userId) => {
   let data = Immutable.Map({
@@ -9,26 +11,28 @@ export const getDataForUser = (game, userId) => {
   
   const position = getPlayerPosition(game.getIn(['common', 'teams']), userId);
   if (position) {
+    const { team } = position;
     data = data
-      .set('team', position.team) // TODO: This is redundant. It's information that's available in common.
+      .set('team', position.team)
       .set('role', position.role);
     
     switch (position.role) {
-      case 'captain': // TODO: Constants
+      case CAPTAIN:
         data = data
           .set('grid', game.get('grid'))
-          .set('subLocation', game.getIn(['subLocations', position.team]))
-          .set('path', game.getIn(['subPaths', position.team]));
+          .set('subLocation', game.getIn(['subLocations', team]))
+          .set('path', game.getIn(['subPaths', team]))
+          .set('turnInfo', game.getIn(['turnInfo', team]));
         break;
-      case 'first_mate': // TODO: Constants
+      case FIRST_MATE:
         data = data
-          .set('systems', game.getIn(['systems', position.team]));
+          .set('systems', game.getIn(['systems', team]))
         break;
-      case 'engineer': // TODO: Constants
+      case ENGINEER:
         data = data
-          .set('engine', game.getIn(['engines', position.team]));
+          .set('engine', game.getIn(['engines', team]));
         break;
-      case 'radio_operator': // TODO: Constants
+      case RADIO_OPERATOR:
         data = data
           .set('grid', game.get('grid'));
         break;
@@ -48,4 +52,24 @@ export const getPlayerPosition = (teams, playerId) => {
   }
   // not found
   return undefined;
+};
+
+export const assertStarted = (game) => {
+  if (!game.getIn(['common', 'started'])) { // TODO: Constants
+    throw new GameStateError('Game not yet started');
+  }
+};
+
+export const assertNotStarted = (game) => {
+  if (game.getIn(['common', 'started'])) { // TODO: Constants
+    throw new GameStateError('Game already started');
+  }
+};
+
+export const assertSystemReady = (game, team, systemName) => {
+  const system = game.getIn(['systems', team, systemName]);
+  if (system.get('charge') < system.get('max')) { // TODO: Constants
+    throw new GameStateError('System is not charged')
+  }
+  // TODO: Check breakdowns
 };

@@ -3,9 +3,12 @@ import { joinCustomLobby } from '../actions/CustomLobbyActions';
 import { connected, disconnected } from '../actions/GeneralActions';
 import { messageToAction } from '../actions/SocketActions';
 
-const ioSocketLocation = window.ioSocketLocation || 'localhost:8080';
+const log = require('debug')('commander-periscope:server');
 
-// TODO: Try to separate layers of logic for general messages from custom lobby specific stuff.
+const ioSocketLocation = window.ioSocketLocation || '';
+
+// TODO: Try to separate out custom-lobby-specific logic from general-messaging logic.
+// This file is not the place for it to be
 
 export default (getStore) => {
   const socket = SocketIo(ioSocketLocation);
@@ -14,7 +17,7 @@ export default (getStore) => {
   });
   
   socket.on('connect', () => {
-    console.log('socket.io connect');
+    log('socket.io connect');
     
     const store = getStore();
     store.dispatch(connected());
@@ -27,7 +30,7 @@ export default (getStore) => {
   });
   
   socket.on('disconnect', () => {
-    console.log('socket.io connect');
+    log('socket.io disconnect');
     getStore().dispatch(disconnected());
   });
   

@@ -1,10 +1,11 @@
 import * as Immutable from 'immutable';
-import * as GameActions from '../actions/GameActions';
+import { JOINED, UPDATED } from '../../common/Messages';
 
 export default (state, action) => {
   state = state || Immutable.Map();
   switch (action.type) {
-    case GameActions.JOINED:
+    case JOINED:
+    case UPDATED:
       return jsonToGame(action.game);
   }
   return state;

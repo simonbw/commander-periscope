@@ -1,10 +1,10 @@
 import { Map } from 'immutable';
 import { applyMiddleware, createStore } from 'redux';
+import ReduxMulti from 'redux-multi';
 import ReduxThunk from 'redux-thunk';
 import reducers from '../reducers';
 import { getUserId } from '../user';
 import SocketMiddleware from './SocketMiddleware';
-import ReduxMulti from 'redux-multi';
 
 const LoggingMiddleware = (store) => (next) => (action) => {
   console.log('dispatching', action);

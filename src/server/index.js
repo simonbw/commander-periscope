@@ -1,20 +1,20 @@
 import { Server } from 'http';
-import app from './app';
+import createApp from './app';
 import { registerErrorHandlers } from './errors';
 import { initSocketServer } from './sockets'
 
-if (process.env.NODE_DEBUG_OPTION) {
-  console.log(`NODE_DEBUG_OPTION: ${process.env.NODE_DEBUG_OPTION}`);
-}
+const log = require('debug')('commander-periscope:server');
 
 registerErrorHandlers();
 
-const server = Server(app);
+// TODO: Production mode
+const devMode = process.env.NODE_ENV !== 'prod';
+const server = Server(createApp({ devServer: devMode }));
 initSocketServer(server);
 
 const port = parseInt(process.env.PORT) || 8080;
 
 server.listen(port, () => {
-  console.log(`captain-sonar-server started on port ${port}`);
+  log(`commander-periscope server started on port ${port}`);
 });
 

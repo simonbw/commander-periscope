@@ -1,3 +1,6 @@
+require('trace');
+require('clarify');
+
 import PrettyError from 'pretty-error';
 
 const prettyError = new PrettyError();

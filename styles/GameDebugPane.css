@@ -1,0 +1,8 @@
+
+.GameDebugPane {
+    cursor: pointer;
+}
+
+.GameDebugPane.open {
+    background: #EEE;
+}

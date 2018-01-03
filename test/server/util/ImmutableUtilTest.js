@@ -1,9 +1,6 @@
-import chai, { expect } from 'chai';
-import chaiImmutable from 'chai-immutable';
 import Immutable, { List } from 'immutable';
-import { deepFind } from '../../src/util/ImmutableUtil';
-
-chai.use(chaiImmutable);
+import { deepFind } from '../../../src/common/util/ImmutableUtil';
+import expect from '../../expect';
 
 describe('ImmutableUtil', () => {
   describe('.deepFind', () => {

@@ -1,9 +1,18 @@
 {
   "presets": [
     "react",
-    "env"
+    [
+      "env",
+      {
+        "targets": {
+          "browsers": "last 2 Chrome versions"
+        }
+      }
+    ]
   ],
   "plugins": [
-    "transform-object-rest-spread"
-  ]
+    "transform-object-rest-spread",
+    "transform-react-jsx"
+  ],
+  "sourceMaps": "inline"
 }

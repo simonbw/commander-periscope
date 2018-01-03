@@ -1,5 +1,6 @@
 import PubSub from 'pubsub-js';
 import shortid from 'shortid';
+import { waitForSettled } from '../../common/util/AsyncUtil';
 
 export default class Resource {
   
@@ -9,51 +10,68 @@ export default class Resource {
     this._createInstance = createInstance;
     this._createOnNotFound = createOnNotFound;
     this._instances = new Map(); // not Immutable.Map
+    this._lastUpdates = new Map();
   }
   
+  // TODO: Should we wrap pubsub entirely?
   getPubSubTopic(id, action = null) {
     return `${this._pubsubName}.${id}${action ? `.${action}` : ''}`;
   }
   
   publish(instance, action, data = {}) {
+    const pubSubTopic = this.getPubSubTopic(instance.get('id'), action);
     PubSub.publish(
-      this.getPubSubTopic(instance.get('id'), action),
+      pubSubTopic,
       { [this._resourceName]: instance, ...data }
     );
   }
   
-  create(id, ...rest) {
+  async create(id, ...rest) {
     if (this._instances.has(id)) {
-      return Promise.reject(new Error(`${this._pubsubName} with id ${id} already exists`));
+      throw new Error(`${this._pubsubName} with id ${id} already exists`);
     }
-    const instance = this._createInstance(id || shortid.generate(), ...rest);
+    const instance = this._createInstance(this.coerceId(id), ...rest);
     this._instances.set(instance.get('id'), instance);
-    return Promise.resolve(instance);
+    return instance;
   }
   
-  get(id) {
+  coerceId(id) {
+    return id || shortid.generate();
+  }
+  
+  async get(id) {
     if (!this._instances.has(id)) {
       if (this._createOnNotFound) {
         return this.create(id);
       } else {
-        return Promise.reject(new Error(`${this._resourceName} with id ${id} not found`));
+        throw new Error(`${this._resourceName} with id ${id} not found`);
       }
     }
-    return Promise.resolve(this._instances.get(id));
+    return this._instances.get(id);
   }
   
-  update(id, action, actionData, updater) {
-    return this.get(id)
-      .then(updater) // Put this here so updater can be async
-      .then((instance) => {
-        this._instances.set(id, instance);
-        this.publish(instance, action, actionData);
-        return instance;
-      });
+  async update(id, action, actionData, updater) {
+    id = this.coerceId(id);
+    const lastUpdate = this._lastUpdates.get(id) || Promise.resolve();
+    
+    // put all the async work into a promise so we can store it in _lastUpdates
+    const updatePromise = (async () => {
+      await waitForSettled(lastUpdate);
+      const instance = await updater(await this.get(id));
+      if (!instance) {
+        throw new Error(`updater returned ${instance}, ${this._resourceName} ${action}`);
+      }
+      this._instances.set(id, instance);
+      this.publish(instance, action, actionData);
+      return instance;
+    })();
+    this._lastUpdates.set(id, updatePromise);
+    return updatePromise;
   }
   
-  remove(id) {
+  async remove(id) {
     PubSub.unsubscribe(this.getPubSubTopic(id));
-    return Promise.resolve(this._instances.remove(id));
+    // TODO: What should this return? Should this throw an error on not found?
+    return this._instances.delete(id);
   }
 }
