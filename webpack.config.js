@@ -1,4 +1,5 @@
 const path = require('path');
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 
 module.exports = {
   entry: "./src/client/index.js",
@@ -24,7 +25,10 @@ module.exports = {
           localIdentName: '[name]__[local]___[hash:base64:5]'
         }
       }],
-    }]
+    }],
   },
+  plugins: [
+    new HardSourceWebpackPlugin() // makes things faster
+  ],
   devtool: "inline-source-map",
 };

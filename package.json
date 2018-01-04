@@ -20,6 +20,7 @@
     "debug": "^3.1.0",
     "express": "^4.16.2",
     "glob": "^7.1.2",
+    "hard-source-webpack-plugin": "^0.5.14",
     "immutable": "^4.0.0-rc.9",
     "js-cookie": "^2.2.0",
     "morgan": "^1.9.0",
