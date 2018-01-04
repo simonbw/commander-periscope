@@ -1,9 +1,9 @@
 import PubSub from 'pubsub-js';
 import {
-  CUSTOM_LOBBY_JOINED,
-  CUSTOM_LOBBY_READY, CUSTOM_LOBBY_SELECT_ROLE, CUSTOM_LOBBY_SET_USERNAME, CUSTOM_LOBBY_UNREADY, JOIN_CUSTOM_LOBBY,
-  LEAVE_CUSTOM_LOBBY
+  CUSTOM_LOBBY_JOINED, CUSTOM_LOBBY_READY, CUSTOM_LOBBY_SELECT_ROLE, CUSTOM_LOBBY_SET_USERNAME,
+  CUSTOM_LOBBY_UNREADY, JOIN_CUSTOM_LOBBY, LEAVE_CUSTOM_LOBBY
 } from '../../common/Messages';
+import { ID } from '../../common/StateFields';
 import CustomLobby from '../data/CustomLobbies';
 
 const log = require('debug')('commander-periscope:server');
@@ -27,10 +27,10 @@ export default () => (socket, next) => {
     
     const lobby = await CustomLobby.addPlayer(lobbyId, socket.userId, username);
     joiningCustomLobby = false;
-    socket.lobbyId = lobby.get('id');
+    socket.lobbyId = lobby.get(ID);
     
-    const pubsubToken = attachPubsubHandlers(socket, lobby.get('id'));
-    listenToSocketMessages(socket, lobby.get('id'), pubsubToken);
+    const pubsubToken = attachPubsubHandlers(socket, lobby.get(ID));
+    listenToSocketMessages(socket, lobby.get(ID), pubsubToken);
     
     socket.emit('action', {
       type: CUSTOM_LOBBY_JOINED,

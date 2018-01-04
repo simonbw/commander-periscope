@@ -18,5 +18,4 @@ server.listen(port, () => {
   log(`commander-periscope server started on port ${port}`);
 });
 
-
 // GENERAL TODO: Enforce some stricter style standards. Be consistent with the type of function declaration we're using.

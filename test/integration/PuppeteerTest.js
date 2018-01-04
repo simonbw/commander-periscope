@@ -1,6 +1,9 @@
 import puppeteer from 'puppeteer';
 import { ALL_ROLES } from '../../src/common/Role';
+import { READIED, TEAMS } from '../../src/common/StateFields';
+import CustomLobbies from '../../src/server/data/CustomLobbies';
 import expect from '../expect';
+import { wait } from '../testUtils';
 import {
   clickReadyButton, closePageWithContext, createCustomLobby, expectNoErrors, expectPagesValid, extractGame,
   extractState, extractUserId, initServer, joinCustomLobby, newPageWithContext
@@ -34,6 +37,9 @@ describe('Integration', function () {
       page.on('pageerror', (e) => {
         page.pageErrors.push(e);
       });
+      page.on('console', (msg) => {
+        require('debug')('client')(msg.text);
+      })
     }
     const port = server.address().port;
     await Promise.all(pages.map(page => page.goto(`http://localhost:${port}`)));
@@ -86,30 +92,45 @@ describe('Integration', function () {
     
     // TODO: Test changing usernames
     
-    for (let i = 0; i < 4; i++) {
-      await redTeam[i].click(`#red-${ALL_ROLES[i]}`);
-      await blueTeam[i].click(`#blue-${ALL_ROLES[i]}`);
-    }
+    // TODO: Doesn't have to be sequential
+    await Promise.all([
+      redTeam[0].click('#red-captain'),
+      redTeam[1].click('#red-first_mate'),
+      redTeam[2].click('#red-engineer'),
+      redTeam[3].click('#red-radio_operator'),
+      
+      blueTeam[0].click('#blue-captain'),
+      blueTeam[1].click('#blue-first_mate'),
+      blueTeam[2].click('#blue-engineer'),
+      blueTeam[3].click('#blue-radio_operator'),
+    ]);
+    
+    const lobbyTeams = (await CustomLobbies.get(lobbyId, true)).get(TEAMS); // wait for all these updates to finish
+    expect(lobbyTeams.every(team => team.every(player => player)), lobbyTeams).to.be.true;
     
     log(`all players have roles`);
     expectNoErrors(pages);
     
     for (const page of pages) {
-      await clickReadyButton(page);
-      await page.waitFor(50); // TODO: Why do we need this? We should be able to do these simultaneously.
+      await clickReadyButton(page); // TODO: Why do these have to be synchronous
     }
+    // await Promise.all(pages.map(page => clickReadyButton(page)));
+    
+    const lobby = await CustomLobbies.get(lobbyId, true);
+    expect(lobby.get(READIED)).to.have.size(8);
     
     log(`all players ready`);
     expectNoErrors(pages);
-    
-    expect(await redTeam[0].$('#captain-page')).to.exist;
-    expect(await redTeam[1].$('#first-mate-page')).to.exist;
-    expect(await redTeam[2].$('#engineer-page')).to.exist;
-    expect(await redTeam[3].$('#radio-operator-page')).to.exist;
-    expect(await blueTeam[0].$('#captain-page')).to.exist;
-    expect(await blueTeam[1].$('#first-mate-page')).to.exist;
-    expect(await blueTeam[2].$('#engineer-page')).to.exist;
-    expect(await blueTeam[3].$('#radio-operator-page')).to.exist;
+    await Promise.all([
+      redTeam[0].waitForSelector('#captain-page', { timeout: 500 }),
+      redTeam[1].waitForSelector('#first-mate-page', { timeout: 500 }),
+      redTeam[2].waitForSelector('#engineer-page', { timeout: 500 }),
+      redTeam[3].waitForSelector('#radio-operator-page', { timeout: 500 }),
+      blueTeam[0].waitForSelector('#captain-page', { timeout: 500 }),
+      blueTeam[1].waitForSelector('#first-mate-page', { timeout: 500 }),
+      blueTeam[2].waitForSelector('#engineer-page', { timeout: 500 }),
+      blueTeam[3].waitForSelector('#radio-operator-page', { timeout: 500 })
+    ]);
     
     log(`all players on game pages`);
     expectNoErrors(pages);

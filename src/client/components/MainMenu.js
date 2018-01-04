@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import styles from '../../../styles/MainMenu.css'
+import { USER_ID } from '../../common/StateFields';
 import * as CustomLobbyActions from '../actions/CustomLobbyActions';
 
 const MainMenu = ({ createCustomLobby, joinCustomLobby, userId }) => {
@@ -24,7 +25,7 @@ const MainMenu = ({ createCustomLobby, joinCustomLobby, userId }) => {
 };
 
 export default connect(
-  (state) => ({ userId: state.get('userId') }),
+  (state) => ({ userId: state.get(USER_ID) }),
   (dispatch) => ({
     createCustomLobby: () => dispatch(CustomLobbyActions.createCustomLobby()),
     joinCustomLobby: (lobbyId) => dispatch(CustomLobbyActions.joinCustomLobby(lobbyId))

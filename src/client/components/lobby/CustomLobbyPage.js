@@ -2,16 +2,17 @@ import classnames from 'classnames';
 import React from 'react';
 import { connect } from 'react-redux';
 import styles from '../../../../styles/CustomLobbyPage.css';
+import { ID, LOBBY, READIED, USER_ID } from '../../../common/StateFields';
 import * as Team from '../../../common/Team';
 import * as CustomLobbyActions from '../../actions/CustomLobbyActions';
 import * as GeneralActions from '../../actions/GeneralActions';
-import * as Page from '../../models/Page';
+import { MAIN_MENU_PAGE } from '../../models/Page';
 import TeamList from './TeamList';
 
 const CustomLobbyPage = ({ lobby, userId, selectRole, ready, unready, goToMainMenu, setUsername }) => {
-  const lobbyId = lobby.get('id');
+  const lobbyId = lobby.get(ID);
   if (lobbyId) {
-    const userIsReady = lobby.get('readied').has(userId);
+    const userIsReady = lobby.get(READIED).has(userId);
     return (
       <div id="custom-lobby-page" className={styles.CustomLobbyPage}>
         <pre>{JSON.stringify(lobby, null, 2)}</pre>
@@ -64,8 +65,8 @@ const UsernameInput = ({ setUsername }) => (
 
 export default connect(
   (state) => ({
-    lobby: state.get('lobby'),
-    userId: state.get('userId'),
+    lobby: state.get(LOBBY),
+    userId: state.get(USER_ID),
   }),
   (dispatch) => ({
     selectRole: (role, team) => dispatch(CustomLobbyActions.selectRole(role, team)),
@@ -73,7 +74,7 @@ export default connect(
     unready: () => dispatch(CustomLobbyActions.unready()),
     goToMainMenu: () => {
       dispatch(CustomLobbyActions.leaveCustomLobby());
-      dispatch(GeneralActions.changePage(Page.MAIN_MENU))
+      dispatch(GeneralActions.changePage(MAIN_MENU_PAGE))
     },
     setUsername: (username) => dispatch(CustomLobbyActions.setUsername(username))
   })

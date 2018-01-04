@@ -1,5 +1,6 @@
 import PubSub from 'pubsub-js';
 import shortid from 'shortid';
+import { ID } from '../../common/StateFields';
 import { waitForSettled } from '../../common/util/AsyncUtil';
 
 export default class Resource {
@@ -19,7 +20,7 @@ export default class Resource {
   }
   
   publish(instance, action, data = {}) {
-    const pubSubTopic = this.getPubSubTopic(instance.get('id'), action);
+    const pubSubTopic = this.getPubSubTopic(instance.get(ID), action);
     PubSub.publish(
       pubSubTopic,
       { [this._resourceName]: instance, ...data }
@@ -31,7 +32,7 @@ export default class Resource {
       throw new Error(`${this._pubsubName} with id ${id} already exists`);
     }
     const instance = this._createInstance(this.coerceId(id), ...rest);
-    this._instances.set(instance.get('id'), instance);
+    this._instances.set(instance.get(ID), instance);
     return instance;
   }
   
@@ -39,13 +40,17 @@ export default class Resource {
     return id || shortid.generate();
   }
   
-  async get(id) {
+  async get(id, waitForUpdate = false) {
     if (!this._instances.has(id)) {
       if (this._createOnNotFound) {
         return this.create(id);
       } else {
         throw new Error(`${this._resourceName} with id ${id} not found`);
       }
+    }
+    if (waitForUpdate) {
+      const lastUpdate = this._lastUpdates.get(id) || Promise.resolve();
+      await waitForSettled(lastUpdate);
     }
     return this._instances.get(id);
   }

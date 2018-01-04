@@ -1,4 +1,5 @@
 import { ALL_ROLES, CAPTAIN, FIRST_MATE } from '../../../src/common/Role';
+import { PLAYERS, READIED, TEAMS, USERNAMES } from '../../../src/common/StateFields';
 import { BLUE, BOTH_TEAMS, RED } from '../../../src/common/Team';
 import { createRange } from '../../../src/common/util/ImmutableUtil';
 import { shouldStartGame } from '../../../src/server/data/CustomLobbyUtils';
@@ -17,7 +18,7 @@ describe('CustomLobbies', () => {
     await CustomLobbies.addPlayer('lobbyId', 'player2', 'username2');
     await CustomLobbies.addPlayer('lobbyId', 'player3', 'username3');
     const lobby = await CustomLobbies.get('lobbyId');
-    expect(lobby.get('players')).to.have.size(3);
+    expect(lobby.get(PLAYERS)).to.have.size(3);
   });
   
   it('.removePlayer()', async () => {
@@ -27,7 +28,7 @@ describe('CustomLobbies', () => {
     await CustomLobbies.removePlayer('lobbyId', 'player3');
     await CustomLobbies.removePlayer('lobbyId', 'player1');
     const lobby = (await CustomLobbies.get('lobbyId'));
-    expect(lobby.get('players'))
+    expect(lobby.get(PLAYERS))
       .to.have.size(1).and
       .to.not.include('player1', 'player3');
   });
@@ -39,17 +40,17 @@ describe('CustomLobbies', () => {
     await CustomLobbies.removePlayer('lobbyId', 'player3');
     await CustomLobbies.removePlayer('lobbyId', 'player1');
     const lobby = (await CustomLobbies.get('lobbyId'));
-    expect(lobby.get('players'))
+    expect(lobby.get(PLAYERS))
       .to.have.size(1).and
       .to.not.include('player1', 'player3');
   });
   
   it('.setUsername()', async () => {
     await CustomLobbies.addPlayer('lobbyId', 'player1', 'oldUsername');
-    expect((await CustomLobbies.get('lobbyId')).getIn(['usernames', 'player1']))
+    expect((await CustomLobbies.get('lobbyId')).getIn([USERNAMES, 'player1']))
       .to.equal('oldUsername');
     await CustomLobbies.setUsername('lobbyId', 'player1', 'newUsername');
-    expect((await CustomLobbies.get('lobbyId')).getIn(['usernames', 'player1']))
+    expect((await CustomLobbies.get('lobbyId')).getIn([USERNAMES, 'player1']))
       .to.equal('newUsername');
   });
   
@@ -64,21 +65,21 @@ describe('CustomLobbies', () => {
     it('setting a role should work', async () => {
       await CustomLobbies.selectRole('lobbyId', 'player1', RED, CAPTAIN);
       const lobby = await CustomLobbies.get('lobbyId');
-      expect(lobby.getIn(['teams', RED, CAPTAIN])).to.equal('player1');
+      expect(lobby.getIn([TEAMS, RED, CAPTAIN])).to.equal('player1');
     });
     
     it('removing a role should work', async () => {
       await CustomLobbies.selectRole('lobbyId', 'player1', RED, CAPTAIN);
       await CustomLobbies.selectRole('lobbyId', 'player1', null, null);
       const lobby = await CustomLobbies.get('lobbyId');
-      expect(lobby.getIn(['teams', RED, CAPTAIN])).to.not.exist;
+      expect(lobby.getIn([TEAMS, RED, CAPTAIN])).to.not.exist;
     });
     
     it('setting a new role should remove the old role', async () => {
       await CustomLobbies.selectRole('lobbyId', 'player1', RED, CAPTAIN);
       await CustomLobbies.selectRole('lobbyId', 'player1', RED, FIRST_MATE);
       const lobby = await CustomLobbies.get('lobbyId');
-      expect(lobby.getIn(['teams', RED, CAPTAIN])).to.not.exist;
+      expect(lobby.getIn([TEAMS, RED, CAPTAIN])).to.not.exist;
     });
     
     it(`selecting a role that's already taken should cause an error`, async () => {
@@ -97,7 +98,7 @@ describe('CustomLobbies', () => {
       await CustomLobbies.selectRole('lobbyId', 'player1', RED, CAPTAIN);
       await CustomLobbies.ready('lobbyId', 'player1');
       const lobby = await CustomLobbies.get('lobbyId');
-      expect(lobby.get('readied')).to.include('player1');
+      expect(lobby.get(READIED)).to.include('player1');
     });
     
     it('cannot ready without a role', async () => {
@@ -109,7 +110,7 @@ describe('CustomLobbies', () => {
       await CustomLobbies.ready('lobbyId', 'player1');
       await CustomLobbies.unready('lobbyId', 'player1');
       const lobby = await CustomLobbies.get('lobbyId');
-      expect(lobby.get('readied')).to.not.include('player1');
+      expect(lobby.get(READIED)).to.not.include('player1');
     });
     
     it('unready when role removed', async () => {
@@ -117,7 +118,7 @@ describe('CustomLobbies', () => {
       await CustomLobbies.ready('lobbyId', 'player1');
       await CustomLobbies.selectRole('lobbyId', 'player1', null, null);
       const lobby = await CustomLobbies.get('lobbyId');
-      expect(lobby.get('readied')).to.not.include('player1');
+      expect(lobby.get(READIED)).to.not.include('player1');
     });
   });
   

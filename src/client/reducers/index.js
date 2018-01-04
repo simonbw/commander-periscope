@@ -1,4 +1,5 @@
 import { Map } from 'immutable';
+import { CONNECTED, GAME, LOBBY, PAGE } from '../../common/StateFields';
 import connectionReducer from './connectionReducer';
 import customLobbyReducer from './customLobbyReducer';
 import gameReducer from './gameReducer';
@@ -8,8 +9,8 @@ export default (state, action) => {
   state = state || Map();
   
   return state
-    .update('page', (page) => pageReducer(page, action))
-    .update('lobby', (lobby) => customLobbyReducer(lobby, action))
-    .update('game', (game) => gameReducer(game, action))
-    .update('connected', (connection) => connectionReducer(connection, action));
+    .update(PAGE, (page) => pageReducer(page, action))
+    .update(LOBBY, (lobby) => customLobbyReducer(lobby, action))
+    .update(GAME, (game) => gameReducer(game, action))
+    .update(CONNECTED, (connection) => connectionReducer(connection, action));
 };

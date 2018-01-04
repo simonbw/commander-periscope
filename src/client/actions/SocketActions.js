@@ -1,6 +1,6 @@
 import { CUSTOM_LOBBY_GAME_START, CUSTOM_LOBBY_JOINED } from '../../common/Messages';
 // Convert socket messages into actions
-import * as Page from '../models/Page';
+import { GAME_PAGE } from '../models/Page';
 import { changePage, sendMessage } from './GeneralActions';
 
 export const messageToAction = (action) => {
@@ -9,7 +9,7 @@ export const messageToAction = (action) => {
       const gameId = action.gameId;
       return [
         sendMessage('join_game', { gameId }),
-        changePage(Page.GAME)
+        changePage(GAME_PAGE)
       ];
     }
     case CUSTOM_LOBBY_JOINED: {
@@ -18,7 +18,7 @@ export const messageToAction = (action) => {
         return [
           action,
           sendMessage('join_game', { gameId }),
-          changePage(Page.GAME)
+          changePage(GAME_PAGE)
         ]
       }
       return action;

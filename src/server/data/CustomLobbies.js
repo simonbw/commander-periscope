@@ -1,5 +1,6 @@
 import Immutable from 'immutable';
 import { CAPTAIN, ENGINEER, FIRST_MATE, RADIO_OPERATOR } from '../../common/Role';
+import { ID, PLAYERS, READIED, TEAMS, USERNAMES } from '../../common/StateFields';
 import { BLUE, RED } from '../../common/Team';
 import { shouldStartGame } from './CustomLobbyUtils';
 import Games from './Games';
@@ -8,6 +9,7 @@ import Resource from './Resource';
 
 const log = require('debug')('commander-periscope:server');
 
+// TODO: Custom Lobby Fields In Constants
 function createCustomLobby(id) {
   return Immutable.Map({
     id,
@@ -35,50 +37,50 @@ const CustomLobbies = new Resource('lobby', 'custom_lobby', createCustomLobby, t
 CustomLobbies.addPlayer = (lobbyId, playerId, username) => (
   CustomLobbies.update(lobbyId, 'player_added', { playerId }, (lobby) =>
     lobby
-      .update('players', (players) => players.add(playerId))
-      .update('usernames', (usernames) => username ? usernames.set(playerId, username) : usernames)
+      .update(PLAYERS, (players) => players.add(playerId))
+      .update(USERNAMES, (usernames) => username ? usernames.set(playerId, username) : usernames)
   )
 );
 
 CustomLobbies.removePlayer = async (lobbyId, playerId) => {
   const updatedLobby = await CustomLobbies.update(lobbyId, 'player_left', { playerId }, (lobby) =>
     lobby
-      .update('players', (players) => players.remove(playerId))
-      .update('readied', (ready) => ready.remove(playerId))
-      .update('usernames', (usernames) => usernames.remove(playerId))
-      .update('teams', (teams) =>
+      .update(PLAYERS, (players) => players.remove(playerId))
+      .update(READIED, (ready) => ready.remove(playerId))
+      .update(USERNAMES, (usernames) => usernames.remove(playerId))
+      .update(TEAMS, (teams) =>
         teams.map((team) => team.map(
           (p) => p === playerId ? null : p
         ))));
-  if (updatedLobby.get('players').isEmpty()) {
-    return CustomLobbies.remove(updatedLobby.get('id'));
+  if (updatedLobby.get(PLAYERS).isEmpty()) {
+    return CustomLobbies.remove(updatedLobby.get(ID));
   }
   return updatedLobby;
 };
 
 CustomLobbies.setUsername = (lobbyId, playerId, username) => (
   CustomLobbies.update(lobbyId, 'player_set_username', { playerId, username }, (lobby) =>
-    lobby.update('usernames', (usernames) => usernames.set(playerId, username))
+    lobby.update(USERNAMES, (usernames) => usernames.set(playerId, username))
   )
 );
 
 // Pass null for team and role to unselect
 CustomLobbies.selectRole = (lobbyId, playerId, team, role) => (
   CustomLobbies.update(lobbyId, 'role_selected', { team, role }, async (lobby) => {
-    const currentPlayer = lobby.getIn(['teams', team, role]);
+    const currentPlayer = lobby.getIn([TEAMS, team, role]);
     if (team && role && currentPlayer && currentPlayer !== playerId) {
       throw new Error(`That position is already taken ${team} ${role} by ${currentPlayer}`);
     }
     
-    const position = getPlayerPosition(lobby.get('teams'), playerId);
+    const position = getPlayerPosition(lobby.get(TEAMS), playerId);
     if (position) {
-      lobby = lobby.setIn(['teams', position.team, position.role], null);
+      lobby = lobby.setIn([TEAMS, position.team, position.role], null);
     }
     
     if (team && role) {
-      lobby = lobby.setIn(['teams', team, role], playerId);
+      lobby = lobby.setIn([TEAMS, team, role], playerId);
     } else { // unready when removing role
-      lobby = lobby.update('readied', (readied) => readied.remove(playerId))
+      lobby = lobby.update(READIED, (readied) => readied.remove(playerId))
     }
     if (shouldStartGame(lobby)) {
       return await startGameIfShould(lobby);
@@ -89,28 +91,29 @@ CustomLobbies.selectRole = (lobbyId, playerId, team, role) => (
 
 CustomLobbies.ready = (lobbyId, playerId) => (
   CustomLobbies.update(lobbyId, 'player_readied', { playerId }, (lobby) => {
-    if (!getPlayerPosition(lobby.get('teams'), playerId)) {
+    if (!getPlayerPosition(lobby.get(TEAMS), playerId)) {
       throw new Error('Cannot ready without a role');
     }
-    lobby = lobby.update('readied', (readied) => readied.add(playerId));
+    log(`${playerId} readied`);
+    lobby = lobby.update(READIED, (readied) => readied.add(playerId));
     return startGameIfShould(lobby);
   })
 );
 
 CustomLobbies.unready = (lobbyId, playerId) => (
   CustomLobbies.update(lobbyId, 'player_unreadied', { playerId }, (lobby) =>
-    lobby.update('readied', (readied) => readied.remove(playerId))
+    lobby.update(READIED, (readied) => readied.remove(playerId))
   )
 );
 
 const startGameIfShould = async (lobby) => {
   if (shouldStartGame(lobby)) {
     const game = await Games.create(null, {
-      players: lobby.get('players'),
-      usernames: lobby.get('usernames'),
-      teams: lobby.get('teams')
+      players: lobby.get(PLAYERS),
+      usernames: lobby.get(USERNAMES),
+      teams: lobby.get(TEAMS)
     });
-    const gameId = game.get('id');
+    const gameId = game.get(ID);
     const updatedLobby = lobby.set('gameId', gameId);
     log(`starting game ${gameId}`);
     CustomLobbies.publish(updatedLobby, 'game_start', { gameId });

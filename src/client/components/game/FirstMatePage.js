@@ -1,13 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { GAME, STARTED, SYSTEMS } from '../../../common/StateFields';
 import { chargeSystem } from '../../actions/GameActions';
 import GameDebugPane from './GameDebugPane';
 
 const FirstMatePage = ({ game, chargeSystem }) => (
   <div id="first-mate-page">
     <span>First Mate Page</span>
-    {game.get('started') && <SystemPanel {...{ systems: game.get('systems'), chargeSystem }}/>}
-    {!game.get('started') && <div>Game Not Started Yet</div>}
+    {game.get(STARTED) && <SystemPanel {...{ systems: game.get(SYSTEMS), chargeSystem }}/>}
+    {!game.get(STARTED) && <div>Game Not Started Yet</div>}
     <GameDebugPane {...{ game }}/>
   </div>
 );
@@ -33,7 +34,7 @@ const System = ({ name, charge, max, chargeSystem }) => (
 
 export default connect(
   (state) => ({
-    game: state.get('game'),
+    game: state.get(GAME),
   }),
   (dispatch) => ({
     chargeSystem: (systemName) => dispatch(chargeSystem(systemName))

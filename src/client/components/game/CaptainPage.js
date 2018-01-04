@@ -2,26 +2,30 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { ALL_DIRECTIONS } from '../../../common/Direction';
 import { WATER_TILE } from '../../../common/Grid';
+import { GAME, GRID, STARTED, TURN_INFO } from '../../../common/StateFields';
 import { headInDirection, setStartLocation } from '../../actions/GameActions';
 import GameDebugPane from './GameDebugPane';
 import Grid from './GridView';
 
-const CaptainPage = ({ game, headInDirection, setStartLocation }) => (
-  <div id="captain-page">
-    Captain Page
-    
-    {game.get('started') ?
-      <DirectionSelect headInDirection={headInDirection}/>
-      : <StartLocationChooser
-        grid={game.get('grid')}
-        setStartLocation={setStartLocation}
-        subLocation={game.get('subLocation')}
-      />
-    }
-    
-    <GameDebugPane game={game}/>
-  </div>
-);
+const CaptainPage = ({ game, headInDirection, setStartLocation }) => {
+  const turnInfo = game.get(TURN_INFO);
+  return (
+    <div id="captain-page">
+      Captain Page
+      
+      {game.get(STARTED) ?
+        <DirectionSelect headInDirection={headInDirection} canMove={turnInfo}/>
+        : <StartLocationChooser
+          grid={game.get(GRID)}
+          setStartLocation={setStartLocation}
+          subLocation={game.get('subLocation')}
+        />
+      }
+      
+      <GameDebugPane game={game}/>
+    </div>
+  );
+};
 
 export const StartLocationChooser = ({ grid, subLocation, setStartLocation }) => (
   <Grid
@@ -48,7 +52,7 @@ const DirectionButton = ({ direction, headInDirection }) => (
 
 export default connect(
   (state) => ({
-    game: state.get('game'),
+    game: state.get(GAME),
   }),
   (dispatch) => ({
     headInDirection: (direction) => dispatch(headInDirection(direction)),

@@ -1,40 +1,45 @@
 import Immutable from 'immutable';
+import {
+  CHARGE,
+  COMMON, ENGINE_LAYOUT, GRID, ID, MAX_CHARGE, STARTED, SUB_LOCATIONS, SUB_PATHS, SYSTEMS, TEAMS, TURN_INFO, USER_ROLE,
+  USER_TEAM
+} from '../../common/StateFields';
 import { CAPTAIN, ENGINEER, FIRST_MATE, RADIO_OPERATOR } from '../../common/Role';
 import { deepFind } from '../../common/util/ImmutableUtil';
 import { GameStateError } from './GameStateError';
 
 export const getDataForUser = (game, userId) => {
   let data = Immutable.Map({
-    id: game.get('id'),
-    common: game.get('common')
+    id: game.get(ID),
+    common: game.get(COMMON)
   });
   
-  const position = getPlayerPosition(game.getIn(['common', 'teams']), userId);
+  const position = getPlayerPosition(game.getIn([COMMON, TEAMS]), userId);
   if (position) {
     const { team } = position;
     data = data
-      .set('team', position.team)
-      .set('role', position.role);
+      .set(USER_TEAM, position.team)
+      .set(USER_ROLE, position.role);
     
     switch (position.role) {
       case CAPTAIN:
         data = data
-          .set('grid', game.get('grid'))
-          .set('subLocation', game.getIn(['subLocations', team]))
-          .set('path', game.getIn(['subPaths', team]))
-          .set('turnInfo', game.getIn(['turnInfo', team]));
+          .set(GRID, game.get(GRID))
+          .set('subLocation', game.getIn([SUB_LOCATIONS, team]))
+          .set('path', game.getIn([SUB_PATHS, team]))
+          .set(TURN_INFO, game.getIn([TURN_INFO, team]));
         break;
       case FIRST_MATE:
         data = data
-          .set('systems', game.getIn(['systems', team]))
+          .set(SYSTEMS, game.getIn([SYSTEMS, team]));
         break;
       case ENGINEER:
         data = data
-          .set('engine', game.getIn(['engines', team]));
+          .set(ENGINE_LAYOUT, game.getIn([ENGINE_LAYOUT, team]));
         break;
       case RADIO_OPERATOR:
         data = data
-          .set('grid', game.get('grid'));
+          .set(GRID, game.get(GRID));
         break;
     }
   }
@@ -55,20 +60,20 @@ export const getPlayerPosition = (teams, playerId) => {
 };
 
 export const assertStarted = (game) => {
-  if (!game.getIn(['common', 'started'])) { // TODO: Constants
+  if (!game.getIn([COMMON, STARTED])) { // TODO: Constants
     throw new GameStateError('Game not yet started');
   }
 };
 
 export const assertNotStarted = (game) => {
-  if (game.getIn(['common', 'started'])) { // TODO: Constants
+  if (game.getIn([COMMON, STARTED])) { // TODO: Constants
     throw new GameStateError('Game already started');
   }
 };
 
 export const assertSystemReady = (game, team, systemName) => {
-  const system = game.getIn(['systems', team, systemName]);
-  if (system.get('charge') < system.get('max')) { // TODO: Constants
+  const system = game.getIn([SYSTEMS, team, systemName]);
+  if (system.get(CHARGE) < system.get(MAX_CHARGE)) { // TODO: Constants
     throw new GameStateError('System is not charged')
   }
   // TODO: Check breakdowns

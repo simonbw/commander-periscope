@@ -1,5 +1,6 @@
 import * as Immutable from 'immutable';
 import { JOINED, UPDATED } from '../../common/Messages';
+import { PLAYERS, READIED } from '../../common/StateFields';
 
 export default (state, action) => {
   state = state || Immutable.Map();
@@ -14,8 +15,8 @@ export default (state, action) => {
 const jsonToGame = (json) => (
   Immutable.fromJS(json, (key, value) => {
     switch (key) {
-      case 'readied':
-      case 'players':
+      case READIED:
+      case PLAYERS:
         return value.toSet();
       default:
         return Immutable.Iterable.isKeyed(value) ? value.toMap() : value.toList()

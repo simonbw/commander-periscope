@@ -3,10 +3,11 @@ import React from 'react';
 import styles from '../../../../styles/TeamList.css';
 import * as Role from '../../../common/Role';
 import { ALL_ROLES } from '../../../common/Role';
+import { READIED, TEAMS, USERNAMES } from '../../../common/StateFields';
 import { BLUE, RED } from '../../../common/Team';
 
 const TeamList = ({ teamName, selectRole, lobby, userId }) => {
-  const team = lobby.getIn(['teams', teamName]);
+  const team = lobby.getIn([TEAMS, teamName]);
   return (
     <div
       className={classnames(
@@ -17,8 +18,8 @@ const TeamList = ({ teamName, selectRole, lobby, userId }) => {
     >
       {ALL_ROLES.map((role) => {
         const playerId = team.get(role);
-        const isReady = playerId && lobby.hasIn(['readied', playerId]);
-        const username = playerId && (lobby.getIn(['usernames', playerId]) || 'Anonymous');
+        const isReady = playerId && lobby.hasIn([READIED, playerId]);
+        const username = playerId && (lobby.getIn([USERNAMES, playerId]) || 'Anonymous');
         const isUser = playerId === userId;
         const onSelect = (() => selectRole(role, teamName));
         const unSelect = (() => selectRole(null, null));

@@ -1,4 +1,5 @@
 import { Server } from 'http';
+import { ID, LOBBY, READIED, USER_ID } from '../../src/common/StateFields';
 import createApp from '../../src/server/app';
 import { initSocketServer } from '../../src/server/sockets';
 import expect from '../expect';
@@ -24,6 +25,7 @@ export async function closePageWithContext(browser, page) {
 }
 
 export async function extractUserId(page) {
+  // Cannot use constants here, cuz we're in browser scope
   return await page.evaluate(() => window._store.getState().get('userId'));
 }
 
@@ -32,15 +34,17 @@ export async function extractState(page) {
 }
 
 export async function extractLobby(page) {
+  // Cannot use constants here, cuz we're in browser scope
   return await page.evaluate(() => window._store.getState().get('lobby').toJS());
 }
 
 export async function extractGame(page) {
+  // Cannot use constants here, cuz we're in browser scope
   return await page.evaluate(() => window._store.getState().get('game').toJS());
 }
 
 export function initServer() {
-  const server = Server(createApp({ shouldLog: false, devServer: true}));
+  const server = Server(createApp({ shouldLog: false, devServer: true }));
   server._io = initSocketServer(server);
   
   server.listen(0, () => {
@@ -72,7 +76,7 @@ export function expectNoErrors(page) {
 export async function createCustomLobby(page) {
   await page.click('#create-custom-game-button');
   await page.waitForSelector('#custom-lobby-page');
-  return (await extractLobby(page))['id'];
+  return (await extractLobby(page))[ID];
 }
 
 export async function joinCustomLobby(page, lobbyId) {
@@ -83,4 +87,9 @@ export async function joinCustomLobby(page, lobbyId) {
 
 export async function clickReadyButton(page) {
   await page.click('#ready-button');
+  await page.waitForFunction(() => {
+    const state = window._store.getState();
+    // Cannot use constants here, cuz we're in browser scope
+    return state.hasIn(['lobby', 'readied'], state.get('userId'));
+  });
 }

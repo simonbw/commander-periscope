@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { COMMON, GAME, TEAMS, USER_ID } from '../../../common/StateFields';
 import * as Role from '../../../common/Role';
 import { getPlayerPosition } from '../../../server/data/GameUtils';
 import CaptainPage from './CaptainPage';
@@ -27,8 +28,8 @@ const GamePage = ({ role, game }) => {
 
 export default connect(
   (state) => ({
-    game: state.get('game'),
-    ...getPlayerPosition(state.getIn(['game', 'common', 'teams']), state.get('userId'))
+    game: state.get(GAME),
+    ...getPlayerPosition(state.getIn([GAME, COMMON, TEAMS]), state.get(USER_ID))
   }),
   (dispatch) => ({})
 )(GamePage);

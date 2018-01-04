@@ -1,4 +1,5 @@
 import SocketIo from 'socket.io-client';
+import { ID, LOBBY } from '../../common/StateFields';
 import { joinCustomLobby } from '../actions/CustomLobbyActions';
 import { connected, disconnected } from '../actions/GeneralActions';
 import { messageToAction } from '../actions/SocketActions';
@@ -23,7 +24,7 @@ export default (getStore) => {
     store.dispatch(connected());
     
     // Try to reconnect to lobby
-    const lobbyId = store.getState().getIn(['lobby', 'id']) || window.location.pathname.substring(1);
+    const lobbyId = store.getState().getIn([LOBBY, ID]) || window.location.pathname.substring(1);
     if (lobbyId) {
       store.dispatch(joinCustomLobby(lobbyId));
     }

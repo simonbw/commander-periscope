@@ -1,4 +1,5 @@
 import PubSub from 'pubsub-js';
+import { COMMON, ID, TEAMS } from '../../common/StateFields';
 import { CHARGE_SYSTEM, HEAD_IN_DIRECTION } from '../../common/Messages';
 import { CAPTAIN, ENGINEER, FIRST_MATE, RADIO_OPERATOR } from '../../common/Role';
 import Games from '../data/Games';
@@ -21,12 +22,12 @@ export default () => (socket, next) => {
     try {
       const game = await Games.get(gameId);
       joiningGame = false;
-      socket.gameId = game.get('id');
+      socket.gameId = game.get(ID);
       
       const playerId = socket.userId;
-      const position = getPlayerPosition(game.getIn(['common', 'teams']), playerId);
-      const pubsubToken = attachPubsubHandlers(socket, game.get('id'), position);
-      listenToSocketMessages(socket, game.get('id'), pubsubToken, position);
+      const position = getPlayerPosition(game.getIn([COMMON, TEAMS]), playerId);
+      const pubsubToken = attachPubsubHandlers(socket, game.get(ID), position);
+      listenToSocketMessages(socket, game.get(ID), pubsubToken, position);
       
       socket.emit('action', {
         type: 'game_joined',
