@@ -54,7 +54,8 @@
 }
 
 .Cell {
-    border: 1px dashed #FFFFFF66;
+    border-right: 1px solid #DEF;
+    border-bottom: 1px solid #DEF;
     color: #147;
     display: inline-block;
     height: 35px;
