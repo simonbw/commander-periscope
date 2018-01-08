@@ -4,12 +4,8 @@ import ReduxMulti from 'redux-multi';
 import ReduxThunk from 'redux-thunk';
 import reducers from '../reducers';
 import { getUserId } from '../user';
+import { LoggingMiddleware } from './LoggingMiddleware';
 import SocketMiddleware from './SocketMiddleware';
-
-const LoggingMiddleware = (store) => (next) => (action) => {
-  console.log('dispatching', action);
-  next(action);
-};
 
 export default (getSocket) => {
   let initialState = Map({
