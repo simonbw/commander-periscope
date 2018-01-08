@@ -1,0 +1,23 @@
+
+.CaptainPage {
+    display: flex;
+    flex-flow: row wrap;
+    margin: auto;
+}
+
+.Messages {
+    margin: 36px 35px;
+    padding: 0 10px;
+    line-height: 35px;
+    background: #CDF;
+}
+
+.WaitingMessage {
+    color: #D00;
+}
+
+.SystemsPanel {
+    background: #CDF;
+    padding: 10px;
+    margin: 35px;
+}

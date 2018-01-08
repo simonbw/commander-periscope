@@ -1,10 +1,18 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { GAME } from '../../../common/StateFields';
+import DebugPane from '../DebugPane';
 
-const EngineerPage = ({ game }) => (
+export const UnconnectedEngineerPage = ({ game }) => (
   <div id="engineer-page">
+    <DebugPane data={game}/>
     Engineer Page
-    <pre>{JSON.stringify(game, null, 2)}</pre>
   </div>
 );
 
-export default EngineerPage;
+export default connect(
+  (state) => ({
+    game: state.get(GAME),
+  }),
+  (dispatch) => ({})
+)(UnconnectedEngineerPage);

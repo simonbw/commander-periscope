@@ -4,7 +4,7 @@ import styles from '../../../styles/MainMenu.css'
 import { USER_ID } from '../../common/StateFields';
 import * as CustomLobbyActions from '../actions/CustomLobbyActions';
 
-const MainMenu = ({ createCustomLobby, joinCustomLobby, userId }) => {
+export const UnconnectedMainMenu = ({ createCustomLobby, joinCustomLobby, userId }) => {
   let customGameInput;
   return (
     <div className={styles.MainMenu}>
@@ -30,4 +30,4 @@ export default connect(
     createCustomLobby: () => dispatch(CustomLobbyActions.createCustomLobby()),
     joinCustomLobby: (lobbyId) => dispatch(CustomLobbyActions.joinCustomLobby(lobbyId))
   })
-)(MainMenu);
+)(UnconnectedMainMenu);

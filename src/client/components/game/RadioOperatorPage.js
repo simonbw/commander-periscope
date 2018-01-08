@@ -1,10 +1,20 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { GAME, GRID } from '../../../common/StateFields';
+import DebugPane from '../DebugPane';
+import Grid from './GridView';
 
-const RadioOperatorPage = ({ game }) => (
+export const UnconnectedRadioOperatorPage = ({ game }) => (
   <div id="radio-operator-page">
-    Radio Operator Page
-    <pre>{JSON.stringify(game, null, 2)}</pre>
+    <DebugPane data={game}/>
+    <h1>Radio Operator Page</h1>
+    <Grid grid={game.get(GRID)}/>
   </div>
 );
 
-export default RadioOperatorPage;
+export default connect(
+  (state) => ({
+    game: state.get(GAME),
+  }),
+  (dispatch) => ({})
+)(UnconnectedRadioOperatorPage);

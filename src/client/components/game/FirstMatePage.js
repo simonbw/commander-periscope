@@ -1,15 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { GAME, STARTED, SYSTEMS } from '../../../common/StateFields';
+import { CHARGE, COMMON, GAME, MAX_CHARGE, STARTED, SYSTEMS } from '../../../common/StateFields';
 import { chargeSystem } from '../../actions/GameActions';
-import GameDebugPane from './GameDebugPane';
+import DebugPane from '../DebugPane';
 
-const FirstMatePage = ({ game, chargeSystem }) => (
+export const UnconnectedFirstMatePage = ({ game, chargeSystem }) => (
   <div id="first-mate-page">
     <span>First Mate Page</span>
-    {game.get(STARTED) && <SystemPanel {...{ systems: game.get(SYSTEMS), chargeSystem }}/>}
-    {!game.get(STARTED) && <div>Game Not Started Yet</div>}
-    <GameDebugPane {...{ game }}/>
+    {game.getIn([COMMON, STARTED]) && <SystemPanel {...{ systems: game.get(SYSTEMS), chargeSystem }}/>}
+    {!game.getIn([COMMON, STARTED]) && <div>Game Not Started Yet</div>}
+    <DebugPane data={game}/>
   </div>
 );
 
@@ -19,10 +19,16 @@ const SystemPanel = ({ systems, chargeSystem }) => (
       .map((system, name) => system.set('name', name))
       .toIndexedSeq() // TODO: Is there an easier way to do this? Also, guarantee order.
       .map((system, i) => (
-        <System key={i} {...system.toJS()} chargeSystem={chargeSystem}/>
+        <System
+          key={i}
+          chargeSystem={chargeSystem}
+          name={system.get('name')}
+          charge={system.get(CHARGE)}
+          max={system.get(MAX_CHARGE)}
+        />
       ))
-      .toArray()
     }
+    <div onClick={() => chargeSystem(undefined)}>Skip Charging</div>
   </div>
 );
 
@@ -39,4 +45,4 @@ export default connect(
   (dispatch) => ({
     chargeSystem: (systemName) => dispatch(chargeSystem(systemName))
   })
-)(FirstMatePage);
+)(UnconnectedFirstMatePage);

@@ -1,53 +1,85 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
-import { ALL_DIRECTIONS } from '../../../common/Direction';
+import style from '../../../../styles/CaptainPage.css';
 import { WATER_TILE } from '../../../common/Grid';
-import { GAME, GRID, STARTED, TURN_INFO } from '../../../common/StateFields';
+import {
+  COMMON, GAME, GRID, STARTED, SUB_LOCATION, SUB_PATH, SYSTEMS, TURN_INFO, WAITING_FOR_ENGINEER,
+  WAITING_FOR_FIRST_MATE
+} from '../../../common/StateFields';
 import { headInDirection, setStartLocation } from '../../actions/GameActions';
-import GameDebugPane from './GameDebugPane';
+import DebugPane from '../DebugPane';
+import DirectionSelect from './DirectionSelect';
 import Grid from './GridView';
 
-const CaptainPage = ({ game, headInDirection, setStartLocation }) => {
-  const turnInfo = game.get(TURN_INFO);
-  return (
-    <div id="captain-page">
-      Captain Page
-      
-      {game.get(STARTED) ?
-        <DirectionSelect headInDirection={headInDirection} canMove={turnInfo}/>
-        : <StartLocationChooser
+export class UnconnectedCaptainPage extends React.Component { // export for testing
+  render() {
+    const { game } = this.props;
+    return (
+      <div id="captain-page" className={style.CaptainPage}>
+        <DebugPane data={game}/>
+        {game.getIn([COMMON, STARTED]) ? this.renderStarted() : this.renderPreStart()}
+      </div>
+    );
+  }
+  
+  renderPreStart() {
+    const { game, setStartLocation } = this.props;
+    return (
+      <Fragment>
+        <Grid
           grid={game.get(GRID)}
-          setStartLocation={setStartLocation}
-          subLocation={game.get('subLocation')}
+          subLocation={game.get(SUB_LOCATION)}
+          canClick={(location) => game.get(GRID).getIn(location) === WATER_TILE}
+          onClick={(location) => setStartLocation(location)}
         />
-      }
-      
-      <GameDebugPane game={game}/>
-    </div>
-  );
-};
+        <h1>Choose a start location</h1>
+      </Fragment>
+    );
+  }
+  
+  renderStarted() {
+    const { game, headInDirection } = this.props;
+    const waitingForFirstMate = game.getIn([TURN_INFO, WAITING_FOR_FIRST_MATE]);
+    const waitingForEngineer = game.getIn([TURN_INFO, WAITING_FOR_ENGINEER]);
+    return (
+      <Fragment>
+        <DirectionSelect
+          headInDirection={headInDirection}
+          grid={game.get(GRID)}
+          subPath={game.get(SUB_PATH)}
+          subLocation={game.get(SUB_LOCATION)}
+          waiting={waitingForFirstMate || waitingForEngineer}
+        />
+        <MessagesPanel
+          waitingForFirstMate={waitingForFirstMate}
+          waitingForEngineer={waitingForEngineer}
+        />
+        <SystemsPanel systems={game.get(SYSTEMS)}/>
+      </Fragment>
+    );
+  }
+}
 
-export const StartLocationChooser = ({ grid, subLocation, setStartLocation }) => (
-  <Grid
-    grid={grid}
-    subLocation={subLocation}
-    canClick={([x, y], tile) => tile === WATER_TILE}
-    onClick={(location) => setStartLocation(location)}
-  />
-);
-
-const DirectionSelect = ({ headInDirection }) => (
-  <div>
-    {ALL_DIRECTIONS.map(direction => (
-      <DirectionButton key={direction} {...{ direction, headInDirection }}/>
-    ))}
+const SystemsPanel = ({ systems }) => (
+  <div className={style.SystemsPanel}>
+    {systems.map((available, name) => (
+      <button
+        key={name}
+        disabled={!available}
+        onClick={() => console.log(name)} // TODO: Actually use systems
+      >
+        {name}
+      </button>
+    )).valueSeq()}
   </div>
 );
 
-const DirectionButton = ({ direction, headInDirection }) => (
-  <button onClick={() => headInDirection(direction)}>
-    {direction}
-  </button>
+const MessagesPanel = ({ waitingForFirstMate, waitingForEngineer }) => (
+  <div className={style.Messages}>
+    <h2>Messages</h2>
+    {waitingForFirstMate && <div className={style.WaitingMessage}>Waiting for first mate...</div>}
+    {waitingForEngineer && <div className={style.WaitingMessage}>Waiting for engineer...</div>}
+  </div>
 );
 
 export default connect(
@@ -58,4 +90,4 @@ export default connect(
     headInDirection: (direction) => dispatch(headInDirection(direction)),
     setStartLocation: (location) => dispatch(setStartLocation(location))
   })
-)(CaptainPage);
+)(UnconnectedCaptainPage);

@@ -4,14 +4,11 @@ import React from 'react';
 import styles from '../../../../styles/Grid.css';
 import { LAND_TILE, WATER_TILE } from '../../../common/Grid';
 import { noop } from '../../../common/util/FunctionUtil';
-import { createRange } from '../../../common/util/ImmutableUtil';
 
 const ROW_LABELS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-// TODO: sectors
-// TODO: Paths, sub locations, mines, etc.
-
-const Grid = ({ grid, subLocation, path, canClick = noop, onClick = noop, canClickSector = noop, onClickSector = noop }) => (
+// TODO Should this be an SVG?
+const Grid = ({ grid, subLocation, subPath, canClick = noop, onClick = noop, canClickSector = noop, onClickSector = noop }) => (
   <div className={styles.Grid}>
     <SectorsOverlay {...{ grid, canClickSector, onClickSector }}/>
     <div className={styles.Column}>
@@ -27,10 +24,11 @@ const Grid = ({ grid, subLocation, path, canClick = noop, onClick = noop, canCli
           <Cell
             key={y}
             tile={tile}
-            onClick={canClick([x, y], tile)
-              ? () => onClick([x, y], tile)
+            onClick={canClick(Immutable.List([x, y]))
+              ? () => onClick(Immutable.List([x, y]))
               : undefined}
             isSubLocation={Immutable.List([x, y]).equals(subLocation)}
+            isSubPath={subPath && subPath.includes(Immutable.List([x, y]))}
           />
         ))}
       </div>
@@ -38,7 +36,7 @@ const Grid = ({ grid, subLocation, path, canClick = noop, onClick = noop, canCli
   </div>
 );
 
-const Cell = ({ tile, onClick, isSubLocation }) => (
+const Cell = ({ tile, onClick, isSubLocation, isSubPath }) => (
   <div
     className={classnames(
       'Cell', // for testing
@@ -46,12 +44,15 @@ const Cell = ({ tile, onClick, isSubLocation }) => (
       { [styles.clickable]: Boolean(onClick) },
       getTileClass(tile))}
     onClick={onClick}
-  >{isSubLocation && (<span>◉</span>)}</div>
+  >
+    {isSubLocation && (<span>◉</span>)}
+    {isSubPath && (<span>╳</span>)}
+  </div>
 );
 
 const SectorsOverlay = ({ canClickSector, onClickSector }) => (
   <div className={styles.SectorsOverlay}>
-    {createRange(1, 10).map((i) => (
+    {Immutable.Range(1, 10).map((i) => (
       <div
         key={i}
         className={classnames(styles.Sector, { [styles.clickable]: canClickSector(i) })}
@@ -74,6 +75,6 @@ const getTileClass = (tile) => {
   }
 };
 
-// TODO: show paths/current location
+// TODO: Paths, sub locations, mines, etc.
 
 export default Grid;
