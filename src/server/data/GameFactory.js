@@ -1,15 +1,11 @@
 import Immutable from 'immutable';
-import {
-  BREAKDOWNS, CHARGE, COMMON, CREATED, DRONE, ENGINE_LAYOUT, GRID, ID, MAX_CHARGE, MINE_LOCATIONS, MINE, PLAYERS,
-  SILENT,
-  SONAR,
-  STARTED,
-  SUB_LOCATIONS,
-  SUB_PATHS, SYSTEMS, TEAMS, TORPEDO, TURN_INFO, TURN_NUMBER, SYSTEM_IS_USED, USERNAMES, WAITING_FOR_ENGINEER,
-  WAITING_FOR_FIRST_MATE
-} from '../../common/StateFields';
 import { createGrid } from '../../common/Grid';
-import { BOTH_TEAMS, TEAMS_MAP } from '../../common/Team';
+import {
+  BREAKDOWNS, CHARGE, COMMON, CREATED, DRONE, ENGINE_LAYOUT, GRID, ID, MAX_CHARGE, MINE, MINE_LOCATIONS, PLAYERS,
+  SILENT, SONAR, STARTED, SUB_LOCATION, SUB_PATH, SYSTEM_IS_USED, SYSTEMS, TEAMS, TORPEDO, TURN_INFO, TURN_NUMBER,
+  USERNAMES, WAITING_FOR_ENGINEER, WAITING_FOR_FIRST_MATE
+} from '../../common/StateFields';
+import { BLUE, RED } from '../../common/Team';
 
 // TODO: Something so I don't have to worry about mixing immutable and vanilla types.
 
@@ -18,29 +14,10 @@ export const createGame = (id, { players, usernames, teams }) => {
   return new Immutable.fromJS({
     [ID]: id,
     [COMMON]: createCommon(players, usernames, teams),
-    
-    [TURN_INFO]: createTurnInfos(),
-    
-    // Map data
     [GRID]: createGrid(),
-    
-    // Current ship locations
-    [SUB_LOCATIONS]: TEAMS_MAP.map(() => null),
-    
-    // Ship Paths
-    [SUB_PATHS]: BOTH_TEAMS.map(() => Immutable.List()),
-    
-    // Locations of all the mines currently dropped
-    [MINE_LOCATIONS]: TEAMS_MAP.map(() => Immutable.List()),
-    
-    // List of which systems are broken down
-    [BREAKDOWNS]: createBreakdowns(),
-    
-    // Engine layout/status
     [ENGINE_LAYOUT]: createEngineLayout(),
-    
-    // System charges
-    [SYSTEMS]: createSystems()
+    [RED]: createTeamInfo(RED),
+    [BLUE]: createTeamInfo(BLUE),
   });
 };
 
@@ -54,21 +31,24 @@ function createCommon(players, usernames, teams) {
   });
 }
 
-function createTurnInfos() {
-  return TEAMS_MAP.map(() => Immutable.fromJS({
-    [WAITING_FOR_FIRST_MATE]: false,
-    [WAITING_FOR_ENGINEER]: false,
-    [SYSTEM_IS_USED]: false,
-    [TURN_NUMBER]: 0
-  }));
-}
-
-function createBreakdowns() {
-  return TEAMS_MAP.map(() => Immutable.List());
+function createTeamInfo(team) {
+  return Immutable.fromJS({
+    [TURN_INFO]: {
+      [WAITING_FOR_FIRST_MATE]: false,
+      [WAITING_FOR_ENGINEER]: false,
+      [SYSTEM_IS_USED]: false,
+      [TURN_NUMBER]: 0
+    },
+    [SUB_LOCATION]: null,
+    [SUB_PATH]: [],
+    [MINE_LOCATIONS]: [],
+    [BREAKDOWNS]: Immutable.Set(),
+    [SYSTEMS]: createSystems(),
+  })
 }
 
 function createSystems() {
-  return TEAMS_MAP.map(() => Immutable.fromJS({
+  return Immutable.fromJS({
     [MINE]: {
       [CHARGE]: 0,
       [MAX_CHARGE]: 3
@@ -89,9 +69,12 @@ function createSystems() {
       [CHARGE]: 0,
       [MAX_CHARGE]: 6
     },
-  }));
+  });
 }
 
 function createEngineLayout() {
-  return Immutable.fromJS({}); // TODO: Design engine layout structure
+  
+  return Immutable.fromJS({
+  
+  }); // TODO: Design engine layout structure
 }

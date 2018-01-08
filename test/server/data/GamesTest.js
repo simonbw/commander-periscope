@@ -1,15 +1,14 @@
 import Immutable from 'immutable';
 import { CAPTAIN, ENGINEER, FIRST_MATE, RADIO_OPERATOR } from '../../../src/common/Role';
 import {
-  BREAKDOWNS, COMMON, ENGINE_LAYOUT, GRID, PLAYERS, STARTED, SUB_LOCATIONS, SUB_PATHS, SYSTEMS, TEAMS, TURN_INFO,
+  BREAKDOWNS, COMMON, ENGINE_LAYOUT, GRID, PLAYERS, STARTED, SUB_LOCATION, SUB_PATH, SYSTEMS, TEAMS, TURN_INFO,
   USERNAMES
 } from '../../../src/common/StateFields';
 import { BLUE, RED } from '../../../src/common/Team';
-import { createRange } from '../../../src/common/util/ImmutableUtil';
 import expect from '../../expect';
 
 function mockLobby() {
-  const players = createRange(1, 9).map(i => `id${i}`);
+  const players = Immutable.Range(1, 9).map(i => `id${i}`);
   const usernames = Immutable.Map(players.map((playerId, i) => [playerId, `player${i + 1}`]));
   return Immutable.fromJS({
     players,
@@ -53,14 +52,17 @@ describe('Games', () => {
     expect(common.get(PLAYERS)).to.have.size(8);
     expect(common.get(USERNAMES)).to.have.size(8);
     
-    // TODO: Better testing
-    expect(game.get(TURN_INFO)).to.exist;
     expect(game.get(GRID)).to.exist;
-    expect(game.get(SUB_LOCATIONS)).to.exist;
-    expect(game.get(SUB_PATHS)).to.exist;
-    expect(game.get(BREAKDOWNS)).to.exist;
     expect(game.get(ENGINE_LAYOUT)).to.exist;
-    expect(game.get(SYSTEMS)).to.exist;
+    
+    // TODO: Better testing
+    for (const teamInfo of [game.get(RED), game.get(BLUE)]) {
+      expect(teamInfo.get(TURN_INFO)).to.exist;
+      expect(teamInfo.get(SUB_LOCATION)).to.be.null;
+      expect(teamInfo.get(SUB_PATH)).to.exist;
+      expect(teamInfo.get(BREAKDOWNS)).to.exist;
+      expect(teamInfo.get(SYSTEMS)).to.exist;
+    }
   });
   
   describe('Captain', async () => {
@@ -76,6 +78,8 @@ describe('Games', () => {
       await Games.setStartLocation('gameId', BLUE, Immutable.List([2, 3]));
       expect((await Games.get('gameId')).get(COMMON)).to.have.property(STARTED, true);
     });
+    
+    // TODO: Test Captain Actions
   });
   
   describe('First Mate', async () => {

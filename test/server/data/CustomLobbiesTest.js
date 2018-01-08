@@ -1,7 +1,6 @@
 import { ALL_ROLES, CAPTAIN, FIRST_MATE } from '../../../src/common/Role';
 import { PLAYERS, READIED, TEAMS, USERNAMES } from '../../../src/common/StateFields';
 import { BLUE, BOTH_TEAMS, RED } from '../../../src/common/Team';
-import { createRange } from '../../../src/common/util/ImmutableUtil';
 import { shouldStartGame } from '../../../src/server/data/CustomLobbyUtils';
 import expect from '../../expect';
 
@@ -124,14 +123,14 @@ describe('CustomLobbies', () => {
   
   it('.shouldStartGame', async () => {
     await Promise.all(
-      createRange(0, 8).map(i =>
+      Immutable.Range(0, 8).map(i =>
         CustomLobbies.addPlayer('lobbyId', `player${i}`, `username${i}`))
     );
     
     expect(shouldStartGame(await CustomLobbies.get('lobbyId'))).to.be.false;
     
     await Promise.all(
-      createRange(0, 8).map(i =>
+      Immutable.Range(0, 8).map(i =>
         CustomLobbies.selectRole(
           'lobbyId',
           `player${i}`,
@@ -141,7 +140,7 @@ describe('CustomLobbies', () => {
     );
     
     await Promise.all(
-      createRange(0, 8).map(i =>
+      Immutable.Range(0, 8).map(i =>
         CustomLobbies.ready('lobbyId', `player${i}`))
     );
     

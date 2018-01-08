@@ -6,7 +6,7 @@ import expect from '../expect';
 import { wait } from '../testUtils';
 import {
   clickReadyButton, closePageWithContext, createCustomLobby, expectNoErrors, expectPagesValid, extractGame,
-  extractState, extractUserId, initServer, joinCustomLobby, newPageWithContext
+  extractState, extractUserId, initServer, joinCustomLobby, newPageWithContext, waitForJoinGame
 } from './puppeteerUtils';
 
 // registerErrorHandlers();
@@ -37,9 +37,6 @@ describe('Integration', function () {
       page.on('pageerror', (e) => {
         page.pageErrors.push(e);
       });
-      page.on('console', (msg) => {
-        require('debug')('client')(msg.text);
-      })
     }
     const port = server.address().port;
     await Promise.all(pages.map(page => page.goto(`http://localhost:${port}`)));
@@ -92,13 +89,11 @@ describe('Integration', function () {
     
     // TODO: Test changing usernames
     
-    // TODO: Doesn't have to be sequential
     await Promise.all([
       redTeam[0].click('#red-captain'),
       redTeam[1].click('#red-first_mate'),
       redTeam[2].click('#red-engineer'),
       redTeam[3].click('#red-radio_operator'),
-      
       blueTeam[0].click('#blue-captain'),
       blueTeam[1].click('#blue-first_mate'),
       blueTeam[2].click('#blue-engineer'),
@@ -121,6 +116,14 @@ describe('Integration', function () {
     
     log(`all players ready`);
     expectNoErrors(pages);
+    
+    await Promise.all(pages.map(async (page, i) => {
+      await waitForJoinGame(page);
+    }));
+    
+    expectNoErrors(pages);
+    log(`all players have joined game`);
+    
     await Promise.all([
       redTeam[0].waitForSelector('#captain-page', { timeout: 500 }),
       redTeam[1].waitForSelector('#first-mate-page', { timeout: 500 }),
@@ -129,11 +132,11 @@ describe('Integration', function () {
       blueTeam[0].waitForSelector('#captain-page', { timeout: 500 }),
       blueTeam[1].waitForSelector('#first-mate-page', { timeout: 500 }),
       blueTeam[2].waitForSelector('#engineer-page', { timeout: 500 }),
-      blueTeam[3].waitForSelector('#radio-operator-page', { timeout: 500 })
+      blueTeam[3].waitForSelector('#radio-operator-page', { timeout: 500 }),
     ]);
     
-    log(`all players on game pages`);
     expectNoErrors(pages);
+    log(`all players on game pages`);
     
     await blueTeam[0].click('.Cell:nth-of-type(3)');
     await extractGame(blueTeam[0])

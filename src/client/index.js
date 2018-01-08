@@ -15,7 +15,7 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 const render = function (store) {
-  const root = document.createElement('div');
+  const root = document.body;
   
   ReactDOM.render(
     <Provider store={store}>
@@ -23,6 +23,4 @@ const render = function (store) {
     </Provider>,
     root
   );
-  
-  document.body.appendChild(root);
 };

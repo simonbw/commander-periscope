@@ -14,12 +14,12 @@ export const headInDirection = (direction) => (
   sendMessage(Messages.HEAD_IN_DIRECTION, { direction })
 );
 
-export const fireTorpedo = ([x, y]) => (
-  sendMessage(Messages.FIRE_TORPEDO, { x, y })
+export const fireTorpedo = (location) => (
+  sendMessage(Messages.FIRE_TORPEDO, { location })
 );
 
-export const dropMine = ([x, y]) => (
-  sendMessage(Messages.DROP_MINE, { x, y })
+export const dropMine = (location) => (
+  sendMessage(Messages.DROP_MINE, { location })
 );
 
 export const useSonar = () => (

@@ -93,3 +93,11 @@ export async function clickReadyButton(page) {
     return state.hasIn(['lobby', 'readied'], state.get('userId'));
   });
 }
+
+export async function waitForJoinGame(page) {
+  await page.waitForFunction(() => {
+    const state = window._store.getState();
+    // Cannot use constants here, cuz we're in browser scope
+    return state.get('game') != null;
+  });
+}

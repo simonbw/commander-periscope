@@ -57,6 +57,7 @@ const attachPubsubHandlers = (socket, lobbyId) => {
 };
 
 const listenToSocketMessages = (socket, lobbyId, pubsubToken) => {
+  // TODO: Report errors in these handlers back to the client
   const handlers = {};
   handlers[CUSTOM_LOBBY_SELECT_ROLE] = ({ role, team }) => {
     CustomLobby.selectRole(lobbyId, socket.userId, team, role);

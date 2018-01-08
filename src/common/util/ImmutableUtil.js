@@ -19,15 +19,3 @@ export function deepFind(root, value, path = Immutable.List()) {
   // no path is found
   return undefined;
 }
-
-export const createList = (length, value = undefined) => {
-  return Immutable.List(new Array(length).fill(value));
-};
-
-export const createRange = (start, end) => {
-  const result = [];
-  for (let i = start; i < end; i++) {
-    result.push(i);
-  }
-  return Immutable.List(result);
-};

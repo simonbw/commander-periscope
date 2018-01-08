@@ -3,7 +3,8 @@ import { COMMON, ID, TEAMS } from '../../common/StateFields';
 import { CHARGE_SYSTEM, HEAD_IN_DIRECTION } from '../../common/Messages';
 import { CAPTAIN, ENGINEER, FIRST_MATE, RADIO_OPERATOR } from '../../common/Role';
 import Games from '../data/Games';
-import { getDataForUser, getPlayerPosition } from '../data/GameUtils';
+import { getPlayerPosition } from '../data/GameUtils';
+import { getDataForUser } from '../data/UserGameTransform';
 
 const log = require('debug')('commander-periscope:server');
 
@@ -64,6 +65,7 @@ function attachPubsubHandlers(socket, gameId, position) {
 function listenToSocketMessages(socket, gameId, pubsubToken, position) {
   const handlers = {};
   // TODO: Separate out handlers by role
+  // TODO: Report errors in handlers
   
   const team = position && position.team;
   const role = position && position.role;
