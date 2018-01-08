@@ -6,7 +6,7 @@ import {
 import { BLUE, RED } from '../../common/Team';
 import { createGame } from './GameFactory';
 import { GameStateError } from './GameStateError';
-import { assertNotStarted, assertStarted, assertSystemReady } from './GameUtils';
+import { assertNotStarted, assertStarted, assertSystemReady } from '../../common/util/GameUtils';
 import Resource from './Resource';
 
 // TODO: Unit test all of this

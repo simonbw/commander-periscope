@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import * as Role from '../../../common/Role';
 import { COMMON, GAME, TEAMS, USER_ID } from '../../../common/StateFields';
-import { getPlayerPosition } from '../../../server/data/GameUtils';
+import { getPlayerPosition } from '../../../common/util/GameUtils';
 import CaptainPage from './CaptainPage';
 import EngineerPage from './EngineerPage';
 import FirstMatePage from './FirstMatePage';

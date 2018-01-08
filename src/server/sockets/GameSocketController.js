@@ -3,7 +3,7 @@ import { COMMON, ID, TEAMS } from '../../common/StateFields';
 import { CHARGE_SYSTEM, HEAD_IN_DIRECTION } from '../../common/Messages';
 import { CAPTAIN, ENGINEER, FIRST_MATE, RADIO_OPERATOR } from '../../common/Role';
 import Games from '../data/Games';
-import { getPlayerPosition } from '../data/GameUtils';
+import { getPlayerPosition } from '../../common/util/GameUtils';
 import { getDataForUser } from '../data/UserGameTransform';
 
 const log = require('debug')('commander-periscope:server');

@@ -1,7 +1,7 @@
 import { CAPTAIN, ENGINEER } from '../../../src/common/Role';
 import { TEAMS } from '../../../src/common/StateFields';
 import { BLUE, RED } from '../../../src/common/Team';
-import { getPlayerPosition } from '../../../src/server/data/GameUtils';
+import { getPlayerPosition } from '../../../src/common/util/GameUtils';
 import expect from '../../expect';
 
 describe('GameUtils', () => {

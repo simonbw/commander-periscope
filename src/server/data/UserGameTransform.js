@@ -4,7 +4,7 @@ import {
   COMMON, ENGINE_LAYOUT, GRID, ID, SUB_LOCATION, SUB_PATH, SYSTEMS, TEAMS,
   TURN_INFO, WAITING_FOR_FIRST_MATE
 } from '../../common/StateFields';
-import { canUseSystem, getPlayerPosition } from './GameUtils';
+import { canUseSystem, getPlayerPosition } from '../../common/util/GameUtils';
 
 export const getDataForUser = (game, userId) => {
   let data = Immutable.Map({

@@ -4,7 +4,7 @@ import { ID, PLAYERS, READIED, TEAMS, USERNAMES } from '../../common/StateFields
 import { BLUE, RED } from '../../common/Team';
 import { shouldStartGame } from './CustomLobbyUtils';
 import Games from './Games';
-import { getPlayerPosition } from './GameUtils';
+import { getPlayerPosition } from '../../common/util/GameUtils';
 import Resource from './Resource';
 
 const log = require('debug')('commander-periscope:server');

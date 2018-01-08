@@ -1,6 +1,6 @@
-import { CHARGE, COMMON, MAX_CHARGE, STARTED, SYSTEMS } from '../../common/StateFields';
-import { deepFind } from '../../common/util/ImmutableUtil';
-import { GameStateError } from './GameStateError';
+import { CHARGE, COMMON, MAX_CHARGE, STARTED, SYSTEMS } from '../StateFields';
+import { deepFind } from './ImmutableUtil';
+import { GameStateError } from '../../server/data/GameStateError';
 
 export const getPlayerPosition = (teams, playerId) => {
   const path = deepFind(teams, playerId);
