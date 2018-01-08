@@ -1,0 +1,73 @@
+.DebugPane {
+    cursor: pointer;
+    padding: 0 5px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 1000;
+}
+
+.DebugPane:not(.open) {
+    color: #FFF4;
+}
+
+.DebugPane:not(.open):hover {
+    color: #FFF9;
+}
+
+.DebugPane.open {
+    background: #333;
+    box-shadow: 0 0 10px 1px #333;
+    color: #EEE;
+    max-height: 100%;
+    overflow: auto;
+    padding: 5px;
+}
+
+.DebugPane.open::-webkit-scrollbar {
+    width: 10px;
+    padding: 2px;
+}
+
+.DebugPane.open::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.DebugPane.open::-webkit-scrollbar-track:hover {
+    background: #444;
+}
+
+.DebugPane.open::-webkit-scrollbar-thumb {
+    background: #777;
+    border: 1px solid transparent;
+    border-radius: 10px;
+}
+
+.DebugPane.open::-webkit-scrollbar-thumb:hover {
+    background: #999;
+}
+
+/* Settings for react-json-pretty */
+:global .json-pretty {
+    color: #999;
+}
+
+:global .json-key {
+    color: #9876AA;
+}
+
+:global .json-string {
+    color: #619647;
+    font-style: italic;
+}
+
+:global .json-null,
+:global .json-boolean {
+    color: #C72;
+    font-weight: bold;
+}
+
+:global .json-value {
+    color: #6897BB;
+    font-style: italic;
+}

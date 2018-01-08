@@ -1,10 +1,11 @@
 import classnames from 'classnames';
 import React, { Component, Fragment } from 'react';
-import styles from '../../../../styles/GameDebugPane.css';
+import ReactJsonSyntaxHighlighter from 'react-json-pretty';
+import styles from '../../../styles/DebugPane.css';
 
-class GameDebugPane extends Component {
-  constructor() {
-    super();
+class DebugPane extends Component {
+  constructor(props) {
+    super(props);
     this.state = { open: false };
   }
   
@@ -15,19 +16,19 @@ class GameDebugPane extends Component {
   render() {
     return <div
       onClick={() => this.toggle()}
-      className={classnames(styles.GameDebugPane, { [styles.open]: this.state.open })}
+      className={classnames(styles.DebugPane, { [styles.open]: this.state.open })}
     >
       {(this.state.open ? this.renderOpen() : this.renderClosed())}
     </div>
   }
   
   renderOpen() {
-    return <pre>{JSON.stringify(this.props.game, null, 2)}</pre>
+    return <ReactJsonSyntaxHighlighter json={this.props.data}/>
   }
   
   renderClosed() {
-    return <Fragment>Debug</Fragment> // TODO: Use Fragment syntax when supported
+    return <Fragment>Debug</Fragment>
   }
 }
 
-export default GameDebugPane;
+export default DebugPane;
