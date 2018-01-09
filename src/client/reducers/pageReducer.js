@@ -1,6 +1,5 @@
 import { CHANGE_PAGE } from '../actions/GeneralActions';
 import { MAIN_MENU_PAGE } from '../models/Page';
-import * as Page from '../models/Page';
 
 export default (page, action) => {
   page = page || MAIN_MENU_PAGE;

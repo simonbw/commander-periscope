@@ -1,7 +1,7 @@
 import puppeteer from 'puppeteer';
 import { ALL_ROLES } from '../../src/common/Role';
 import { READIED, TEAMS } from '../../src/common/StateFields';
-import CustomLobbies from '../../src/server/data/CustomLobbies';
+import CustomLobbies from '../../src/server/resources/CustomLobbies';
 import expect from '../expect';
 import { wait } from '../testUtils';
 import {

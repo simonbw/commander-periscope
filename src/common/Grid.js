@@ -9,12 +9,7 @@ import { EAST, NORTH, SOUTH, WEST } from './Direction';
 export const WATER_TILE = 0;
 export const LAND_TILE = 1;
 
-export function createGrid() {
-  // TODO: real map creation
-  return Immutable.Repeat(Immutable.Repeat(WATER_TILE, 15).toList(), 15).toList();
-}
-
-export const getNewLocation = (location, direction) => {
+export function getNewLocation(location, direction) {
   const [x, y] = location.toArray();
   switch (direction) {
     case NORTH:
@@ -28,4 +23,10 @@ export const getNewLocation = (location, direction) => {
     default:
       throw new Error(`Invalid direction: ${direction}`);
   }
-};
+}
+
+// Return manhattan distance between two points
+export function getDistance(locationA, locationB) {
+  // return locationA.zip(locationB).reduce((t, [x, y]) => t + Math.abs(x - y), 0);
+  return Math.abs(locationA.get(0) - locationB.get(0)) + Math.abs(locationA.get(1) - locationB.get(1));
+}

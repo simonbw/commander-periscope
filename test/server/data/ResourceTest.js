@@ -1,6 +1,6 @@
 import Immutable from 'immutable';
 import { ID } from '../../../src/common/StateFields';
-import Resource from '../../../src/server/data/Resource';
+import Resource from '../../../src/server/resources/Resource';
 import expect from '../../expect';
 import { shouldReject, wait } from '../../testUtils';
 

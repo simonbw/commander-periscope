@@ -1,44 +1,58 @@
-import { CHARGE, COMMON, MAX_CHARGE, STARTED, SYSTEMS } from '../StateFields';
+import { BREAKDOWNS, SUBSYSTEMS, SYSTEMS } from '../StateFields';
+import { CHARGE, CIRCUIT, CIRCUITS, DIRECTION, getSystemType, MAX_CHARGE, NUCLEAR, SYSTEM_TYPE } from '../System';
 import { deepFind } from './ImmutableUtil';
-import { GameStateError } from '../../server/data/GameStateError';
 
 export const getPlayerPosition = (teams, playerId) => {
   const path = deepFind(teams, playerId);
   if (path) {
-    return {
-      team: path.get(0),
-      role: path.get(1)
-    };
+    const [team, role] = path.toArray();
+    return { role, team }
   }
   // not found
   return undefined;
 };
 
 export function canUseSystem(game, team, systemName) {
+  // Must be charged
   const system = game.getIn([team, SYSTEMS, systemName]);
   if (system.get(CHARGE) < system.get(MAX_CHARGE)) {
     return false;
   }
-  // TODO: Check breakdowns
+  // Must not be broken
+  const systemType = getSystemType(systemName);
+  const subsystems = game.get(SUBSYSTEMS);
+  for (const breakdownIndex of game.getIn([team, BREAKDOWNS])) {
+    if (subsystems.getIn([breakdownIndex, SYSTEM_TYPE]) === systemType) {
+      return false;
+    }
+  }
+  
   return true;
 }
 
-export const assertStarted = (game) => {
-  if (!game.getIn([COMMON, STARTED])) {
-    throw new GameStateError('Game not yet started');
+export function fixCircuits(game, team) {
+  for (const circuit of CIRCUITS) {
+    const circuitIndexes = game.get(SUBSYSTEMS)
+      .entrySeq()
+      .filter(([i, s]) => s.get(CIRCUIT) === circuit)
+      .map(([i]) => i)
+      .toSet();
+    if (circuitIndexes.every((i) => game.getIn([team, BREAKDOWNS]).has(i))) {
+      game = game.updateIn([team, BREAKDOWNS], breakdowns => breakdowns.subtract(circuitIndexes));
+    }
   }
-};
+  return game;
+}
 
-export const assertNotStarted = (game) => {
-  if (game.getIn([COMMON, STARTED])) {
-    throw new GameStateError('Game already started');
-  }
-};
-
-function assertSystemReady(game, team, systemName) {
-  const system = game.getIn([SYSTEMS, team, systemName]);
-  if (system.get(CHARGE) < system.get(MAX_CHARGE)) {
-    throw new GameStateError('System is not charged')
-  }
-  // TODO: Check breakdowns
+// Returns true if the engine should cause damage, otherwise false
+export function checkEngineOverload(subsystems, breakdowns) {
+  return subsystems // entire direction is broken
+      .entrySeq()
+      .groupBy(([i, s]) => s.get(DIRECTION))
+      .some(group => group.map(([i]) => i).isSubset(breakdowns))
+    || subsystems // or all nuclear are broken
+      .entrySeq()
+      .filter(([i, s]) => s.get(SYSTEM_TYPE) === NUCLEAR)
+      .map(([i]) => i)
+      .isSubset(breakdowns);
 }

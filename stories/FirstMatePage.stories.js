@@ -5,7 +5,7 @@ import { UnconnectedFirstMatePage } from '../src/client/components/game/FirstMat
 import { FIRST_MATE } from '../src/common/Role';
 import { COMMON, STARTED, TEAMS, WAITING_FOR_FIRST_MATE } from '../src/common/StateFields';
 import { RED } from '../src/common/Team';
-import { getDataForUser } from '../src/server/data/UserGameTransform';
+import { getDataForUser } from '../src/server/resources/UserGameTransform';
 import '../styles/main.css';
 import { mockGame } from '../test/mocks';
 

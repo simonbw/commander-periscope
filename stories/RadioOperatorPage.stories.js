@@ -4,7 +4,7 @@ import { UnconnectedRadioOperatorPage } from '../src/client/components/game/Radi
 import { RADIO_OPERATOR } from '../src/common/Role';
 import { COMMON, TEAMS } from '../src/common/StateFields';
 import { RED } from '../src/common/Team';
-import { getDataForUser } from '../src/server/data/UserGameTransform';
+import { getDataForUser } from '../src/server/resources/UserGameTransform';
 import '../styles/main.css';
 import { mockGame } from '../test/mocks';
 

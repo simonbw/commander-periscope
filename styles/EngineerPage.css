@@ -1,0 +1,29 @@
+.EngineerPage {
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.DirectionPane {
+    padding: 10px;
+    margin: 10px;
+    color: #147;
+    background: #CDF;
+}
+
+.SubsystemSymbol {
+    display: inline-block;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.SubsystemSymbol:hover {
+    background: #DEF;
+}
+
+.SubsystemSymbol.broken {
+    color: #666;
+}
+
+.Circuit {
+    vertical-align: super;
+}

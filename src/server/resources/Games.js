@@ -1,12 +1,13 @@
-import { getNewLocation, WATER_TILE } from '../../common/Grid';
+import { getDistance, getNewLocation, WATER_TILE } from '../../common/Grid';
 import {
-  CHARGE, COMMON, DRONE, GRID, MAX_CHARGE, MINE, SILENT, SONAR, STARTED, SUB_LOCATION, SUB_PATH, SYSTEM_IS_USED,
-  SYSTEMS, TORPEDO, TURN_INFO, TURN_NUMBER, WAITING_FOR_ENGINEER, WAITING_FOR_FIRST_MATE
+  BREAKDOWNS, COMMON, DIRECTION_MOVED, GRID, STARTED, SUB_LOCATION, SUB_PATH, SUBSYSTEMS, SYSTEM_IS_USED,
+  SYSTEMS, TURN_INFO, TURN_NUMBER, WAITING_FOR_ENGINEER, WAITING_FOR_FIRST_MATE
 } from '../../common/StateFields';
+import { CHARGE, DIRECTION, DRONE, MAX_CHARGE, MINE, SILENT, SONAR, TORPEDO } from '../../common/System';
 import { BLUE, RED } from '../../common/Team';
+import { checkEngineOverload, fixCircuits } from '../../common/util/GameUtils';
+import { assert, assertNotStarted, assertStarted, assertSystemReady } from './GameAssertions';
 import { createGame } from './GameFactory';
-import { GameStateError } from './GameStateError';
-import { assertNotStarted, assertStarted, assertSystemReady } from '../../common/util/GameUtils';
 import Resource from './Resource';
 
 // TODO: Unit test all of this
@@ -34,30 +35,23 @@ Games.headInDirection = (gameId, team, direction) => (
     assertStarted(game);
     
     const turnInfo = game.getIn([team, TURN_INFO]);
-    if (turnInfo.get(WAITING_FOR_FIRST_MATE) || turnInfo.get(WAITING_FOR_ENGINEER)) { // TODO: Constants
-      throw new GameStateError('Cannot move: ' + JSON.stringify(turnInfo));
-    }
+    assert(!turnInfo.get(WAITING_FOR_FIRST_MATE), 'Cannot move. Waiting for First Mate');
+    assert(!turnInfo.get(WAITING_FOR_ENGINEER), 'Cannot move. Waiting for Engineer');
     
     const grid = game.get(GRID);
     const currentLocation = game.getIn([team, SUB_LOCATION]);
     const nextLocation = getNewLocation(currentLocation, direction);
     const [x, y] = nextLocation.toArray();
     
-    if (x < 0 || y < 0 || x > grid.size || y > grid.get(0).size) {
-      throw new GameStateError('Cannot move out of bounds');
-    }
-    
-    if (game.getIn([team, SUB_PATH]).contains(nextLocation)) {
-      throw new GameStateError('Cannot cross path');
-    }
-    
+    assert(x >= 0 && y >= 0 && x <= grid.size && y <= grid.get(0).size, 'Cannot move out of bounds');
+    assert(!game.getIn([team, SUB_PATH]).contains(nextLocation), 'Cannot cross your path.');
     const tile = grid.getIn([x, y]);
-    if (!tile.equal(WATER_TILE)) {
-      throw new GameStateError(`Can only move into water tiles. ${tile}`);
-    }
+    assert(!tile.equal(WATER_TILE), `Can only move into water tiles. ${tile}`);
+    // TODO: Cannot move across mines
     
     return game
       .updateIn([team, TURN_INFO], turnInfo => turnInfo
+        .set(DIRECTION_MOVED, direction)
         .set(WAITING_FOR_ENGINEER, true)
         .set(WAITING_FOR_FIRST_MATE, true)
         .set(SYSTEM_IS_USED, false)
@@ -70,8 +64,12 @@ Games.headInDirection = (gameId, team, direction) => (
 Games.fireTorpedo = (gameId, team, location) => {
   return Games.update(gameId, 'fired_torpedo', {}, (game) => {
     assertSystemReady(TORPEDO);
-    // TODO: Validate location
+    const currentLocation = game.getIn([team, SUB_LOCATION]);
+    const distance = getDistance(currentLocation, location);
+    assert(distance <= 4, `Torpedo target must within 4 squares (was ${distance})`);
+    
     // TODO: Torpedo
+    
     game = game.setIn([team, SYSTEMS, TORPEDO, CHARGE], 0);
     return game;
   })
@@ -80,7 +78,9 @@ Games.fireTorpedo = (gameId, team, location) => {
 Games.dropMine = (gameId, team, location) => {
   return Games.update(gameId, 'dropped_mine', {}, (game) => {
     assertSystemReady(MINE);
+    
     // TODO: Mine
+    
     game = game.setIn([team, SYSTEMS, MINE, CHARGE], 0);
     return game;
   })
@@ -89,7 +89,9 @@ Games.dropMine = (gameId, team, location) => {
 Games.useSonar = (gameId, team) => {
   return Games.update(gameId, 'used_sonar', {}, (game) => {
     assertSystemReady(SONAR);
+    
     // TODO: Sonar
+    
     game = game.setIn([team, SYSTEMS, SONAR, CHARGE], 0);
     return game;
   })
@@ -98,7 +100,9 @@ Games.useSonar = (gameId, team) => {
 Games.useDrone = (gameId, team) => {
   return Games.update(gameId, 'used_drone', {}, (game) => {
     assertSystemReady(DRONE);
+    
     // TODO: Drone
+    
     game = game.setIn([team, SYSTEMS, DRONE, CHARGE], 0);
     return game;
   })
@@ -107,7 +111,9 @@ Games.useDrone = (gameId, team) => {
 Games.goSilent = (gameId, team) => {
   return Games.update(gameId, 'went_silent', {}, (game) => {
     assertSystemReady(SILENT);
+    
     // TODO: Silent
+    
     game = game.setIn([team, SYSTEMS, SILENT, CHARGE], 0);
     return game;
   })
@@ -120,30 +126,39 @@ Games.goSilent = (gameId, team) => {
 Games.chargeSystem = (gameId, team, systemName) => (
   Games.update(gameId, 'charged_system', {}, (game) => {
     assertStarted(game);
-    if (!game.getIn([team, TURN_INFO, WAITING_FOR_FIRST_MATE])) {
-      throw new GameStateError('First Mate has already gone');
-    }
+    assert(game.getIn([team, TURN_INFO, WAITING_FOR_FIRST_MATE]), 'First Mate has already gone');
     
+    // If system name is undefined, don't charge a system this turn
     if (systemName) {
-      if (!game.hasIn([team, SYSTEMS, systemName])) {
-        throw new GameStateError(`Cannot charge unknown system: ${systemName}`);
-      }
+      assert(game.hasIn([team, SYSTEMS, systemName]), `Cannot charge unknown system: ${systemName}`);
       game = game.updateIn([team, SYSTEMS, systemName], (system) =>
         system.set(CHARGE, Math.min(system.get(CHARGE) + 1, system.get(MAX_CHARGE))));
     }
     
-    game = game.setIn([team, TURN_INFO, WAITING_FOR_FIRST_MATE], false);
-    
-    return game
+    return game.setIn([team, TURN_INFO, WAITING_FOR_FIRST_MATE], false);
   })
 );
 
 /// Engineer ///
 
-Games.trackBreakdown = (gameId, team, breakdown) => {
+Games.trackBreakdown = (gameId, team, breakdownIndex) => {
   return Games.update(gameId, 'tracked_breakdown', {}, (game) => {
-    // TODO: Check valid breakdown
-    // TODO: Actually mark breakdowns
+    const brokenSubsystem = game.getIn([SUBSYSTEMS, breakdownIndex]);
+    assert(brokenSubsystem, `Invalid Breakdown: ${breakdownIndex}`);
+    const directionMoved = game.getIn([team, TURN_INFO, DIRECTION_MOVED]);
+    assert(
+      brokenSubsystem.get(DIRECTION) === directionMoved,
+      `Breakdown must be in direction moved. Expected ${directionMoved}, Actual ${brokenSubsystem.get(DIRECTION)}`
+    );
+    assert(!game.getIn([team, BREAKDOWNS]).includes(breakdownIndex), `Subsystem already broken: ${breakdownIndex}`);
+    game = game.updateIn([team, BREAKDOWNS], breakdowns => breakdowns.push(breakdownIndex));
+    
+    game = fixCircuits(game, team);
+    if (checkEngineOverload(game.get(SUBSYSTEMS), game.getIn([team, BREAKDOWNS]))) {
+      game.setIn([team, BREAKDOWNS], Immutable.List());
+      // TODO: Damage
+    }
+    
     return game.setIn([team, TURN_INFO, WAITING_FOR_ENGINEER], false);
   });
 };

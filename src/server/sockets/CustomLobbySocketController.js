@@ -4,7 +4,7 @@ import {
   CUSTOM_LOBBY_UNREADY, JOIN_CUSTOM_LOBBY, LEAVE_CUSTOM_LOBBY
 } from '../../common/Messages';
 import { ID } from '../../common/StateFields';
-import CustomLobby from '../data/CustomLobbies';
+import CustomLobby from '../resources/CustomLobbies';
 
 const log = require('debug')('commander-periscope:server');
 

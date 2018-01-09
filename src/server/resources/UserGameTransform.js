@@ -1,8 +1,8 @@
 import Immutable from 'immutable/dist/immutable';
 import { CAPTAIN, ENGINEER, FIRST_MATE, RADIO_OPERATOR } from '../../common/Role';
 import {
-  COMMON, ENGINE_LAYOUT, GRID, ID, SUB_LOCATION, SUB_PATH, SYSTEMS, TEAMS,
-  TURN_INFO, WAITING_FOR_FIRST_MATE
+  COMMON, SUBSYSTEMS, GRID, ID, SUB_LOCATION, SUB_PATH, SYSTEMS, TEAMS, TURN_INFO,
+  WAITING_FOR_FIRST_MATE, BREAKDOWNS
 } from '../../common/StateFields';
 import { canUseSystem, getPlayerPosition } from '../../common/util/GameUtils';
 
@@ -34,7 +34,8 @@ export const getDataForUser = (game, userId) => {
         break;
       case ENGINEER:
         data = data
-          .set(ENGINE_LAYOUT, teamInfo.get(ENGINE_LAYOUT));
+          .set(SUBSYSTEMS, game.get(SUBSYSTEMS))
+          .set(BREAKDOWNS, teamInfo.get(BREAKDOWNS));
         break;
       case RADIO_OPERATOR:
         data = data

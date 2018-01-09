@@ -1,8 +1,8 @@
-import { createGrid, LAND_TILE } from '../src/common/Grid';
+import { LAND_TILE } from '../src/common/Grid';
 import { ALL_ROLES, CAPTAIN } from '../src/common/Role';
 import { GRID } from '../src/common/StateFields';
 import { BLUE, BOTH_TEAMS, RED } from '../src/common/Team';
-import { createGame } from '../src/server/data/GameFactory';
+import { createGame, createGrid } from '../src/server/resources/GameFactory';
 
 export function mockGrid() {
   return createGrid()
@@ -18,6 +18,7 @@ export function mockGrid() {
     .setIn([4, 12], LAND_TILE);
 }
 
+// Create a game with players = ['p1',...] and usernames ['player1'...]
 export function mockGame(gameId = 'gameId') {
   const players = [];
   const usernames = {};
@@ -26,9 +27,9 @@ export function mockGame(gameId = 'gameId') {
     [BLUE]: {}
   };
   for (let i = 0; i < 8; i++) {
-    const userId = `userId${i}`;
+    const userId = `p${i + 1}`;
     players.push(userId);
-    usernames[userId] = `username${i}`;
+    usernames[userId] = `player${i + 1}`;
     teams[BOTH_TEAMS[Math.floor(i / 4)]][ALL_ROLES[i % 4]] = userId;
   }
   return createGame(gameId, { players, usernames, teams }).set(GRID, mockGrid());

@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { CHARGE, COMMON, GAME, MAX_CHARGE, STARTED, SYSTEMS } from '../../../common/StateFields';
+import { COMMON, GAME, STARTED, SYSTEMS } from '../../../common/StateFields';
+import { CHARGE, MAX_CHARGE } from '../../../common/System';
 import { chargeSystem } from '../../actions/GameActions';
 import DebugPane from '../DebugPane';
 

@@ -10,7 +10,6 @@ const log = require('debug')('commander-periscope:server');
 export default ({ shouldLog = true, devServer = false }) => {
   const app = express();
   
-  // TODO: Production mode
   if (devServer) {
     log('using webpack-dev-middleware');
     const Webpack = require('webpack');
@@ -33,8 +32,6 @@ export default ({ shouldLog = true, devServer = false }) => {
   app.use(Favicon(path.join(__dirname, '../../../favicon.ico')));
   app.use(CookieParser());
   app.use(GuaranteeUserMiddleware);
-  
-  // TODO: Probably a lot of stuff. I'm not exactly sure what.
   
   app.get('/healthcheck', (req, res) => {
     // TODO: real healthcheck. There are no dependencies, so I don't know what a real healthcheck would be.

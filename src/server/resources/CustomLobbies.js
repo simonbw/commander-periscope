@@ -2,9 +2,9 @@ import Immutable from 'immutable';
 import { CAPTAIN, ENGINEER, FIRST_MATE, RADIO_OPERATOR } from '../../common/Role';
 import { ID, PLAYERS, READIED, TEAMS, USERNAMES } from '../../common/StateFields';
 import { BLUE, RED } from '../../common/Team';
+import { getPlayerPosition } from '../../common/util/GameUtils';
 import { shouldStartGame } from './CustomLobbyUtils';
 import Games from './Games';
-import { getPlayerPosition } from '../../common/util/GameUtils';
 import Resource from './Resource';
 
 const log = require('debug')('commander-periscope:server');

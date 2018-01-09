@@ -1,10 +1,10 @@
 import PubSub from 'pubsub-js';
-import { COMMON, ID, TEAMS } from '../../common/StateFields';
-import { CHARGE_SYSTEM, HEAD_IN_DIRECTION } from '../../common/Messages';
+import { CHARGE_SYSTEM, HEAD_IN_DIRECTION, TRACK_BREAKDOWN } from '../../common/Messages';
 import { CAPTAIN, ENGINEER, FIRST_MATE, RADIO_OPERATOR } from '../../common/Role';
-import Games from '../data/Games';
+import { COMMON, ID, TEAMS } from '../../common/StateFields';
 import { getPlayerPosition } from '../../common/util/GameUtils';
-import { getDataForUser } from '../data/UserGameTransform';
+import Games from '../resources/Games';
+import { getDataForUser } from '../resources/UserGameTransform';
 
 const log = require('debug')('commander-periscope:server');
 
@@ -83,6 +83,9 @@ function listenToSocketMessages(socket, gameId, pubsubToken, position) {
       break;
     case RADIO_OPERATOR:
     case ENGINEER:
+      handlers[TRACK_BREAKDOWN] = ({ breakdownIndex }) => {
+        Games.trackBreakdown(gameId, team, breakdownIndex);
+      };
       break;
     default:
       log(`unknown role: ${role}`);

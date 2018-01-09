@@ -46,6 +46,6 @@ export const chargeSystem = (systemName) => (
 // Engineer Actions
 /// --------------- ///
 
-export const trackBreakdown = (breakdown) => (
-  sendMessage(Messages.TRACK_BREAKDOWN, { breakdown })
+export const trackBreakdown = (breakdownIndex) => (
+  sendMessage(Messages.TRACK_BREAKDOWN, { breakdownIndex })
 );

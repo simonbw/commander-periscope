@@ -1,7 +1,7 @@
 import Immutable from 'immutable';
 import { CAPTAIN, ENGINEER, FIRST_MATE, RADIO_OPERATOR } from '../../../src/common/Role';
 import {
-  BREAKDOWNS, COMMON, ENGINE_LAYOUT, GRID, PLAYERS, STARTED, SUB_LOCATION, SUB_PATH, SYSTEMS, TEAMS, TURN_INFO,
+  BREAKDOWNS, COMMON, SUBSYSTEMS, GRID, PLAYERS, STARTED, SUB_LOCATION, SUB_PATH, SYSTEMS, TEAMS, TURN_INFO,
   USERNAMES
 } from '../../../src/common/StateFields';
 import { BLUE, RED } from '../../../src/common/Team';
@@ -34,8 +34,8 @@ describe('Games', () => {
   let Games;
   beforeEach(() => {
     // Get a fresh copy of Games every test
-    delete require.cache[require.resolve('../../../src/server/data/Games')];
-    Games = require('../../../src/server/data/Games').default;
+    delete require.cache[require.resolve('../../../src/server/resources/Games')];
+    Games = require('../../../src/server/resources/Games').default;
   });
   
   it('should create a game', async () => {
@@ -53,7 +53,7 @@ describe('Games', () => {
     expect(common.get(USERNAMES)).to.have.size(8);
     
     expect(game.get(GRID)).to.exist;
-    expect(game.get(ENGINE_LAYOUT)).to.exist;
+    expect(game.get(SUBSYSTEMS)).to.exist;
     
     // TODO: Better testing
     for (const teamInfo of [game.get(RED), game.get(BLUE)]) {

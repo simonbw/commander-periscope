@@ -1,15 +1,16 @@
+import Immutable from 'immutable';
 import { ALL_ROLES, CAPTAIN, FIRST_MATE } from '../../../src/common/Role';
 import { PLAYERS, READIED, TEAMS, USERNAMES } from '../../../src/common/StateFields';
 import { BLUE, BOTH_TEAMS, RED } from '../../../src/common/Team';
-import { shouldStartGame } from '../../../src/server/data/CustomLobbyUtils';
+import { shouldStartGame } from '../../../src/server/resources/CustomLobbyUtils';
 import expect from '../../expect';
 
 describe('CustomLobbies', () => {
   let CustomLobbies;
   beforeEach(() => {
     // Get a fresh copy of CustomLobbies every test
-    delete require.cache[require.resolve('../../../src/server/data/CustomLobbies')];
-    CustomLobbies = require('../../../src/server/data/CustomLobbies').default;
+    delete require.cache[require.resolve('../../../src/server/resources/CustomLobbies')];
+    CustomLobbies = require('../../../src/server/resources/CustomLobbies').default;
   });
   
   it('.addPlayer()', async () => {
