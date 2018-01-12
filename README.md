@@ -21,4 +21,4 @@ If you're working on react components, you'll probably want to use storybook so 
 Look in [stories](/stories) for some examples.
 
 If you're working on server code, you will likely find [integration testing](/test/integration) to be helpful, since testing the game manually requires spinning up 8 clients.
-We use (puppeteer)[https://github.com/GoogleChrome/puppeteer] to spin up multiple clients in parallel to play through a game.
+We use [puppeteer](https://github.com/GoogleChrome/puppeteer) to spin up multiple clients in parallel to play through a game.
