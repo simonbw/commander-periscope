@@ -2,12 +2,14 @@ import * as Messages from '../../common/Messages';
 // Sent by server
 import { sendMessage } from './GeneralActions';
 
+// TODO: Some way to make it easy to be consistent between field names here and on the server
+
 /// --------------- ///
 /// Captain Actions ///
 /// --------------- ///
 
-export const setStartLocation = ([x, y]) => (
-  sendMessage(Messages.SET_START_LOCATION, { x, y })
+export const setStartLocation = (location) => (
+  sendMessage(Messages.SET_START_LOCATION, { location })
 );
 
 export const headInDirection = (direction) => (
@@ -20,6 +22,10 @@ export const fireTorpedo = (location) => (
 
 export const dropMine = (location) => (
   sendMessage(Messages.DROP_MINE, { location })
+);
+
+export const detonateMine = (mineIndex) => (
+  sendMessage(Messages.DETONATE_MINE, { mineIndex })
 );
 
 export const useSonar = () => (

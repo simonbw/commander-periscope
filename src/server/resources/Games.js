@@ -1,14 +1,16 @@
-import { getDistance, getNewLocation, WATER_TILE } from '../../common/Grid';
+import { getManhattanDistance, getNewLocation, isAdjacent, WATER_TILE } from '../../common/Grid';
 import {
-  BREAKDOWNS, COMMON, DIRECTION_MOVED, GRID, STARTED, SUB_LOCATION, SUB_PATH, SUBSYSTEMS, SYSTEM_IS_USED,
-  SYSTEMS, TURN_INFO, TURN_NUMBER, WAITING_FOR_ENGINEER, WAITING_FOR_FIRST_MATE
+  BREAKDOWNS, COMMON, DIRECTION_MOVED, GRID, MINE_LOCATIONS, STARTED, SUB_LOCATION, SUB_PATH, SUBSYSTEMS,
+  SYSTEM_IS_USED, SYSTEMS, TURN_INFO, TURN_NUMBER, WAITING_FOR_ENGINEER, WAITING_FOR_FIRST_MATE
 } from '../../common/StateFields';
 import { CHARGE, DIRECTION, DRONE, MAX_CHARGE, MINE, SILENT, SONAR, TORPEDO } from '../../common/System';
-import { BLUE, RED } from '../../common/Team';
+import { BLUE, otherTeam, RED } from '../../common/Team';
 import { checkEngineOverload, fixCircuits } from '../../common/util/GameUtils';
 import { assert, assertNotStarted, assertStarted, assertSystemReady } from './GameAssertions';
 import { createGame } from './GameFactory';
 import Resource from './Resource';
+
+const log = require('debug')('commander-periscope:server');
 
 // TODO: Unit test all of this
 
@@ -18,13 +20,15 @@ const Games = new Resource('game', 'game', createGame, false);
 
 /// Captain ///
 
-Games.setStartLocation = (gameId, team, position) => (
+Games.setStartLocation = (gameId, team, location) => (
   Games.update(gameId, 'start_location_set', {}, (game) => {
+    log('setting start location', team);
     assertNotStarted(game);
-    game = game.setIn([team, SUB_LOCATION], position);
+    game = game.setIn([team, SUB_LOCATION], location);
     if (game.getIn([RED, SUB_LOCATION]) && game.getIn([BLUE, SUB_LOCATION])) {
       game = game.setIn([COMMON, STARTED], true);
       Games.publish(game, 'started');
+      log('starting game');
     }
     return game;
   })
@@ -47,7 +51,7 @@ Games.headInDirection = (gameId, team, direction) => (
     assert(!game.getIn([team, SUB_PATH]).contains(nextLocation), 'Cannot cross your path.');
     const tile = grid.getIn([x, y]);
     assert(!tile.equal(WATER_TILE), `Can only move into water tiles. ${tile}`);
-    // TODO: Cannot move across mines
+    assert(!game.getIn([team, MINE_LOCATIONS]).has(location), `Cannot move across your mines`);
     
     return game
       .updateIn([team, TURN_INFO], turnInfo => turnInfo
@@ -61,61 +65,80 @@ Games.headInDirection = (gameId, team, direction) => (
   })
 );
 
-Games.fireTorpedo = (gameId, team, location) => {
+Games.fireTorpedo = (gameId, team, targetLocation) => {
   return Games.update(gameId, 'fired_torpedo', {}, (game) => {
-    assertSystemReady(TORPEDO);
+    assertSystemReady(game, team, TORPEDO);
+    
     const currentLocation = game.getIn([team, SUB_LOCATION]);
-    const distance = getDistance(currentLocation, location);
+    const opponentLocation = game.getIn([otherTeam(team), SUB_LOCATION]);
+    const distance = getManhattanDistance(currentLocation, targetLocation);
     assert(distance <= 4, `Torpedo target must within 4 squares (was ${distance})`);
     
-    // TODO: Torpedo
+    game = explosion(game, team, targetLocation, currentLocation, opponentLocation);
+    return game.setIn([team, SYSTEMS, TORPEDO, CHARGE], 0);
+  });
+};
+
+Games.detonateMine = (gameId, team, mineIndex) => {
+  return Games.update(gameId, 'fired_torpedo', {}, (game) => {
+    assertSystemReady(game, team, TORPEDO);
+    const mineLocation = game.getIn([team, MINE_LOCATIONS, mineIndex]);
+    assert(mineLocation, `Invalid mineIndex: ${mineIndex}`);
     
-    game = game.setIn([team, SYSTEMS, TORPEDO, CHARGE], 0);
-    return game;
-  })
+    const currentLocation = game.getIn([team, SUB_LOCATION]);
+    const opponentLocation = game.getIn([otherTeam(team), SUB_LOCATION]);
+    
+    game = explosion(game, team, mineLocation, currentLocation, opponentLocation)
+    return game.setIn([team, SYSTEMS, TORPEDO, CHARGE], 0);
+  });
 };
 
 Games.dropMine = (gameId, team, location) => {
   return Games.update(gameId, 'dropped_mine', {}, (game) => {
-    assertSystemReady(MINE);
+    const currentLocation = game.getIn([team, SUB_LOCATION]);
+    assertSystemReady(game, team, MINE);
+    assert(isAdjacent(location, currentLocation), 'must drop mine on adjacent location');
+    assert(!game.getIn([team, MINE_LOCATIONS]).has(location), 'cannot drop a mine on an existing mine');
     
-    // TODO: Mine
-    
-    game = game.setIn([team, SYSTEMS, MINE, CHARGE], 0);
-    return game;
+    return game
+      .updateIn([team, MINE_LOCATIONS], mineLocations => mineLocations.push(location))
+      .setIn([team, SYSTEMS, MINE, CHARGE], 0);
   })
 };
 
 Games.useSonar = (gameId, team) => {
   return Games.update(gameId, 'used_sonar', {}, (game) => {
-    assertSystemReady(SONAR);
+    assertSystemReady(game, team, SONAR);
     
     // TODO: Sonar
     
-    game = game.setIn([team, SYSTEMS, SONAR, CHARGE], 0);
-    return game;
+    return game.setIn([team, SYSTEMS, SONAR, CHARGE], 0);
   })
 };
 
-Games.useDrone = (gameId, team) => {
-  return Games.update(gameId, 'used_drone', {}, (game) => {
-    assertSystemReady(DRONE);
+Games.useDrone = (gameId, team, sector) => {
+  return Games.update(gameId, 'used_drone', { sector }, (game) => {
+    assertSystemReady(game, team, DRONE);
     
-    // TODO: Drone
+    // TODO: Is there actually anything to do here?
     
-    game = game.setIn([team, SYSTEMS, DRONE, CHARGE], 0);
-    return game;
+    return game.setIn([team, SYSTEMS, DRONE, CHARGE], 0);
   })
 };
 
-Games.goSilent = (gameId, team) => {
+Games.goSilent = (gameId, team, destination) => {
   return Games.update(gameId, 'went_silent', {}, (game) => {
-    assertSystemReady(SILENT);
+    assertSystemReady(game, team, SILENT);
     
-    // TODO: Silent
+    const startLocation = game.getIn([team, SUB_LOCATION]);
+    assert(getManhattanDistance(startLocation, destination) < 4, 'Cannot move more than 4 spaces while silent');
+    assert(startLocation.zip(destination).some(([c1, c2]) => c1 === c2), 'Must move in a straight line');
     
-    game = game.setIn([team, SYSTEMS, SILENT, CHARGE], 0);
-    return game;
+    // TODO: Make sure nothing in between
+    
+    return game
+      .setIn([team, SUB_LOCATION], destination)
+      .setIn([team, SYSTEMS, SILENT, CHARGE], 0);
   })
 };
 
@@ -156,7 +179,7 @@ Games.trackBreakdown = (gameId, team, breakdownIndex) => {
     game = fixCircuits(game, team);
     if (checkEngineOverload(game.get(SUBSYSTEMS), game.getIn([team, BREAKDOWNS]))) {
       game.setIn([team, BREAKDOWNS], Immutable.List());
-      // TODO: Damage
+      game = causeDamage(game, team, 1);
     }
     
     return game.setIn([team, TURN_INFO, WAITING_FOR_ENGINEER], false);
@@ -165,5 +188,25 @@ Games.trackBreakdown = (gameId, team, breakdownIndex) => {
 
 /// Radio Operator ///
 // Has no moves
+
+function causeDamage(game, team, amount) {
+  // TODO: causeDamage
+  return game;
+}
+
+function explosion(game, team, explosionLocation, currentLocation, opponentLocation) {
+  if (opponentLocation.equals(explosionLocation)) { // direct hit
+    game = causeDamage(game, otherTeam(team), 2);
+  } else if (isAdjacent(opponentLocation, explosionLocation)) { // indirect hit
+    game = causeDamage(game, otherTeam(team), 1);
+  }
+  
+  if (currentLocation.equals(explosionLocation)) { // direct hit
+    game = causeDamage(game, team, 2);
+  } else if (isAdjacent(currentLocation, explosionLocation)) { // indirect hit
+    game = causeDamage(game, team, 1);
+  }
+  return game;
+}
 
 export default Games;

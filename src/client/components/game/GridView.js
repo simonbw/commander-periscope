@@ -8,6 +8,8 @@ import { noop } from '../../../common/util/FunctionUtil';
 const ROW_LABELS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 // TODO Should this be an SVG?
+// TODO: Document these props
+// TODO: Make this whole file less painful to read
 const Grid = ({ grid, subLocation, subPath, canClick = noop, onClick = noop, canClickSector = noop, onClickSector = noop }) => (
   <div className={styles.Grid}>
     <SectorsOverlay {...{ grid, canClickSector, onClickSector }}/>

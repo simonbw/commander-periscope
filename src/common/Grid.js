@@ -26,7 +26,10 @@ export function getNewLocation(location, direction) {
 }
 
 // Return manhattan distance between two points
-export function getDistance(locationA, locationB) {
-  // return locationA.zip(locationB).reduce((t, [x, y]) => t + Math.abs(x - y), 0);
-  return Math.abs(locationA.get(0) - locationB.get(0)) + Math.abs(locationA.get(1) - locationB.get(1));
+export function getManhattanDistance(a, b) {
+  return Math.abs(a.get(0) - b.get(0)) + Math.abs(a.get(1) - b.get(1));
+}
+
+export function isAdjacent(a, b) {
+  return !a.equals(b) && (Math.abs(a.get(0) - b.get(0)) <= 1) && (Math.abs(a.get(0) - b.get(0)) <= 1)
 }

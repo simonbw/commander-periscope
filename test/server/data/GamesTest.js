@@ -1,34 +1,11 @@
 import Immutable from 'immutable';
-import { CAPTAIN, ENGINEER, FIRST_MATE, RADIO_OPERATOR } from '../../../src/common/Role';
 import {
-  BREAKDOWNS, COMMON, SUBSYSTEMS, GRID, PLAYERS, STARTED, SUB_LOCATION, SUB_PATH, SYSTEMS, TEAMS, TURN_INFO,
+  BREAKDOWNS, COMMON, GRID, PLAYERS, STARTED, SUB_LOCATION, SUB_PATH, SUBSYSTEMS, SYSTEMS, TEAMS, TURN_INFO,
   USERNAMES
 } from '../../../src/common/StateFields';
 import { BLUE, RED } from '../../../src/common/Team';
 import expect from '../../expect';
-
-function mockLobby() {
-  const players = Immutable.Range(1, 9).map(i => `id${i}`);
-  const usernames = Immutable.Map(players.map((playerId, i) => [playerId, `player${i + 1}`]));
-  return Immutable.fromJS({
-    players,
-    usernames,
-    teams: {
-      [RED]: {
-        [CAPTAIN]: players.get(0),
-        [FIRST_MATE]: players.get(1),
-        [ENGINEER]: players.get(2),
-        [RADIO_OPERATOR]: players.get(3)
-      },
-      [BLUE]: {
-        [CAPTAIN]: players.get(4),
-        [FIRST_MATE]: players.get(5),
-        [ENGINEER]: players.get(6),
-        [RADIO_OPERATOR]: players.get(7)
-      }
-    }
-  })
-}
+import { mockLobby } from '../../mocks';
 
 describe('Games', () => {
   let Games;

@@ -1,7 +1,8 @@
+import Immutable from 'immutable/dist/immutable';
 import { LAND_TILE } from '../src/common/Grid';
-import { ALL_ROLES, CAPTAIN } from '../src/common/Role';
-import { GRID } from '../src/common/StateFields';
-import { BLUE, BOTH_TEAMS, RED } from '../src/common/Team';
+import { CAPTAIN, ENGINEER, FIRST_MATE, RADIO_OPERATOR } from '../src/common/Role';
+import { GRID, PLAYERS, TEAMS, USERNAMES } from '../src/common/StateFields';
+import { BLUE, RED } from '../src/common/Team';
 import { createGame, createGrid } from '../src/server/resources/GameFactory';
 
 export function mockGrid() {
@@ -20,17 +21,33 @@ export function mockGrid() {
 
 // Create a game with players = ['p1',...] and usernames ['player1'...]
 export function mockGame(gameId = 'gameId') {
-  const players = [];
-  const usernames = {};
-  const teams = {
-    [RED]: {},
-    [BLUE]: {}
-  };
-  for (let i = 0; i < 8; i++) {
-    const userId = `p${i + 1}`;
-    players.push(userId);
-    usernames[userId] = `player${i + 1}`;
-    teams[BOTH_TEAMS[Math.floor(i / 4)]][ALL_ROLES[i % 4]] = userId;
-  }
-  return createGame(gameId, { players, usernames, teams }).set(GRID, mockGrid());
+  const lobby = mockLobby();
+  return createGame(gameId, {
+    players: lobby.get(PLAYERS),
+    usernames: lobby.get(USERNAMES),
+    teams: lobby.get(TEAMS)
+  }).set(GRID, mockGrid());
+}
+
+export function mockLobby() {
+  const players = Immutable.Range(1, 9).map(i => `p${i}`);
+  const usernames = Immutable.Map(players.map((playerId, i) => [playerId, `player${i + 1}`]));
+  return Immutable.fromJS({
+    players,
+    usernames,
+    teams: {
+      [RED]: {
+        [CAPTAIN]: players.get(0),
+        [FIRST_MATE]: players.get(1),
+        [RADIO_OPERATOR]: players.get(2),
+        [ENGINEER]: players.get(3),
+      },
+      [BLUE]: {
+        [CAPTAIN]: players.get(4),
+        [FIRST_MATE]: players.get(5),
+        [RADIO_OPERATOR]: players.get(6),
+        [ENGINEER]: players.get(7),
+      }
+    }
+  })
 }

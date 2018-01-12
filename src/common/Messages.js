@@ -13,6 +13,7 @@ export const SET_START_LOCATION = 'set_start_location';
 export const HEAD_IN_DIRECTION = 'head_in_direction';
 export const FIRE_TORPEDO = 'fire_torpedo';
 export const DROP_MINE = 'drop_mine';
+export const DETONATE_MINE = 'detonate_mine';
 export const USE_SONAR = 'use_sonar';
 export const USE_DRONE = 'use_drone';
 export const GO_SILENT = 'go_silent';

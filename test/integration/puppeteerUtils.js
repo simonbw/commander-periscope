@@ -4,7 +4,8 @@ import createApp from '../../src/server/app';
 import { initSocketServer } from '../../src/server/sockets';
 import expect from '../expect';
 
-const log = require('debug')('commander-periscope:server');
+const logServer = require('debug')('commander-periscope:server');
+const logTest = require('debug')('commander-periscope:test');
 
 export const newPageWithContext = async (browser) => {
   // TODO: Something that doesn't require using weird pppeteer internals.
@@ -48,7 +49,7 @@ export function initServer() {
   server._io = initSocketServer(server);
   
   server.listen(0, () => {
-    log(`commander-periscope server started on port ${server.address().port}`);
+    logServer(`commander-periscope server started on port ${server.address().port}`);
   });
   
   return server;
@@ -99,5 +100,17 @@ export async function waitForJoinGame(page) {
     const state = window._store.getState();
     // Cannot use constants here, cuz we're in browser scope
     return state.get('game') != null;
-  });
+  }, { timeout: 500 });
+}
+
+export async function waitForGameStarted(page) {
+  try {
+    await page.waitForFunction(() => {
+      const state = window._store.getState();
+      // Cannot use constants here, cuz we're in browser scope
+      return state.getIn(['game', 'common', 'started']);
+    }, { timeout: 500 });
+  } catch (e) {
+    throw new Error('Game not started');
+  }
 }

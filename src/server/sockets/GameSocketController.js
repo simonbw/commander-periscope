@@ -1,5 +1,8 @@
 import PubSub from 'pubsub-js';
-import { CHARGE_SYSTEM, HEAD_IN_DIRECTION, TRACK_BREAKDOWN } from '../../common/Messages';
+import {
+  CHARGE_SYSTEM, DETONATE_MINE, DROP_MINE, FIRE_TORPEDO, GO_SILENT, HEAD_IN_DIRECTION, SET_START_LOCATION,
+  TRACK_BREAKDOWN, USE_DRONE, USE_SONAR
+} from '../../common/Messages';
 import { CAPTAIN, ENGINEER, FIRST_MATE, RADIO_OPERATOR } from '../../common/Role';
 import { COMMON, ID, TEAMS } from '../../common/StateFields';
 import { getPlayerPosition } from '../../common/util/GameUtils';
@@ -63,35 +66,47 @@ function attachPubsubHandlers(socket, gameId, position) {
 }
 
 function listenToSocketMessages(socket, gameId, pubsubToken, position) {
-  const handlers = {};
-  // TODO: Separate out handlers by role
-  // TODO: Report errors in handlers
-  
   const team = position && position.team;
   const role = position && position.role;
   
-  switch (role) {
-    case CAPTAIN:
-      handlers[HEAD_IN_DIRECTION] = ({ systemName }) => {
-        Games.headInDirection(gameId, team, systemName);
-      };
-      break;
-    case FIRST_MATE:
-      handlers[CHARGE_SYSTEM] = ({ systemName }) => {
-        Games.chargeSystem(gameId, team, systemName);
-      };
-      break;
-    case RADIO_OPERATOR:
-    case ENGINEER:
-      handlers[TRACK_BREAKDOWN] = ({ breakdownIndex }) => {
-        Games.trackBreakdown(gameId, team, breakdownIndex);
-      };
-      break;
-    default:
-      log(`unknown role: ${role}`);
-  }
+  const handlers = getRoleHandlers(role, team, gameId);
   
   Object.entries(handlers).forEach(([message, handler]) => {
-    socket.on(message, handler);
+    socket.on(message, async (...args) => {
+      try {
+        await handler(...args);
+      } catch (e) {
+        // TODO: Report errors in handlers
+        throw e;
+      }
+    });
   });
+}
+
+function getRoleHandlers(role, team, gameId) {
+  switch (role) {
+    case CAPTAIN:
+      return {
+        [SET_START_LOCATION]: ({ location }) => Games.setStartLocation(gameId, team, location),
+        [HEAD_IN_DIRECTION]: ({ direction }) => Games.headInDirection(gameId, team, direction),
+        [FIRE_TORPEDO]: ({ location }) => Games.fireTorpedo(gameId, team, location),
+        [DROP_MINE]: ({ location }) => Games.dropMine(gameId, team, location),
+        [DETONATE_MINE]: ({ mineIndex }) => Games.detonateMine(gameId, team, mineIndex),
+        [USE_SONAR]: ({}) => Games.useSonar(gameId, team),
+        [USE_DRONE]: ({ sector }) => Games.useDrone(gameId, team, sector),
+        [GO_SILENT]: ({ location }) => Games.goSilent(gameId, team, location),
+      };
+    case FIRST_MATE:
+      return {
+        [CHARGE_SYSTEM]: ({ systemName }) => Games.chargeSystem(gameId, team, systemName),
+      };
+    case ENGINEER:
+      return {
+        [TRACK_BREAKDOWN]: ({ breakdownIndex }) => Games.trackBreakdown(gameId, team, breakdownIndex),
+      };
+    case RADIO_OPERATOR:
+      return {};
+    default:
+      throw new Error(`Cannot get handlers for unknown role: ${role}`);
+  }
 }

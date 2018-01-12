@@ -64,7 +64,6 @@ const listenToSocketMessages = (socket, lobbyId, pubsubToken) => {
   };
   
   handlers[CUSTOM_LOBBY_READY] = () => {
-    log(`${socket.userId} ready message`);
     CustomLobby.ready(lobbyId, socket.userId);
   };
   

@@ -1,16 +1,14 @@
 import puppeteer from 'puppeteer';
-import { ALL_ROLES } from '../../src/common/Role';
 import { READIED, TEAMS } from '../../src/common/StateFields';
 import CustomLobbies from '../../src/server/resources/CustomLobbies';
 import expect from '../expect';
-import { wait } from '../testUtils';
 import {
   clickReadyButton, closePageWithContext, createCustomLobby, expectNoErrors, expectPagesValid, extractGame,
-  extractState, extractUserId, initServer, joinCustomLobby, newPageWithContext, waitForJoinGame
+  extractState,
+  extractUserId, initServer, joinCustomLobby, newPageWithContext, waitForGameStarted, waitForJoinGame
 } from './puppeteerUtils';
 
 // registerErrorHandlers();
-// TODO: Start up app
 
 const log = require('debug')('commander-periscope:test');
 
@@ -117,9 +115,7 @@ describe('Integration', function () {
     log(`all players ready`);
     expectNoErrors(pages);
     
-    await Promise.all(pages.map(async (page, i) => {
-      await waitForJoinGame(page);
-    }));
+    await Promise.all(pages.map(waitForJoinGame));
     
     expectNoErrors(pages);
     log(`all players have joined game`);
@@ -138,11 +134,14 @@ describe('Integration', function () {
     expectNoErrors(pages);
     log(`all players on game pages`);
     
-    await blueTeam[0].click('.Cell:nth-of-type(3)');
-    await extractGame(blueTeam[0])
+    // Select locations
+    await redTeam[0].click('.Cell:nth-of-type(3)');
+    await blueTeam[0].click('.Cell:nth-of-type(7)');
+    expectNoErrors(pages);
     
-    // TODO: Verify game started
-    // TODO: Select Locations
+    await Promise.all(pages.map(waitForGameStarted));
+    log(`game started`);
+    
     // TODO: Play game
   });
 });
