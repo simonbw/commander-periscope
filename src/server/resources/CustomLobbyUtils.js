@@ -7,5 +7,5 @@ export const shouldStartGame = (lobby) => {
     return false;
   }
   return lobby.get(TEAMS).every((team) => team.every((playerId) =>
-    playerId && lobby.get(READIED).has(playerId)));
+    playerId && lobby.get(READIED).includes(playerId)));
 };

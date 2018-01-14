@@ -2,7 +2,7 @@ import {
   CUSTOM_LOBBY_READY, CUSTOM_LOBBY_SELECT_ROLE, CUSTOM_LOBBY_SET_USERNAME, CUSTOM_LOBBY_UNREADY,
   JOIN_CUSTOM_LOBBY, LEAVE_CUSTOM_LOBBY
 } from '../../common/Messages';
-import { CUSTOM_LOBBY_PAGE } from '../models/Page';
+import { CUSTOM_LOBBY_PAGE } from '../constants/Page';
 import { debounceAction } from './ActionUtils';
 import { changePage, sendMessage } from './GeneralActions';
 

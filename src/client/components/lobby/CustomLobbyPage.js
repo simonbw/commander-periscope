@@ -6,13 +6,13 @@ import { ID, LOBBY, READIED, USER_ID } from '../../../common/StateFields';
 import * as Team from '../../../common/Team';
 import * as CustomLobbyActions from '../../actions/CustomLobbyActions';
 import * as GeneralActions from '../../actions/GeneralActions';
-import { MAIN_MENU_PAGE } from '../../models/Page';
+import { MAIN_MENU_PAGE } from '../../constants/Page';
 import TeamList from './TeamList';
 
 const CustomLobbyPage = ({ lobby, userId, selectRole, ready, unready, goToMainMenu, setUsername }) => {
   const lobbyId = lobby.get(ID);
   if (lobbyId) {
-    const userIsReady = lobby.get(READIED).has(userId);
+    const userIsReady = lobby.get(READIED).includes(userId);
     return (
       <div id="custom-lobby-page" className={styles.CustomLobbyPage}>
         <pre>{JSON.stringify(lobby, null, 2)}</pre>

@@ -3,14 +3,13 @@ import Immutable from 'immutable';
 import React from 'react';
 import styles from '../../../../styles/Grid.css';
 import { LAND_TILE, WATER_TILE } from '../../../common/Grid';
-import { noop } from '../../../common/util/FunctionUtil';
 
 const ROW_LABELS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 // TODO Should this be an SVG?
 // TODO: Document these props
 // TODO: Make this whole file less painful to read
-const Grid = ({ grid, subLocation, subPath, canClick = noop, onClick = noop, canClickSector = noop, onClickSector = noop }) => (
+const Grid = ({ grid, subLocation, subPath, canClick = () => false, onClick = () => null, canClickSector = () => false, onClickSector = () => null }) => (
   <div className={styles.Grid}>
     <SectorsOverlay {...{ grid, canClickSector, onClickSector }}/>
     <div className={styles.Column}>

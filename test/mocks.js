@@ -29,6 +29,8 @@ export function mockGame(gameId = 'gameId') {
   }).set(GRID, mockGrid());
 }
 
+// TODO: Mock subsystems so that we don't have random test behavior
+
 export function mockLobby() {
   const players = Immutable.Range(1, 9).map(i => `p${i}`);
   const usernames = Immutable.Map(players.map((playerId, i) => [playerId, `player${i + 1}`]));

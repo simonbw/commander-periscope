@@ -2,10 +2,9 @@ import classnames from 'classnames';
 import React from 'react';
 import { connect } from 'react-redux';
 import style from '../../../../styles/EngineerPage.css';
-import { ALL_DIRECTIONS } from '../../../common/Direction';
+import { ALL_DIRECTIONS } from '../../../common/Grid';
 import { BREAKDOWNS, GAME, SUBSYSTEMS } from '../../../common/StateFields';
 import { CIRCUIT, DIRECTION, SYSTEM_TYPE } from '../../../common/System';
-import { noop } from '../../../common/util/FunctionUtil';
 import { trackBreakdown } from '../../actions/GameActions';
 import DebugPane from '../DebugPane';
 
@@ -40,7 +39,7 @@ const DirectionPane = ({ direction, subsystems, trackBreakdown, breakdowns }) =>
         <SubsystemSymbol
           key={subsystem.get(INDEX)}
           subsystem={subsystem}
-          broken={breakdowns.has(subsystem.get(INDEX))}
+          broken={breakdowns.includes(subsystem.get(INDEX))}
           onClick={() => trackBreakdown(subsystem.get(INDEX))}
         />
       ))

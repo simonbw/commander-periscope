@@ -18,7 +18,7 @@ const TeamList = ({ teamName, selectRole, lobby, userId }) => {
     >
       {ALL_ROLES.map((role) => {
         const playerId = team.get(role);
-        const isReady = playerId && lobby.hasIn([READIED, playerId]);
+        const isReady = playerId && lobby.get(READIED).includes(playerId);
         const username = playerId && (lobby.getIn([USERNAMES, playerId]) || 'Anonymous');
         const isUser = playerId === userId;
         const onSelect = (() => selectRole(role, teamName));

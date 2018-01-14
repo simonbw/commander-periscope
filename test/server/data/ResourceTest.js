@@ -2,7 +2,7 @@ import Immutable from 'immutable';
 import { ID } from '../../../src/common/StateFields';
 import Resource from '../../../src/server/resources/Resource';
 import expect from '../../expect';
-import { shouldReject, wait } from '../../testUtils';
+import { wait } from '../../testUtils';
 
 describe('Resource', () => {
   describe('.create', () => {
@@ -41,7 +41,7 @@ describe('Resource', () => {
     
     it('should error on missing instances when createOnError == false', async () => {
       const resource = new Resource('resource_name', 'pubsub_name', (id) => Immutable.Map({ id }), false);
-      expect(resource.get('non-existent-id')).to.be.rejected;
+      await expect(resource.get('non-existent-id')).to.be.rejected;
     });
     
     it('waitForUpdate should wait for the last scheduled update to finish', async () => {
@@ -126,7 +126,7 @@ describe('Resource', () => {
     const resource = new Resource('resource_name', 'pubsub_name', (id) => Immutable.Map({ id, foo: '' }));
     const instance = await resource.create();
     await resource.remove(instance.get(ID));
-    expect(resource.get(instance.get(ID))).to.be.rejected;
+    await expect(resource.get(instance.get(ID))).to.be.rejected;
   });
   
   // TODO: Test publish and pubsub stuff.

@@ -108,11 +108,7 @@ CustomLobbies.unready = (lobbyId, playerId) => (
 
 const startGameIfShould = async (lobby) => {
   if (shouldStartGame(lobby)) {
-    const game = await Games.create(null, {
-      players: lobby.get(PLAYERS),
-      usernames: lobby.get(USERNAMES),
-      teams: lobby.get(TEAMS)
-    });
+    const game = await Games.createFromLobby(lobby);
     const gameId = game.get(ID);
     const updatedLobby = lobby.set('gameId', gameId);
     log(`starting game ${gameId}`);

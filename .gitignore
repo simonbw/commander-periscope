@@ -2,3 +2,5 @@ node_modules/
 .idea/
 dist/
 yarn.lock
+.nyc_output/
+coverage/

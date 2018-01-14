@@ -1,6 +1,5 @@
 import Immutable from 'immutable/dist/immutable';
-import { ALL_DIRECTIONS } from '../../common/Direction';
-import { WATER_TILE } from '../../common/Grid';
+import { ALL_DIRECTIONS, WATER_TILE } from '../../common/Grid';
 import {
   BREAKDOWNS, COMMON, CREATED, DIRECTION_MOVED, GRID, ID, MINE_LOCATIONS, PLAYERS, STARTED, SUB_LOCATION,
   SUB_PATH, SUBSYSTEMS, SYSTEM_IS_USED, SYSTEMS, TEAMS, TURN_INFO, TURN_NUMBER, USERNAMES, WAITING_FOR_ENGINEER,
@@ -19,8 +18,8 @@ export function createGame(id, { players, usernames, teams }) {
     [COMMON]: createCommon(players, usernames, teams),
     [GRID]: createGrid(),
     [SUBSYSTEMS]: createSubsystems(),
-    [RED]: createTeamInfo(RED),
-    [BLUE]: createTeamInfo(BLUE),
+    [RED]: createTeamInfo(),
+    [BLUE]: createTeamInfo(),
   });
 }
 
@@ -34,7 +33,7 @@ export function createCommon(players, usernames, teams) {
   });
 }
 
-export function createTeamInfo(team) {
+export function createTeamInfo() {
   return Immutable.fromJS({
     [TURN_INFO]: {
       [DIRECTION_MOVED]: false,

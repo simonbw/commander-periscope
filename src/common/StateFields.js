@@ -21,6 +21,7 @@ export const SYSTEMS = 'systems';
 export const SUBSYSTEMS = 'subsystems';
 
 // TODO: Some of these are common between lobby and game. Do we want different constants?
+// TODO: Do we really need a 'common' object at all?
 // Common
 export const PLAYERS = 'players';
 export const USERNAMES = 'usernames';

@@ -1,12 +1,17 @@
 import puppeteer from 'puppeteer';
-import { READIED, TEAMS } from '../../src/common/StateFields';
+import { LOBBY, PLAYERS, READIED, TEAMS, USER_ID } from '../../src/common/StateFields';
 import CustomLobbies from '../../src/server/resources/CustomLobbies';
 import expect from '../expect';
 import {
-  clickReadyButton, closePageWithContext, createCustomLobby, expectNoErrors, expectPagesValid, extractGame,
-  extractState,
-  extractUserId, initServer, joinCustomLobby, newPageWithContext, waitForGameStarted, waitForJoinGame
-} from './puppeteerUtils';
+  clickReadyButton, createCustomLobby, joinCustomLobby, waitForGameStarted,
+  waitForJoinGame
+} from './PageActions';
+import { expectNoErrors, expectTitle } from './PageAssertions';
+import { extractLobby, extractState, extractUserId } from './PageExtractors';
+import {
+  closePageWithContext, initServer,
+  newPageWithContext
+} from './PuppeteerUtils';
 
 // registerErrorHandlers();
 
@@ -55,14 +60,14 @@ describe('Integration', function () {
   });
   
   it('each tab should have a different userId', async () => {
-    await expectPagesValid(pages);
+    await expectTitle(pages);
     
     const userIds = new Set(await Promise.all(pages.map(page => extractUserId(page))));
     expect(userIds.size).to.equal(pages.length);
   });
   
   it('play through a game', async () => {
-    await expectPagesValid(pages);
+    await expectTitle(pages);
     
     const redTeam = pages.slice(0, 4);
     const blueTeam = pages.slice(4, 8);
@@ -79,11 +84,14 @@ describe('Integration', function () {
     // Make sure everyone sees all players in the lobby
     for (const page of pages) {
       const state = await extractState(page);
-      expect(state.lobby.players).to.include(state.userId);
-      expect(state.lobby.players).to.have.lengthOf(pages.length);
+      const players = state.getIn([LOBBY, PLAYERS]);
+      expect(players).to.include(state.get(USER_ID));
+      expect(players).to.have.size(pages.length);
     }
     
     log(`all players in lobby`);
+    
+    // TODO: Test leaving lobby
     
     // TODO: Test changing usernames
     

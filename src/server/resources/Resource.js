@@ -3,6 +3,7 @@ import shortid from 'shortid';
 import { ID } from '../../common/StateFields';
 import { waitForSettled } from '../../common/util/AsyncUtil';
 
+// TODO: Consider renaming this to DAO (Data Access Object)
 export default class Resource {
   
   constructor(resourceName, pubsubName, createInstance, createOnNotFound = false) {
@@ -67,7 +68,7 @@ export default class Resource {
         throw new Error(`updater returned ${instance}, ${this._resourceName} ${action}`);
       }
       this._instances.set(id, instance);
-      this.publish(instance, action, actionData);
+      this.publish(instance, action, actionData); // TODO: Do we really need to auto-publish?
       return instance;
     })();
     this._lastUpdates.set(id, updatePromise);

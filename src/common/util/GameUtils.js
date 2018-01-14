@@ -37,7 +37,7 @@ export function fixCircuits(game, team) {
       .filter(([i, s]) => s.get(CIRCUIT) === circuit)
       .map(([i]) => i)
       .toSet();
-    if (circuitIndexes.every((i) => game.getIn([team, BREAKDOWNS]).has(i))) {
+    if (circuitIndexes.every((i) => game.getIn([team, BREAKDOWNS]).includes(i))) {
       game = game.updateIn([team, BREAKDOWNS], breakdowns => breakdowns.subtract(circuitIndexes));
     }
   }

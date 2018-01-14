@@ -1,8 +1,8 @@
 import Immutable from 'immutable/dist/immutable';
 import { CAPTAIN, ENGINEER, FIRST_MATE, RADIO_OPERATOR } from '../../common/Role';
 import {
-  COMMON, SUBSYSTEMS, GRID, ID, SUB_LOCATION, SUB_PATH, SYSTEMS, TEAMS, TURN_INFO,
-  WAITING_FOR_FIRST_MATE, BREAKDOWNS
+  BREAKDOWNS, COMMON, GRID, ID, SUB_LOCATION, SUB_PATH, SUBSYSTEMS, SYSTEMS, TEAMS, TURN_INFO,
+  WAITING_FOR_FIRST_MATE
 } from '../../common/StateFields';
 import { canUseSystem, getPlayerPosition } from '../../common/util/GameUtils';
 

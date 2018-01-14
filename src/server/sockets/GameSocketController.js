@@ -1,3 +1,4 @@
+import { List } from 'immutable';
 import PubSub from 'pubsub-js';
 import {
   CHARGE_SYSTEM, DETONATE_MINE, DROP_MINE, FIRE_TORPEDO, GO_SILENT, HEAD_IN_DIRECTION, SET_START_LOCATION,
@@ -87,14 +88,14 @@ function getRoleHandlers(role, team, gameId) {
   switch (role) {
     case CAPTAIN:
       return {
-        [SET_START_LOCATION]: ({ location }) => Games.setStartLocation(gameId, team, location),
+        [SET_START_LOCATION]: ({ location }) => Games.setStartLocation(gameId, team, List(location)),
         [HEAD_IN_DIRECTION]: ({ direction }) => Games.headInDirection(gameId, team, direction),
-        [FIRE_TORPEDO]: ({ location }) => Games.fireTorpedo(gameId, team, location),
-        [DROP_MINE]: ({ location }) => Games.dropMine(gameId, team, location),
-        [DETONATE_MINE]: ({ mineIndex }) => Games.detonateMine(gameId, team, mineIndex),
+        [FIRE_TORPEDO]: ({ location }) => Games.fireTorpedo(gameId, team, List(location)),
+        [DROP_MINE]: ({ location }) => Games.dropMine(gameId, team, List(location)),
+        [DETONATE_MINE]: ({ location }) => Games.detonateMine(gameId, team, List(location)),
         [USE_SONAR]: ({}) => Games.useSonar(gameId, team),
         [USE_DRONE]: ({ sector }) => Games.useDrone(gameId, team, sector),
-        [GO_SILENT]: ({ location }) => Games.goSilent(gameId, team, location),
+        [GO_SILENT]: ({ location }) => Games.goSilent(gameId, team, List(location)),
       };
     case FIRST_MATE:
       return {

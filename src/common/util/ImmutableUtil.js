@@ -1,4 +1,5 @@
-import Immutable from 'immutable';
+import * as Immutable from 'immutable/dist/immutable';
+import { BREAKDOWNS, PLAYERS, READIED } from '../StateFields';
 
 export function deepFind(root, value, path = Immutable.List()) {
   if (root === value) {
@@ -19,3 +20,16 @@ export function deepFind(root, value, path = Immutable.List()) {
   // no path is found
   return undefined;
 }
+
+export const jsonToImmutable = (json) => (
+  Immutable.fromJS(json, (key, value) => {
+    switch (key) {
+      case READIED:
+      case PLAYERS:
+      case BREAKDOWNS:
+        return value.toSet();
+      default:
+        return Immutable.Iterable.isKeyed(value) ? value.toMap() : value.toList()
+    }
+  })
+);

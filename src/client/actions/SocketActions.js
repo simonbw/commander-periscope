@@ -1,6 +1,6 @@
 import { CUSTOM_LOBBY_GAME_START, CUSTOM_LOBBY_JOINED } from '../../common/Messages';
 // Convert socket messages into actions
-import { GAME_PAGE } from '../models/Page';
+import { GAME_PAGE } from '../constants/Page';
 import { changePage, sendMessage } from './GeneralActions';
 
 export const messageToAction = (action) => {

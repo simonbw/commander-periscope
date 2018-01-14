@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import '../../../styles/main.css';
 import { CONNECTED, PAGE } from '../../common/StateFields';
-import { CUSTOM_LOBBY_PAGE, GAME_PAGE, MAIN_MENU_PAGE } from '../models/Page';
+import { CUSTOM_LOBBY_PAGE, GAME_PAGE, MAIN_MENU_PAGE } from '../constants/Page';
 import GamePage from './game/GamePage';
 import CustomGameLobby from './lobby/CustomLobbyPage';
 import MainMenu from './MainMenu';

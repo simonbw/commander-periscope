@@ -3,7 +3,7 @@ import {
   CUSTOM_LOBBY_JOINED, PLAYER_ADDED, PLAYER_LEFT, PLAYER_READIED, PLAYER_SET_USERNAME, PLAYER_UNREADIED,
   ROLE_SELECTED
 } from '../../common/Messages';
-import { PLAYERS, READIED } from '../../common/StateFields';
+import { jsonToImmutable } from '../../common/util/ImmutableUtil';
 
 export default (state, action) => {
   state = state || Immutable.Map();
@@ -15,19 +15,7 @@ export default (state, action) => {
     case PLAYER_LEFT:
     case ROLE_SELECTED:
     case PLAYER_SET_USERNAME:
-      return jsonToLobby(action.lobby);
+      return jsonToImmutable(action.lobby);
   }
   return state;
 }
-
-const jsonToLobby = (json) => (
-  Immutable.fromJS(json, (key, value) => {
-    switch (key) {
-      case READIED:
-      case PLAYERS:
-        return value.toSet();
-      default:
-        return Immutable.Iterable.isKeyed(value) ? value.toMap() : value.toList()
-    }
-  })
-);

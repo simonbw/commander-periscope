@@ -24,6 +24,7 @@
     "immutable": "^4.0.0-rc.9",
     "js-cookie": "^2.2.0",
     "morgan": "^1.9.0",
+    "nyc": "^11.4.1",
     "pretty-error": "^2.1.1",
     "prop-types": "^15.6.0",
     "pubsub-js": "^1.5.7",
@@ -54,13 +55,23 @@
     "nodemon": "^1.13.3",
     "puppeteer": "^0.13.0"
   },
+  "nyc": {
+    "all": true,
+    "cache": true,
+    "exclude": [
+      "dist/**",
+      "coverage/**",
+      "stories/**"
+    ],
+    "reporter": "html"
+  },
   "scripts": {
     "start": "NODE_ENV=dev DEBUG=commander-periscope:* nodemon --inspect $NODE_DEBUG_OPTION src/server/index.js --exec babel-node",
     "build": "$npm_execpath run build-server; $npm_execpath run build-client",
     "build-client": "webpack",
     "build-server": "babel src/server/ -d dist/server; babel src/common/ -d dist/common",
     "start-prod": "NODE_ENV=prod node dist/server/index.js",
-    "test": "NODE_ENV=test mocha --exit --require babel-register --recursive test",
+    "test": "NODE_ENV=test nyc mocha --exit --require babel-register --recursive test",
     "test-unit": "NODE_ENV=test mocha --exit --require babel-register --recursive test/server test/client",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"

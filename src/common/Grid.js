@@ -4,7 +4,13 @@
 // [1, 0] is one tile East of [0, 0], while [0, 1] is one tile South of [0, 0].
 
 import Immutable from 'immutable';
-import { EAST, NORTH, SOUTH, WEST } from './Direction';
+
+export const NORTH = 'NORTH';
+export const EAST = 'EAST';
+export const SOUTH = 'SOUTH';
+export const WEST = 'WEST';
+
+export const ALL_DIRECTIONS = [NORTH, EAST, SOUTH, WEST];
 
 export const WATER_TILE = 0;
 export const LAND_TILE = 1;
@@ -25,11 +31,28 @@ export function getNewLocation(location, direction) {
   }
 }
 
+// Returns the direction from point a to b
+export function getDirection(a, b) {
+  if (b.get(0) > a.get(0)) {
+    return EAST;
+  } else if (b.get(0) < a.get(0)) {
+    return WEST;
+  } else if (b.get(1) > a.get(1)) {
+    return SOUTH;
+  } else if (b.get(1) < a.get(1)) {
+    return NORTH;
+  }
+  // a == b
+  return null;
+}
+
 // Return manhattan distance between two points
 export function getManhattanDistance(a, b) {
   return Math.abs(a.get(0) - b.get(0)) + Math.abs(a.get(1) - b.get(1));
 }
 
 export function isAdjacent(a, b) {
-  return !a.equals(b) && (Math.abs(a.get(0) - b.get(0)) <= 1) && (Math.abs(a.get(0) - b.get(0)) <= 1)
+  return !a.equals(b)
+    && (Math.abs(a.get(0) - b.get(0)) <= 1)
+    && (Math.abs(a.get(1) - b.get(1)) <= 1)
 }
