@@ -1,7 +1,7 @@
 import Immutable from 'immutable/dist/immutable';
 import { LAND_TILE } from '../src/common/Grid';
 import { CAPTAIN, ENGINEER, FIRST_MATE, RADIO_OPERATOR } from '../src/common/Role';
-import { GRID, PLAYERS, TEAMS, USERNAMES } from '../src/common/StateFields';
+import { GRID, PLAYERS, READIED, TEAMS, USERNAMES } from '../src/common/StateFields';
 import { BLUE, RED } from '../src/common/Team';
 import { createGame, createGrid } from '../src/server/resources/GameFactory';
 
@@ -23,21 +23,24 @@ export function mockGrid() {
 export function mockGame(gameId = 'gameId') {
   const lobby = mockLobby();
   return createGame(gameId, {
-    players: lobby.get(PLAYERS),
-    usernames: lobby.get(USERNAMES),
-    teams: lobby.get(TEAMS)
+    [PLAYERS]: lobby.get(PLAYERS),
+    [USERNAMES]: lobby.get(USERNAMES),
+    [TEAMS]: lobby.get(TEAMS)
   }).set(GRID, mockGrid());
 }
 
 // TODO: Mock subsystems so that we don't have random test behavior
 
-export function mockLobby() {
+export function mockLobby(id = 'lobbyId') {
   const players = Immutable.Range(1, 9).map(i => `p${i}`);
   const usernames = Immutable.Map(players.map((playerId, i) => [playerId, `player${i + 1}`]));
   return Immutable.fromJS({
-    players,
-    usernames,
-    teams: {
+    id,
+    created: Date.now(),
+    [PLAYERS]: players,
+    [USERNAMES]: usernames,
+    [READIED]: Immutable.Set(),
+    [TEAMS]: {
       [RED]: {
         [CAPTAIN]: players.get(0),
         [FIRST_MATE]: players.get(1),

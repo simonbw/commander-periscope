@@ -11,7 +11,7 @@ export const newPageWithContext = async (browser) => {
   const { browserContextId } = await browser._connection.send('Target.createBrowserContext');
   const { targetId } = await browser._connection.send('Target.createTarget', { url: 'about:blank', browserContextId });
   const target = await browser._targets.get(targetId);
-  expect(await target._initializedPromise, 'Failed to create target for page').to.be.true;
+  expect(await target._initializedPromise, 'Failed to create target for page').to.equal(true);
   const page = await target.page();
   page._browserContextId = browserContextId;
   return page;

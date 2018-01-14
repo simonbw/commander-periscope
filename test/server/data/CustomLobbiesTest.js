@@ -128,7 +128,7 @@ describe('CustomLobbies', () => {
         CustomLobbies.addPlayer('lobbyId', `player${i}`, `username${i}`))
     );
     
-    expect(shouldStartGame(await CustomLobbies.get('lobbyId'))).to.be.false;
+    expect(shouldStartGame(await CustomLobbies.get('lobbyId'))).to.equal(false);
     
     await Promise.all(
       Immutable.Range(0, 8).map(i =>

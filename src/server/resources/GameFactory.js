@@ -12,7 +12,7 @@ import {
 import { BLUE, RED } from '../../common/Team';
 
 // TODO: Something so I don't have to worry about mixing immutable and vanilla types.
-export function createGame(id, { players, usernames, teams }) {
+export function createGame(id, { [PLAYERS]: players, [USERNAMES]: usernames, [TEAMS]: teams }) {
   return new Immutable.fromJS({
     [ID]: id,
     [COMMON]: createCommon(players, usernames, teams),
@@ -76,6 +76,7 @@ export function createSystems() {
 }
 
 export function createSubsystems() {
+  // TODO: Deterministic random
   // TODO: Probably some more constraints/balancing
   const circuits = Immutable
     .List(CIRCUITS)

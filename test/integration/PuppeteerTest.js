@@ -107,7 +107,7 @@ describe('Integration', function () {
     ]);
     
     const lobbyTeams = (await CustomLobbies.get(lobbyId, true)).get(TEAMS); // wait for all these updates to finish
-    expect(lobbyTeams.every(team => team.every(player => player)), lobbyTeams).to.be.true;
+    expect(lobbyTeams.every(team => team.every(player => player)), lobbyTeams).to.equal(true);
     
     log(`all players have roles`);
     expectNoErrors(pages);

@@ -52,11 +52,7 @@ describe('Games', () => {
   it('should create a game', async () => {
     // TODO: Do this in GameFactoryTest
     const lobby = mockLobby();
-    const game = await Games.create(null, {
-      players: lobby.get(PLAYERS),
-      usernames: lobby.get(USERNAMES),
-      teams: lobby.get(TEAMS)
-    });
+    const game = await Games.createFromLobby(lobby);
     
     const common = game.get(COMMON);
     expect(common).to.have.property(STARTED, false);

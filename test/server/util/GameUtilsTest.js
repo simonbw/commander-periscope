@@ -32,13 +32,13 @@ describe('GameUtils', () => {
         subsystem => subsystem.get(SYSTEM_TYPE) === COMMS))));
     
     // Uncharged
-    expect(canUseSystem(game, RED, MINE)).to.be.false;
+    expect(canUseSystem(game, RED, MINE)).to.equal(false);
     
     // Charged but broken
-    expect(canUseSystem(game, RED, DRONE)).to.be.false;
+    expect(canUseSystem(game, RED, DRONE)).to.equal(false);
     
     // Charged and not broken
-    expect(canUseSystem(game, RED, TORPEDO)).to.be.true;
+    expect(canUseSystem(game, RED, TORPEDO)).to.equal(true);
   });
   
   it('.fixCircuits', async () => {
@@ -51,11 +51,11 @@ describe('GameUtils', () => {
   
   it('.checkEngineOverload', async () => {
     const subsystems = createSubsystems();
-    expect(checkEngineOverload(subsystems, Immutable.List()), 'No breakdowns').to.be.false;
+    expect(checkEngineOverload(subsystems, Immutable.List()), 'No breakdowns').to.equal(false);
     
     // Everything is broken
     const allBreakdowns = subsystems.map((s, i) => i).toSet();
-    expect(checkEngineOverload(subsystems, allBreakdowns), `All breakdowns.`).to.be.true;
+    expect(checkEngineOverload(subsystems, allBreakdowns), `All breakdowns.`).to.equal(true);
     
   });
 });

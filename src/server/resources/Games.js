@@ -18,9 +18,9 @@ const Games = new Resource('game', 'game', createGame, false);
 
 Games.createFromLobby = (lobby, id = null) => {
   return Games.create(id, {
-    players: lobby.get(PLAYERS),
-    usernames: lobby.get(USERNAMES),
-    teams: lobby.get(TEAMS)
+    [PLAYERS]: lobby.get(PLAYERS),
+    [USERNAMES]: lobby.get(USERNAMES),
+    [TEAMS]: lobby.get(TEAMS)
   });
 };
 

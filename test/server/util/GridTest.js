@@ -31,16 +31,16 @@ describe('Grid', () => {
   });
   
   it('.isAdjacent', () => {
-    expect(isAdjacent(List([1, 1]), List([3, 3]))).to.be.false;
-    expect(isAdjacent(List([1, 1]), List([1, 3]))).to.be.false;
-    expect(isAdjacent(List([1, 1]), List([3, 1]))).to.be.false;
-    expect(isAdjacent(List([3, 1]), List([1, 1]))).to.be.false;
-    expect(isAdjacent(List([1, 3]), List([1, 1]))).to.be.false;
+    expect(isAdjacent(List([1, 1]), List([3, 3]))).to.equal(false);
+    expect(isAdjacent(List([1, 1]), List([1, 3]))).to.equal(false);
+    expect(isAdjacent(List([1, 1]), List([3, 1]))).to.equal(false);
+    expect(isAdjacent(List([3, 1]), List([1, 1]))).to.equal(false);
+    expect(isAdjacent(List([1, 3]), List([1, 1]))).to.equal(false);
     
-    expect(isAdjacent(List([1, 1]), List([1, 1]))).to.be.false;
+    expect(isAdjacent(List([1, 1]), List([1, 1]))).to.equal(false);
     
-    expect(isAdjacent(List([1, 1]), List([1, 2]))).to.be.true;
-    expect(isAdjacent(List([1, 1]), List([2, 1]))).to.be.true;
-    expect(isAdjacent(List([1, 1]), List([2, 2]))).to.be.true;
+    expect(isAdjacent(List([1, 1]), List([1, 2]))).to.equal(true);
+    expect(isAdjacent(List([1, 1]), List([2, 1]))).to.equal(true);
+    expect(isAdjacent(List([1, 1]), List([2, 2]))).to.equal(true);
   });
 });
