@@ -1,5 +1,5 @@
 import Immutable, { List } from 'immutable';
-import { EAST, NORTH, SOUTH } from '../../../src/common/Grid';
+import { EAST, LAND_TILE, NORTH, SOUTH } from '../../../src/common/Grid';
 import {
   BREAKDOWNS, COMMON, GRID, PLAYERS, STARTED, SUB_LOCATION, SUB_PATH, SUBSYSTEMS, SYSTEMS, TEAMS, TURN_INFO,
   USERNAMES
@@ -49,8 +49,7 @@ describe('Games', () => {
       (game) => game.setIn([RED, BREAKDOWNS], Immutable.Set()));
   }
   
-  it('should create a game', async () => {
-    // TODO: Do this in GameFactoryTest
+  it('.createFromLobby', async () => {
     const lobby = mockLobby();
     const game = await Games.createFromLobby(lobby);
     
@@ -62,7 +61,6 @@ describe('Games', () => {
     expect(game.get(GRID)).to.exist;
     expect(game.get(SUBSYSTEMS)).to.exist;
     
-    // TODO: Better testing
     for (const teamInfo of [game.get(RED), game.get(BLUE)]) {
       expect(teamInfo.get(TURN_INFO)).to.exist;
       expect(teamInfo.get(SUB_LOCATION)).to.be.null;
@@ -195,12 +193,12 @@ describe('Games', () => {
       await expect(
         Games.useDrone('gameId', RED, 10),
         'Should not allow sectors > 9'
-      ).to.be.rejectedWith(GameStateError); // TODO: ArgumentError?
+      ).to.be.rejectedWith(GameStateError);
       
       await expect(
         Games.useDrone('gameId', RED, 0),
         'Should not allow sectors < 1'
-      ).to.be.rejectedWith(GameStateError); // TODO: ArgumentError?
+      ).to.be.rejectedWith(GameStateError);
       
       await Games.useDrone('gameId', RED, 5);
       expect((await Games.get('gameId')).getIn([RED, SYSTEMS, DRONE, CHARGE])).to.equal(0);
@@ -208,6 +206,7 @@ describe('Games', () => {
     
     it('.goSilent()', async () => {
       await createStartedGame('gameId', List([1, 1]), List([1, 6]));
+      await Games.update('gameId', '', '', (game) => game.setIn([GRID, 3, 7], LAND_TILE));
       
       await expect(
         Games.goSilent('gameId', RED, List([3, 1])),
@@ -217,26 +216,38 @@ describe('Games', () => {
       await doMove('gameId', RED, SOUTH, SILENT);
       await doMove('gameId', RED, SOUTH, SILENT);
       await doMove('gameId', RED, SOUTH, SILENT);
-      await clearBreakdowns(); // we're now at [1, 6]
+      await clearBreakdowns();
       await doMove('gameId', RED, SOUTH, SILENT);
       await doMove('gameId', RED, SOUTH, SILENT);
       await doMove('gameId', RED, SOUTH, SILENT);
-      await clearBreakdowns(); // we're now at [1, 7]
+      await doMove('gameId', RED, EAST, SILENT);
+      await clearBreakdowns();
+      expect((await Games.get('gameId')).getIn([RED, SUB_LOCATION])).to.equal(List([2, 7]));
       
       await expect(
-        Games.goSilent('gameId', RED, List([2, 8])),
+        Games.goSilent('gameId', RED, List([3, 8])),
         'Must move in straight line'
-      ).to.be.rejectedWith(GameStateError); // TODO: ArgumentError?
-      
-      // TODO: Test out of bounds
+      ).to.be.rejectedWith(GameStateError);
       
       await expect(
-        Games.goSilent('gameId', RED, List([1, 11])),
+        Games.goSilent('gameId', RED, List([2, 11])),
         'Cannot move more than 3 squares'
-      ).to.be.rejectedWith(GameStateError); // TODO: ArgumentError?
+      ).to.be.rejectedWith(GameStateError);
       
-      await Games.goSilent('gameId', RED, List([1, 10]));
+      await expect(
+        Games.goSilent('gameId', RED, List([4, 7])),
+        'Cannot move through land'
+      ).to.be.rejectedWith(GameStateError);
+      
+      await expect(
+        Games.goSilent('gameId', RED, List([1, 7])),
+        'Cannot move through path'
+      ).to.be.rejectedWith(GameStateError);
+      
+      await Games.goSilent('gameId', RED, List([2, 10]));
       expect((await Games.get('gameId')).getIn([RED, SYSTEMS, SILENT, CHARGE])).to.equal(0);
+      expect((await Games.get('gameId')).getIn([RED, SUB_LOCATION])).to.equal(List([2, 10]));
+      expect((await Games.get('gameId')).getIn([RED, SUB_PATH])).to.have.size(10);
     });
     
     it('.detonateMine()', async () => {

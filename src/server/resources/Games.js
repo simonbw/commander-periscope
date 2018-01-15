@@ -1,13 +1,13 @@
 import { getDirection, getManhattanDistance, getNewLocation, isAdjacent, WATER_TILE } from '../../common/Grid';
 import {
-  BREAKDOWNS, COMMON, DIRECTION_MOVED, GRID, MINE_LOCATIONS, PLAYERS, STARTED, SUB_LOCATION, SUB_PATH,
+  BREAKDOWNS, COMMON, DIRECTION_MOVED, GRID, HIT_POINTS, MINE_LOCATIONS, PLAYERS, STARTED, SUB_LOCATION, SUB_PATH,
   SUBSYSTEMS, SYSTEM_IS_USED, SYSTEMS, TEAMS, TURN_INFO, TURN_NUMBER, USERNAMES, WAITING_FOR_ENGINEER,
-  WAITING_FOR_FIRST_MATE
+  WAITING_FOR_FIRST_MATE, WINNER
 } from '../../common/StateFields';
 import { CHARGE, DIRECTION, DRONE, MAX_CHARGE, MINE, SILENT, SONAR, TORPEDO } from '../../common/System';
 import { BLUE, otherTeam, RED } from '../../common/Team';
 import { checkEngineOverload, fixCircuits } from '../../common/util/GameUtils';
-import { assert, assertNotStarted, assertStarted, assertSystemReady } from './GameAssertions';
+import { assert, assertCanMoveTo, assertNotStarted, assertStarted, assertSystemReady } from './GameAssertions';
 import { createGame } from './GameFactory';
 import Resource from './Resource';
 
@@ -54,10 +54,7 @@ Games.headInDirection = (gameId, team, direction) => (
     const nextLocation = getNewLocation(currentLocation, direction);
     const [x, y] = nextLocation.toArray();
     
-    assert(x >= 0 && y >= 0 && x <= grid.size && y <= grid.get(0).size, 'Cannot move out of bounds');
-    assert(!game.getIn([team, SUB_PATH]).contains(nextLocation), 'Cannot cross your path.');
-    assert(grid.getIn([x, y]) === WATER_TILE, `Can only move into water tiles. ${grid.getIn([x, y])}`);
-    assert(!game.getIn([team, MINE_LOCATIONS]).includes(nextLocation), `Cannot move across your mines`);
+    assertCanMoveTo(nextLocation, grid, game.getIn([team, SUB_PATH]), game.getIn([team, MINE_LOCATIONS]));
     
     return game
       .updateIn([team, TURN_INFO], turnInfo => turnInfo
@@ -137,18 +134,11 @@ Games.goSilent = (gameId, team, destination) => (
       const direction = getDirection(startLocation, destination);
       let current = startLocation;
       while (!current.equals(destination)) {
-        assert(!game.getIn([team, SUB_PATH]).includes(current), 'Cannot move over your own path');
-        assert(!game.getIn([team, MINE_LOCATIONS]).includes(current), 'Cannot move over your own mines');
-        assert(grid.getIn(current) === WATER_TILE, 'Can only mover over water tiles');
-        
-        game = game.updateIn([team, SUB_PATH], path => path.push(current));
         current = getNewLocation(current, direction);
+        assertCanMoveTo(current, grid, game.getIn([team, SUB_PATH]), game.getIn([team, MINE_LOCATIONS]));
+        game = game.updateIn([team, SUB_PATH], path => path.push(current));
       }
     }
-    
-    // TODO: Make sure nothing in between
-    // TODO: Make sure path not in between
-    // TODO: Make sure mines not in between
     
     return game
       .setIn([team, SUB_LOCATION], destination)
@@ -219,8 +209,13 @@ Games.trackBreakdown = (gameId, team, breakdownIndex) => {
 // Has no moves
 
 function causeDamage(game, team, amount) {
-  // TODO: causeDamage
-  return game;
+  if (amount >= game.getIn([team, HIT_POINTS])) {// Game Over
+    return game
+      .setIn([team, HIT_POINTS], 0)
+      .set(WINNER, otherTeam(team));
+  }
+  // not dead
+  return game.updateIn([team, HIT_POINTS], hp => hp - amount);
 }
 
 function explosion(game, team, explosionLocation, currentLocation, opponentLocation) {

@@ -1,7 +1,7 @@
 import Immutable from 'immutable';
 import { CAPTAIN, ENGINEER } from '../../../src/common/Role';
 import { BREAKDOWNS, COMMON, SUBSYSTEMS, SYSTEMS, TEAMS } from '../../../src/common/StateFields';
-import { CHARGE, COMMS, DRONE, MAX_CHARGE, MINE, SYSTEM_TYPE, TORPEDO } from '../../../src/common/System';
+import { CHARGE, CIRCUIT, COMMS, DRONE, MAX_CHARGE, MINE, SYSTEM_TYPE, TORPEDO } from '../../../src/common/System';
 import { BLUE, RED } from '../../../src/common/Team';
 import { canUseSystem, checkEngineOverload, fixCircuits, getPlayerPosition } from '../../../src/common/util/GameUtils';
 import { createSubsystems } from '../../../src/server/resources/GameFactory';
@@ -42,20 +42,37 @@ describe('GameUtils', () => {
   });
   
   it('.fixCircuits', async () => {
-    const everythingBroken = mockGame().update(game => game
+    const brokenGame = mockGame().update(game => game
       .setIn([RED, BREAKDOWNS], game.get(SUBSYSTEMS).keySeq().toSet()));
     
-    const fixed = fixCircuits(everythingBroken, RED);
-    expect(fixed.getIn([RED, BREAKDOWNS])).to.have.size(12); // TODO: Better check
+    const fixedGame = fixCircuits(brokenGame, RED);
+    const subsystems = fixedGame.get(SUBSYSTEMS);
+    
+    const breakdowns = fixedGame.getIn([RED, BREAKDOWNS]);
+    
+    expect(subsystems
+        .toKeyedSeq()
+        .filter((s) => s.get(CIRCUIT))
+        .every((s, i) => !breakdowns.includes(i)),
+      'All subsystems on a circuit should be fixed'
+    ).to.equal(true);
+    
+    expect(subsystems
+        .toKeyedSeq()
+        .filter((s) => s.get(CIRCUIT) === undefined)
+        .every((s, i) => breakdowns.includes(i)),
+      'All subsystems not on a circuit should still be broken'
+    ).to.equal(true);
   });
   
   it('.checkEngineOverload', async () => {
     const subsystems = createSubsystems();
     expect(checkEngineOverload(subsystems, Immutable.List()), 'No breakdowns').to.equal(false);
     
+    // TODO: More tests
+    
     // Everything is broken
     const allBreakdowns = subsystems.map((s, i) => i).toSet();
     expect(checkEngineOverload(subsystems, allBreakdowns), `All breakdowns.`).to.equal(true);
-    
   });
 });

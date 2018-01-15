@@ -113,7 +113,7 @@ describe('Integration', function () {
     expectNoErrors(pages);
     
     for (const page of pages) {
-      await clickReadyButton(page); // TODO: Why do these have to be synchronous
+      await clickReadyButton(page); // TODO: Why do these have to be synchronous?
     }
     // await Promise.all(pages.map(page => clickReadyButton(page)));
     
@@ -150,6 +150,8 @@ describe('Integration', function () {
     await Promise.all(pages.map(waitForGameStarted));
     log(`game started`);
     
-    // TODO: Play game
+    // TODO: Play rest of game
+    // TODO: Test losing connection
+    // TODO: Test refresh page
   });
 });

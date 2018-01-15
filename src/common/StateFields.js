@@ -13,6 +13,7 @@ export const ID = 'id';
 export const COMMON = 'common';
 export const TURN_INFO = 'turnInfo';
 export const GRID = 'grid';
+export const HIT_POINTS = 'hitPoints';
 export const SUB_LOCATION = 'subLocation';
 export const SUB_PATH = 'subPath';
 export const MINE_LOCATIONS = 'mineLocations';
@@ -27,6 +28,7 @@ export const PLAYERS = 'players';
 export const USERNAMES = 'usernames';
 export const TEAMS = 'teams';
 export const STARTED = 'started';
+export const WINNER = 'winner';
 export const CREATED = 'created';
 
 // Turn Info

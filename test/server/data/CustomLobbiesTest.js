@@ -54,8 +54,6 @@ describe('CustomLobbies', () => {
       .to.equal('newUsername');
   });
   
-  // TODO: startGame()
-  
   describe('.selectRole()', () => {
     beforeEach(async () => {
       await CustomLobbies.addPlayer('lobbyId', 'player1', 'username1');
@@ -122,13 +120,13 @@ describe('CustomLobbies', () => {
     });
   });
   
-  it('.shouldStartGame', async () => {
+  it('starts game when ready', async () => {
     await Promise.all(
       Immutable.Range(0, 8).map(i =>
         CustomLobbies.addPlayer('lobbyId', `player${i}`, `username${i}`))
     );
-    
-    expect(shouldStartGame(await CustomLobbies.get('lobbyId'))).to.equal(false);
+  
+    expect(await CustomLobbies.get('lobbyId')).to.not.have.property('gameId');
     
     await Promise.all(
       Immutable.Range(0, 8).map(i =>
@@ -145,5 +143,6 @@ describe('CustomLobbies', () => {
         CustomLobbies.ready('lobbyId', `player${i}`))
     );
     
+    expect(await CustomLobbies.get('lobbyId')).to.have.property('gameId');
   })
 });

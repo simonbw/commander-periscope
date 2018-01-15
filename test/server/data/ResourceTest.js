@@ -86,7 +86,7 @@ describe('Resource', () => {
       const result = 'these letters should all come out in order';
       for (let c of result) {
         promises.push(resource.update('instance_id', 'action', {}, async (instance) => {
-          await wait(Math.random() * 10); // TODO: Do something faster
+          await wait(Math.random() * 10);
           return instance.update('foo', foo => foo + c);
         }));
       }
@@ -112,7 +112,7 @@ describe('Resource', () => {
       const result = 'these letters should all come out in order';
       for (let c of result) {
         promises.push(resource.update('instance_id', 'action', {}, async (instance) => {
-          await wait(Math.random() * 10); // TODO: Do something faster
+          await wait(Math.random() * 10);
           return instance.update('foo', foo => foo + c);
         }));
       }

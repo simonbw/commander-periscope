@@ -1,9 +1,9 @@
 import Immutable from 'immutable/dist/immutable';
 import { ALL_DIRECTIONS, WATER_TILE } from '../../common/Grid';
 import {
-  BREAKDOWNS, COMMON, CREATED, DIRECTION_MOVED, GRID, ID, MINE_LOCATIONS, PLAYERS, STARTED, SUB_LOCATION,
+  BREAKDOWNS, COMMON, CREATED, DIRECTION_MOVED, GRID, HIT_POINTS, ID, MINE_LOCATIONS, PLAYERS, STARTED, SUB_LOCATION,
   SUB_PATH, SUBSYSTEMS, SYSTEM_IS_USED, SYSTEMS, TEAMS, TURN_INFO, TURN_NUMBER, USERNAMES, WAITING_FOR_ENGINEER,
-  WAITING_FOR_FIRST_MATE
+  WAITING_FOR_FIRST_MATE, WINNER
 } from '../../common/StateFields';
 import {
   CHARGE, CIRCUIT, CIRCUITS, DIRECTION, DRONE, MAX_CHARGE, MINE, SILENT, SONAR, SYSTEM_TYPE, SYSTEM_TYPES,
@@ -29,6 +29,7 @@ export function createCommon(players, usernames, teams) {
     [USERNAMES]: usernames,
     [TEAMS]: teams,
     [STARTED]: false,
+    [WINNER]: null,
     [CREATED]: Date.now()
   });
 }
@@ -42,6 +43,7 @@ export function createTeamInfo() {
       [SYSTEM_IS_USED]: false,
       [TURN_NUMBER]: 0
     },
+    [HIT_POINTS]: 4,
     [SUB_LOCATION]: null,
     [SUB_PATH]: [],
     [MINE_LOCATIONS]: [],
