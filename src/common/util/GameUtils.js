@@ -13,6 +13,7 @@ export const getPlayerPosition = (teams, playerId) => {
 };
 
 export function canUseSystem(game, team, systemName) {
+  // TODO: Check system already used
   // Must be charged
   const system = game.getIn([team, SYSTEMS, systemName]);
   if (system.get(CHARGE) < system.get(MAX_CHARGE)) {

@@ -1,8 +1,8 @@
 import Immutable, { List } from 'immutable';
-import { EAST, LAND_TILE, NORTH, SOUTH } from '../../../src/common/Grid';
+import { EAST, LAND_TILE, NORTH, SOUTH, WEST } from '../../../src/common/Grid';
 import {
-  BREAKDOWNS, COMMON, GRID, PLAYERS, STARTED, SUB_LOCATION, SUB_PATH, SUBSYSTEMS, SYSTEMS, TEAMS, TURN_INFO,
-  USERNAMES
+  BREAKDOWNS, COMMON, GRID, HIT_POINTS, PLAYERS, STARTED, SUB_LOCATION, SUB_PATH, SUBSYSTEMS, SYSTEMS, TURN_INFO,
+  USERNAMES, WINNER
 } from '../../../src/common/StateFields';
 import { CHARGE, DIRECTION, DRONE, MINE, SILENT, SONAR, TORPEDO } from '../../../src/common/System';
 import { BLUE, RED } from '../../../src/common/Team';
@@ -26,10 +26,13 @@ describe('Games', () => {
     return await Games.get(gameId);
   }
   
-  async function doMove(gameId, team, direction = SOUTH, system = TORPEDO) {
+  async function doMove(gameId, team, direction = SOUTH, system = TORPEDO, shouldClearBreakdowns = false) {
     await Games.headInDirection(gameId, team, direction);
     await Games.chargeSystem(gameId, team, system);
     await trackAnyBreakdown(gameId, team, direction);
+    if (shouldClearBreakdowns) {
+      await clearBreakdowns(gameId, team);
+    }
   }
   
   async function trackAnyBreakdown(gameId, team, direction) {
@@ -44,9 +47,9 @@ describe('Games', () => {
   }
   
   // Hack for getting rid of breakdowns
-  async function clearBreakdowns() {
-    await Games.update('gameId', null, null,
-      (game) => game.setIn([RED, BREAKDOWNS], Immutable.Set()));
+  async function clearBreakdowns(gameId = 'gameId', team = RED) {
+    await Games.update(gameId, null, null,
+      (game) => game.setIn([team, BREAKDOWNS], Immutable.Set()));
   }
   
   it('.createFromLobby', async () => {
@@ -112,7 +115,7 @@ describe('Games', () => {
       await doMove('gameId', RED, SOUTH, TORPEDO);
       await doMove('gameId', RED, SOUTH, TORPEDO);
       await doMove('gameId', RED, SOUTH, TORPEDO);
-      await clearBreakdowns();
+      await clearBreakdowns('gameId', RED);
       
       await expect(
         Games.fireTorpedo('gameId', RED, List([10, 10])),
@@ -124,6 +127,7 @@ describe('Games', () => {
       expect((await Games.get('gameId')).getIn([RED, SYSTEMS, TORPEDO, CHARGE])).to.equal(0);
       
       // TODO: Test damage
+      // expect((await Games.get()))
     });
     
     it('.dropMine()', async () => {
@@ -137,7 +141,7 @@ describe('Games', () => {
       await doMove('gameId', RED, SOUTH, MINE);
       await doMove('gameId', RED, SOUTH, MINE);
       await doMove('gameId', RED, SOUTH, MINE);
-      await clearBreakdowns(); // we're now at [1, 4]
+      await clearBreakdowns('gameId', RED); // we're now at [1, 4]
       
       await expect(
         Games.dropMine('gameId', RED, List([1, 6])),
@@ -170,7 +174,7 @@ describe('Games', () => {
       await doMove('gameId', RED, SOUTH, SONAR);
       await doMove('gameId', RED, SOUTH, SONAR);
       await doMove('gameId', RED, SOUTH, SONAR);
-      await clearBreakdowns(); // we're now at [1, 4]
+      await clearBreakdowns('gameId', RED); // we're now at [1, 4]
       
       await Games.useSonar('gameId', RED);
       expect((await Games.get('gameId')).getIn([RED, SYSTEMS, SONAR, CHARGE])).to.equal(0);
@@ -188,7 +192,7 @@ describe('Games', () => {
       await doMove('gameId', RED, SOUTH, DRONE);
       await doMove('gameId', RED, SOUTH, DRONE);
       await doMove('gameId', RED, SOUTH, DRONE);
-      await clearBreakdowns(); // we're now at [1, 5]
+      await clearBreakdowns('gameId', RED); // we're now at [1, 5]
       
       await expect(
         Games.useDrone('gameId', RED, 10),
@@ -216,12 +220,12 @@ describe('Games', () => {
       await doMove('gameId', RED, SOUTH, SILENT);
       await doMove('gameId', RED, SOUTH, SILENT);
       await doMove('gameId', RED, SOUTH, SILENT);
-      await clearBreakdowns();
+      await clearBreakdowns('gameId', RED);
       await doMove('gameId', RED, SOUTH, SILENT);
       await doMove('gameId', RED, SOUTH, SILENT);
       await doMove('gameId', RED, SOUTH, SILENT);
       await doMove('gameId', RED, EAST, SILENT);
-      await clearBreakdowns();
+      await clearBreakdowns('gameId', RED);
       expect((await Games.get('gameId')).getIn([RED, SUB_LOCATION])).to.equal(List([2, 7]));
       
       await expect(
@@ -255,7 +259,7 @@ describe('Games', () => {
       await doMove('gameId', RED, SOUTH, MINE);
       await doMove('gameId', RED, SOUTH, MINE);
       await doMove('gameId', RED, SOUTH, MINE);
-      await clearBreakdowns(); // we're now at [1, 4]
+      await clearBreakdowns('gameId', RED); // we're now at [1, 4]
       await Games.dropMine('gameId', RED, List([2, 5]));
       
       await expect(
@@ -333,7 +337,43 @@ describe('Games', () => {
         Games.trackBreakdown('gameId', RED, firstBreakdown),
         'Cannot track same breakdown twice'
       ).to.be.rejectedWith(GameStateError);
-      
     });
+  });
+  
+  it('Damage should end the game', async () => {
+    await createStartedGame('gameId', List([1, 1]), List([5, 5]));
+    
+    await doMove('gameId', RED, SOUTH, TORPEDO, true); // [1, 2]
+    await doMove('gameId', BLUE, NORTH, MINE, true); // [5, 4]
+    
+    await doMove('gameId', RED, SOUTH, TORPEDO, true); // [1, 3]
+    await doMove('gameId', BLUE, NORTH, MINE, true); // [5, 3]
+    
+    await doMove('gameId', RED, EAST, TORPEDO, true); // [2, 3]
+    await doMove('gameId', BLUE, WEST, MINE, true); // [4, 3]
+    
+    await Games.dropMine('gameId', BLUE, List([3, 3]));
+    await Games.detonateMine('gameId', BLUE, List([3, 3]));
+    
+    expect((await Games.get('gameId')).getIn([RED, HIT_POINTS])).to.equal(3);
+    expect((await Games.get('gameId')).getIn([BLUE, HIT_POINTS])).to.equal(3);
+    
+    await Games.fireTorpedo('gameId', RED, List([3, 3]));
+    
+    expect((await Games.get('gameId')).getIn([RED, HIT_POINTS])).to.equal(2);
+    expect((await Games.get('gameId')).getIn([BLUE, HIT_POINTS])).to.equal(2);
+    
+    await doMove('gameId', RED, NORTH, TORPEDO, true); // [2, 2]
+    await doMove('gameId', RED, EAST, TORPEDO, true); // [3, 2]
+    await doMove('gameId', RED, SOUTH, TORPEDO, true); // [3, 3]
+    
+    await Games.fireTorpedo('gameId', RED, List([3, 3]));
+    
+    expect((await Games.get('gameId')).getIn([RED, HIT_POINTS])).to.equal(0);
+    expect((await Games.get('gameId')).getIn([BLUE, HIT_POINTS])).to.equal(1);
+    
+    expect((await Games.get('gameId')).getIn([COMMON, WINNER])).to.equal(BLUE);
+    
+    await expect(Games.headInDirection('gameId', RED, SOUTH)).to.be.rejectedWith(GameStateError);
   });
 });

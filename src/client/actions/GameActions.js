@@ -24,8 +24,8 @@ export const dropMine = (location) => (
   sendMessage(Messages.DROP_MINE, { location })
 );
 
-export const detonateMine = (mineIndex) => (
-  sendMessage(Messages.DETONATE_MINE, { mineIndex })
+export const detonateMine = (location) => (
+  sendMessage(Messages.DETONATE_MINE, { location })
 );
 
 export const useSonar = () => (

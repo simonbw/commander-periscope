@@ -1,13 +1,16 @@
-import { getDirection, getManhattanDistance, getNewLocation, isAdjacent, WATER_TILE } from '../../common/Grid';
+import { getDirection, getManhattanDistance, getNewLocation, isAdjacent } from '../../common/Grid';
 import {
-  BREAKDOWNS, COMMON, DIRECTION_MOVED, GRID, HIT_POINTS, MINE_LOCATIONS, PLAYERS, STARTED, SUB_LOCATION, SUB_PATH,
-  SUBSYSTEMS, SYSTEM_IS_USED, SYSTEMS, TEAMS, TURN_INFO, TURN_NUMBER, USERNAMES, WAITING_FOR_ENGINEER,
+  BREAKDOWNS, COMMON, DIRECTION_MOVED, GRID, HIT_POINTS, MINE_LOCATIONS, PLAYERS, STARTED, SUB_LOCATION,
+  SUB_PATH, SUBSYSTEMS, SYSTEM_IS_USED, SYSTEMS, TEAMS, TURN_INFO, TURN_NUMBER, USERNAMES, WAITING_FOR_ENGINEER,
   WAITING_FOR_FIRST_MATE, WINNER
 } from '../../common/StateFields';
 import { CHARGE, DIRECTION, DRONE, MAX_CHARGE, MINE, SILENT, SONAR, TORPEDO } from '../../common/System';
 import { BLUE, otherTeam, RED } from '../../common/Team';
 import { checkEngineOverload, fixCircuits } from '../../common/util/GameUtils';
-import { assert, assertCanMoveTo, assertNotStarted, assertStarted, assertSystemReady } from './GameAssertions';
+import {
+  assert, assertCanMove, assertCanMoveTo, assertNotStarted, assertStartedAndNotEnded,
+  assertSystemReady
+} from './GameAssertions';
 import { createGame } from './GameFactory';
 import Resource from './Resource';
 
@@ -43,16 +46,11 @@ Games.setStartLocation = (gameId, team, location) => (
 
 Games.headInDirection = (gameId, team, direction) => (
   Games.update(gameId, 'headed_in_direction', {}, (game) => {
-    assertStarted(game);
-    
-    const turnInfo = game.getIn([team, TURN_INFO]);
-    assert(!turnInfo.get(WAITING_FOR_FIRST_MATE), 'Cannot move. Waiting for First Mate');
-    assert(!turnInfo.get(WAITING_FOR_ENGINEER), 'Cannot move. Waiting for Engineer');
+    assertCanMove(game, team);
     
     const grid = game.get(GRID);
     const currentLocation = game.getIn([team, SUB_LOCATION]);
     const nextLocation = getNewLocation(currentLocation, direction);
-    const [x, y] = nextLocation.toArray();
     
     assertCanMoveTo(nextLocation, grid, game.getIn([team, SUB_PATH]), game.getIn([team, MINE_LOCATIONS]));
     
@@ -68,53 +66,46 @@ Games.headInDirection = (gameId, team, direction) => (
   })
 );
 
+Games.useSystem = (gameId, team, systemName, onUse) => {
+  return Games.update(gameId, `used_${systemName}`, {}, async (game) => {
+    assertSystemReady(game, team, systemName);
+    game = await onUse(game);
+    // TODO: System used
+    return game.setIn([team, SYSTEMS, systemName, CHARGE], 0);
+  })
+};
+
 Games.fireTorpedo = (gameId, team, targetLocation) => {
-  return Games.update(gameId, 'fired_torpedo', {}, (game) => {
-    assertSystemReady(game, team, TORPEDO);
-    
+  return Games.useSystem(gameId, team, TORPEDO, (game) => {
     const currentLocation = game.getIn([team, SUB_LOCATION]);
     const opponentLocation = game.getIn([otherTeam(team), SUB_LOCATION]);
     const distance = getManhattanDistance(currentLocation, targetLocation);
     assert(distance <= 4, `Torpedo target must within 4 squares (was ${distance})`);
     
-    game = explosion(game, team, targetLocation, currentLocation, opponentLocation);
-    return game.setIn([team, SYSTEMS, TORPEDO, CHARGE], 0);
+    return explosion(game, team, targetLocation, currentLocation, opponentLocation);
   });
 };
 
 Games.dropMine = (gameId, team, location) => {
-  return Games.update(gameId, 'dropped_mine', {}, (game) => {
+  return Games.useSystem(gameId, team, MINE, (game) => {
     const currentLocation = game.getIn([team, SUB_LOCATION]);
-    assertSystemReady(game, team, MINE);
     assert(!game.getIn([team, SUB_LOCATION]).equals(location), 'cannot drop a mine on self');
     assert(isAdjacent(location, currentLocation), 'must drop mine on adjacent location');
     assert(!game.getIn([team, SUB_PATH]).includes(location), 'cannot drop a mine on your path');
     assert(!game.getIn([team, MINE_LOCATIONS]).includes(location), 'cannot drop a mine on an existing mine');
     
-    return game
-      .updateIn([team, MINE_LOCATIONS], mineLocations => mineLocations.push(location))
-      .setIn([team, SYSTEMS, MINE, CHARGE], 0);
+    return game.updateIn([team, MINE_LOCATIONS], mineLocations => mineLocations.push(location));
   })
 };
 
 Games.useSonar = (gameId, team) => {
-  return Games.update(gameId, 'used_sonar', {}, (game) => {
-    assertSystemReady(game, team, SONAR);
-    
-    // TODO: Sonar
-    
-    return game.setIn([team, SYSTEMS, SONAR, CHARGE], 0);
-  })
+  return Games.useSystem(gameId, team, SONAR, (game) => game)
 };
 
 Games.useDrone = (gameId, team, sector) => {
-  return Games.update(gameId, 'used_drone', { sector }, (game) => {
-    assertSystemReady(game, team, DRONE);
+  return Games.useSystem(gameId, team, DRONE, (game) => {
     assert(sector > 0 && sector <= 9, 'Must choose a sector 1 <= sector <= 9');
-    
-    // TODO: Is there actually anything to do here?
-    
-    return game.setIn([team, SYSTEMS, DRONE, CHARGE], 0);
+    return game;
   });
 };
 
@@ -167,7 +158,7 @@ Games.detonateMine = (gameId, team, mineLocation) => {
 
 Games.chargeSystem = (gameId, team, systemName) => (
   Games.update(gameId, 'charged_system', {}, (game) => {
-    assertStarted(game);
+    assertStartedAndNotEnded(game);
     assert(game.getIn([team, TURN_INFO, WAITING_FOR_FIRST_MATE]), 'First Mate has already gone');
     
     // If system name is undefined, don't charge a system this turn
@@ -185,6 +176,9 @@ Games.chargeSystem = (gameId, team, systemName) => (
 
 Games.trackBreakdown = (gameId, team, breakdownIndex) => {
   return Games.update(gameId, 'tracked_breakdown', {}, (game) => {
+    assertStartedAndNotEnded(game);
+    assert(game.getIn([team, TURN_INFO, WAITING_FOR_ENGINEER]), 'Engineer has already gone');
+    
     const brokenSubsystem = game.getIn([SUBSYSTEMS, breakdownIndex]);
     assert(brokenSubsystem, `Invalid Breakdown: ${breakdownIndex}`);
     const directionMoved = game.getIn([team, TURN_INFO, DIRECTION_MOVED]);
@@ -209,10 +203,11 @@ Games.trackBreakdown = (gameId, team, breakdownIndex) => {
 // Has no moves
 
 function causeDamage(game, team, amount) {
-  if (amount >= game.getIn([team, HIT_POINTS])) {// Game Over
+  if (amount >= game.getIn([team, HIT_POINTS])) { // Game Over
+    log('Game Over');
     return game
       .setIn([team, HIT_POINTS], 0)
-      .set(WINNER, otherTeam(team));
+      .setIn([COMMON, WINNER], otherTeam(team));
   }
   // not dead
   return game.updateIn([team, HIT_POINTS], hp => hp - amount);

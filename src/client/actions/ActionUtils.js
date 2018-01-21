@@ -1,4 +1,3 @@
-// TODO: Do we want this to send a minimum number of times?
 export const debounceAction = (f, delay = 1000) => {
   let timeOut = null;
   return (...args) => (dispatch) => {

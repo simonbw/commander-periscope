@@ -10,14 +10,16 @@ module.exports = {
   module: {
     rules: [{
       test: /\.jsx?$/,
-      loader: 'babel-loader',
-      exclude: /node_modules/
+      
+      use: ['babel-loader'],
+      exclude: /node_modules/,
     }, {
       test: /\.(jpg|png|svg)$/,
       loader: 'file',
       include: path.resolve('images')
     }, {
       test: /\.css?$/,
+      include: path.resolve('styles'),
       use: ['style-loader', {
         loader: 'css-loader',
         options: {
@@ -30,5 +32,5 @@ module.exports = {
   plugins: [
     new HardSourceWebpackPlugin() // makes things faster
   ],
-  devtool: "inline-source-map",
+  devtool: "inline-source-map"
 };

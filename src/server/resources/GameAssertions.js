@@ -3,7 +3,10 @@
  */
 
 import { WATER_TILE } from '../../common/Grid';
-import { COMMON, MINE_LOCATIONS, STARTED, SUB_PATH, SYSTEMS } from '../../common/StateFields';
+import {
+  COMMON, STARTED, SYSTEMS, TURN_INFO, WAITING_FOR_ENGINEER, WAITING_FOR_FIRST_MATE,
+  WINNER
+} from '../../common/StateFields';
 import { CHARGE, MAX_CHARGE } from '../../common/System';
 import { canUseSystem } from '../../common/util/GameUtils';
 
@@ -23,22 +26,21 @@ export function assert(assertion, message) {
   }
 }
 
-export function assertStarted(game) {
-  assert(game.getIn([COMMON, STARTED]), 'Game not yet started')
-}
-
 export function assertNotStarted(game) {
   assert(!game.getIn([COMMON, STARTED]), 'Game already started');
 }
 
-export function assertSystemReady(game, team, systemName) {
-  assertStarted(game);
-  if (!canUseSystem(game, team, systemName)) {
-    const system = game.getIn([team, SYSTEMS, systemName]);
-    assert(system.get(CHARGE) === system.get(MAX_CHARGE), 'System must be charged');
-    // otherwise it's broken
-    throw new GameStateError('System is broken');
-  }
+export function assertStartedAndNotEnded(game) {
+  assert(game.getIn([COMMON, STARTED]), 'Game not yet started');
+  assert(!game.getIn([COMMON, WINNER]), 'Game already ended');
+}
+
+export function assertCanMove(game, team) {
+  assertStartedAndNotEnded(game);
+  
+  const turnInfo = game.getIn([team, TURN_INFO]);
+  assert(!turnInfo.get(WAITING_FOR_FIRST_MATE), 'Cannot move. Waiting for First Mate');
+  assert(!turnInfo.get(WAITING_FOR_ENGINEER), 'Cannot move. Waiting for Engineer');
 }
 
 export function assertCanMoveTo(location, grid, subPath, mineLocations) {
@@ -47,4 +49,15 @@ export function assertCanMoveTo(location, grid, subPath, mineLocations) {
   assert(!subPath.contains(location), 'Cannot cross your path.');
   assert(!mineLocations.includes(location), `Cannot move across your mines`);
   assert(grid.getIn([x, y]) === WATER_TILE, `Can only move into water tiles. ${grid.getIn([x, y])}`);
+}
+
+export function assertSystemReady(game, team, systemName) {
+  assertStartedAndNotEnded(game);
+  
+  if (!canUseSystem(game, team, systemName)) {
+    const system = game.getIn([team, SYSTEMS, systemName]);
+    assert(system.get(CHARGE) === system.get(MAX_CHARGE), 'System must be charged');
+    // otherwise it's broken
+    throw new GameStateError('System is broken');
+  }
 }

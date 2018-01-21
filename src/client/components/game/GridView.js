@@ -57,7 +57,7 @@ const SectorsOverlay = ({ canClickSector, onClickSector }) => (
       <div
         key={i}
         className={classnames(styles.Sector, { [styles.clickable]: canClickSector(i) })}
-        onClick={canClickSector(i) && (() => onClickSector(i))}
+        onClick={canClickSector(i) ? (() => onClickSector(i)) : undefined}
       >
         {i}
       </div>
