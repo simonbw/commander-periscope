@@ -9,7 +9,7 @@ import EngineerPage from './EngineerPage';
 import FirstMatePage from './FirstMatePage';
 import RadioOperatorPage from './RadioOperatorPage';
 
-const GamePage = ({ team, role, game }) => {
+const UnconnectedGamePage = ({ team, role, game }) => {
   if (game.get(WINNER)) {
     return <GameOverPage win={team === game.get(WINNER)}/>;
   }
@@ -46,4 +46,4 @@ export default connect(
     ...getPlayerPosition(state.getIn([GAME, COMMON, TEAMS]), state.get(USER_ID))
   }),
   (dispatch) => ({})
-)(GamePage);
+)(UnconnectedGamePage);

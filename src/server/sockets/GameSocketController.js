@@ -1,8 +1,8 @@
 import { List } from 'immutable';
 import PubSub from 'pubsub-js';
 import {
-  CHARGE_SYSTEM, DETONATE_MINE, DROP_MINE, FIRE_TORPEDO, GO_SILENT, HEAD_IN_DIRECTION, SET_START_LOCATION,
-  TRACK_BREAKDOWN, USE_DRONE, USE_SONAR
+  CHARGE_SYSTEM_MESSAGE, DETONATE_MINE_MESSAGE, DROP_MINE_MESSAGE, FIRE_TORPEDO_MESSAGE, GO_SILENT_MESSAGE,
+  HEAD_IN_DIRECTION_MESSAGE, SET_START_LOCATION_MESSAGE, TRACK_BREAKDOWN_MESSAGE, USE_DRONE_MESSAGE, USE_SONAR_MESSAGE
 } from '../../common/Messages';
 import { CAPTAIN, ENGINEER, FIRST_MATE, RADIO_OPERATOR } from '../../common/Role';
 import { COMMON, ID, TEAMS } from '../../common/StateFields';
@@ -35,7 +35,7 @@ export default () => (socket, next) => {
       listenToSocketMessages(socket, game.get(ID), pubsubToken, position);
       
       socket.emit('action', {
-        type: 'game_joined',
+        type: 'game_joined', // TODO: Constant
         game: getDataForUser(game, playerId)
       });
     } catch (e) { // Could not load game
@@ -88,22 +88,22 @@ function getRoleHandlers(role, team, gameId) {
   switch (role) {
     case CAPTAIN:
       return {
-        [SET_START_LOCATION]: ({ location }) => Games.setStartLocation(gameId, team, List(location)),
-        [HEAD_IN_DIRECTION]: ({ direction }) => Games.headInDirection(gameId, team, direction),
-        [FIRE_TORPEDO]: ({ location }) => Games.fireTorpedo(gameId, team, List(location)),
-        [DROP_MINE]: ({ location }) => Games.dropMine(gameId, team, List(location)),
-        [DETONATE_MINE]: ({ location }) => Games.detonateMine(gameId, team, List(location)),
-        [USE_SONAR]: ({}) => Games.useSonar(gameId, team),
-        [USE_DRONE]: ({ sector }) => Games.useDrone(gameId, team, sector),
-        [GO_SILENT]: ({ location }) => Games.goSilent(gameId, team, List(location)),
+        [SET_START_LOCATION_MESSAGE]: ({ location }) => Games.setStartLocation(gameId, team, List(location)),
+        [HEAD_IN_DIRECTION_MESSAGE]: ({ direction }) => Games.headInDirection(gameId, team, direction),
+        [FIRE_TORPEDO_MESSAGE]: ({ location }) => Games.fireTorpedo(gameId, team, List(location)),
+        [DROP_MINE_MESSAGE]: ({ location }) => Games.dropMine(gameId, team, List(location)),
+        [DETONATE_MINE_MESSAGE]: ({ location }) => Games.detonateMine(gameId, team, List(location)),
+        [USE_SONAR_MESSAGE]: ({}) => Games.useSonar(gameId, team),
+        [USE_DRONE_MESSAGE]: ({ sector }) => Games.useDrone(gameId, team, sector),
+        [GO_SILENT_MESSAGE]: ({ location }) => Games.goSilent(gameId, team, List(location)),
       };
     case FIRST_MATE:
       return {
-        [CHARGE_SYSTEM]: ({ systemName }) => Games.chargeSystem(gameId, team, systemName),
+        [CHARGE_SYSTEM_MESSAGE]: ({ systemName }) => Games.chargeSystem(gameId, team, systemName),
       };
     case ENGINEER:
       return {
-        [TRACK_BREAKDOWN]: ({ breakdownIndex }) => Games.trackBreakdown(gameId, team, breakdownIndex),
+        [TRACK_BREAKDOWN_MESSAGE]: ({ breakdownIndex }) => Games.trackBreakdown(gameId, team, breakdownIndex),
       };
     case RADIO_OPERATOR:
       return {};

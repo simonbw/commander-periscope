@@ -1,6 +1,6 @@
 import Immutable from 'immutable';
 import { CAPTAIN, ENGINEER, FIRST_MATE, RADIO_OPERATOR } from '../../common/Role';
-import { ID, PLAYERS, READIED, TEAMS, USERNAMES } from '../../common/StateFields';
+import { GAME_ID, ID, PLAYERS, READIED, TEAMS, USERNAMES } from '../../common/StateFields';
 import { BLUE, RED } from '../../common/Team';
 import { getPlayerPosition } from '../../common/util/GameUtils';
 import { shouldStartGame } from './CustomLobbyUtils';
@@ -110,7 +110,7 @@ const startGameIfShould = async (lobby) => {
   if (shouldStartGame(lobby)) {
     const game = await Games.createFromLobby(lobby);
     const gameId = game.get(ID);
-    const updatedLobby = lobby.set('gameId', gameId);
+    const updatedLobby = lobby.set(GAME_ID, gameId);
     log(`starting game ${gameId}`);
     CustomLobbies.publish(updatedLobby, 'game_start', { gameId });
     return updatedLobby;

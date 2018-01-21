@@ -9,35 +9,35 @@ import { sendMessage } from './GeneralActions';
 /// --------------- ///
 
 export const setStartLocation = (location) => (
-  sendMessage(Messages.SET_START_LOCATION, { location })
+  sendMessage(Messages.SET_START_LOCATION_MESSAGE, { location })
 );
 
 export const headInDirection = (direction) => (
-  sendMessage(Messages.HEAD_IN_DIRECTION, { direction })
+  sendMessage(Messages.HEAD_IN_DIRECTION_MESSAGE, { direction })
 );
 
 export const fireTorpedo = (location) => (
-  sendMessage(Messages.FIRE_TORPEDO, { location })
+  sendMessage(Messages.FIRE_TORPEDO_MESSAGE, { location })
 );
 
 export const dropMine = (location) => (
-  sendMessage(Messages.DROP_MINE, { location })
+  sendMessage(Messages.DROP_MINE_MESSAGE, { location })
 );
 
 export const detonateMine = (location) => (
-  sendMessage(Messages.DETONATE_MINE, { location })
+  sendMessage(Messages.DETONATE_MINE_MESSAGE, { location })
 );
 
 export const useSonar = () => (
-  sendMessage(Messages.USE_SONAR, {})
+  sendMessage(Messages.USE_SONAR_MESSAGE, {})
 );
 
 export const useDrone = (sector) => (
-  sendMessage(Messages.USE_DRONE, { sector })
+  sendMessage(Messages.USE_DRONE_MESSAGE, { sector })
 );
 
 export const goSilent = () => (
-  sendMessage(Messages.GO_SILENT, {})
+  sendMessage(Messages.GO_SILENT_MESSAGE, {})
 );
 
 /// ------------------ ///
@@ -45,7 +45,7 @@ export const goSilent = () => (
 /// ------------------ ///
 
 export const chargeSystem = (systemName) => (
-  sendMessage(Messages.CHARGE_SYSTEM, { systemName })
+  sendMessage(Messages.CHARGE_SYSTEM_MESSAGE, { systemName })
 );
 
 /// --------------- ///
@@ -53,5 +53,5 @@ export const chargeSystem = (systemName) => (
 /// --------------- ///
 
 export const trackBreakdown = (breakdownIndex) => (
-  sendMessage(Messages.TRACK_BREAKDOWN, { breakdownIndex })
+  sendMessage(Messages.TRACK_BREAKDOWN_MESSAGE, { breakdownIndex })
 );

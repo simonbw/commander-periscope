@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import PageContainer from './components/PageContainer';
+import AppContainer from './components/AppContainer';
 import Socket from './socket';
 import Store from './store';
 
@@ -15,11 +15,12 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 const render = function (store) {
-  const root = document.body;
+  const root = document.createElement('div');
+  document.body.appendChild(root);
   
   ReactDOM.render(
     <Provider store={store}>
-      <PageContainer/>
+      <AppContainer/>
     </Provider>,
     root
   );

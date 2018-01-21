@@ -1,24 +1,21 @@
-import { CUSTOM_LOBBY_GAME_START, CUSTOM_LOBBY_JOINED } from '../../common/Messages';
-// Convert socket messages into actions
-import { GAME_PAGE } from '../constants/Page';
-import { changePage, sendMessage } from './GeneralActions';
+import { CUSTOM_LOBBY_GAME_START_MESSAGE, CUSTOM_LOBBY_JOINED_MESSAGE } from '../../common/Messages';
+import { sendMessage } from './GeneralActions';
 
+// Convert socket messages into actions
 export const messageToAction = (action) => {
   switch (action.type) {
-    case CUSTOM_LOBBY_GAME_START: {
+    case CUSTOM_LOBBY_GAME_START_MESSAGE: {
       const gameId = action.gameId;
       return [
         sendMessage('join_game', { gameId }),
-        changePage(GAME_PAGE)
       ];
     }
-    case CUSTOM_LOBBY_JOINED: {
-      const gameId = action.lobby.gameId;
+    case CUSTOM_LOBBY_JOINED_MESSAGE: {
+      const gameId = action.lobby.gameId; // TODO: Always deal with games and lobbies as immutable objectss
       if (gameId) {
         return [
           action,
           sendMessage('join_game', { gameId }),
-          changePage(GAME_PAGE)
         ]
       }
       return action;

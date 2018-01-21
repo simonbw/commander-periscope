@@ -1,5 +1,12 @@
 /* TODO: Media query styles */
-.TeamList {
+
+.TeamLists {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+}
+
+.RoleSelect {
     padding: 10px;
     flex-grow: 1;
     flex-basis: 0;
@@ -8,11 +15,11 @@
     flex-flow: column;
 }
 
-.TeamList.red {
+.RoleSelect.red {
     border-right: 1px solid #EEE;
 }
 
-.TeamList.blue {
+.RoleSelect.blue {
     border-left: 1px solid #EEE;
 }
 

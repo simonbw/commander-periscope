@@ -13,8 +13,9 @@ const ioSocketLocation = window.ioSocketLocation || '';
 
 export default (getStore) => {
   const socket = SocketIo(ioSocketLocation);
-  socket.on('action', (action) => {
-    getStore().dispatch(messageToAction(action));
+  socket.on('action', (message) => {
+    // TODO: more explicit conversions
+    getStore().dispatch(messageToAction(message));
   });
   
   socket.on('connect', () => {

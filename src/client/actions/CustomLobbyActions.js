@@ -1,47 +1,41 @@
 import {
-  CUSTOM_LOBBY_READY, CUSTOM_LOBBY_SELECT_ROLE, CUSTOM_LOBBY_SET_USERNAME, CUSTOM_LOBBY_UNREADY,
-  JOIN_CUSTOM_LOBBY, LEAVE_CUSTOM_LOBBY
+  CUSTOM_LOBBY_READY_MESSAGE, CUSTOM_LOBBY_SELECT_ROLE_MESSAGE, CUSTOM_LOBBY_SET_USERNAME_MESSAGE,
+  CUSTOM_LOBBY_UNREADY_MESSAGE, JOIN_CUSTOM_LOBBY_MESSAGE, LEAVE_CUSTOM_LOBBY_MESSAGE
 } from '../../common/Messages';
-import { CUSTOM_LOBBY_PAGE } from '../constants/Page';
 import { debounceAction } from './ActionUtils';
-import { changePage, sendMessage } from './GeneralActions';
+import { sendMessage } from './GeneralActions';
 
-export const createCustomLobby = () => {
-  const username = window.localStorage.getItem('username') || undefined;
-  return [
-    changePage(CUSTOM_LOBBY_PAGE),
-    sendMessage(JOIN_CUSTOM_LOBBY, { username })
-  ];
-};
+export const JOIN_CUSTOM_LOBBY = 'joinCustomLobby';
+export const LEAVE_CUSTOM_LOBBY = 'leaveCustomLobby';
 
 export const joinCustomLobby = (lobbyId) => {
   const username = window.localStorage.getItem('username') || undefined;
   return [
-    changePage(CUSTOM_LOBBY_PAGE),
-    sendMessage(JOIN_CUSTOM_LOBBY, { lobbyId, username })
+    { type: JOIN_CUSTOM_LOBBY },
+    sendMessage(JOIN_CUSTOM_LOBBY_MESSAGE, { lobbyId, username })
   ];
 };
 
 export const leaveCustomLobby = () => ([
-  changePage(CUSTOM_LOBBY_PAGE), // TODO: Change url
-  sendMessage(LEAVE_CUSTOM_LOBBY)
+  { type: LEAVE_CUSTOM_LOBBY },
+  sendMessage(LEAVE_CUSTOM_LOBBY_MESSAGE)
 ]);
 
 export const selectRole = (role, team) => (
-  sendMessage(CUSTOM_LOBBY_SELECT_ROLE, { role, team })
+  sendMessage(CUSTOM_LOBBY_SELECT_ROLE_MESSAGE, { role, team })
 );
 
 export const ready = () => {
   return (
-    sendMessage(CUSTOM_LOBBY_READY)
+    sendMessage(CUSTOM_LOBBY_READY_MESSAGE)
   );
 };
 
 export const unready = () => (
-  sendMessage(CUSTOM_LOBBY_UNREADY)
+  sendMessage(CUSTOM_LOBBY_UNREADY_MESSAGE)
 );
 
 export const setUsername = debounceAction((username) => {
   window.localStorage.setItem('username', username);
-  return sendMessage(CUSTOM_LOBBY_SET_USERNAME, { username });
+  return sendMessage(CUSTOM_LOBBY_SET_USERNAME_MESSAGE, { username });
 }, 200);

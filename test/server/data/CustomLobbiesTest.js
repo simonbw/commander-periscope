@@ -1,6 +1,6 @@
 import Immutable from 'immutable';
 import { ALL_ROLES, CAPTAIN, FIRST_MATE } from '../../../src/common/Role';
-import { PLAYERS, READIED, TEAMS, USERNAMES } from '../../../src/common/StateFields';
+import { GAME_ID, PLAYERS, READIED, TEAMS, USERNAMES } from '../../../src/common/StateFields';
 import { BLUE, BOTH_TEAMS, RED } from '../../../src/common/Team';
 import { shouldStartGame } from '../../../src/server/resources/CustomLobbyUtils';
 import expect from '../../expect';
@@ -126,7 +126,7 @@ describe('CustomLobbies', () => {
         CustomLobbies.addPlayer('lobbyId', `player${i}`, `username${i}`))
     );
   
-    expect(await CustomLobbies.get('lobbyId')).to.not.have.property('gameId');
+    expect(await CustomLobbies.get('lobbyId')).to.not.have.property(GAME_ID);
     
     await Promise.all(
       Immutable.Range(0, 8).map(i =>
@@ -143,6 +143,6 @@ describe('CustomLobbies', () => {
         CustomLobbies.ready('lobbyId', `player${i}`))
     );
     
-    expect(await CustomLobbies.get('lobbyId')).to.have.property('gameId');
+    expect(await CustomLobbies.get('lobbyId')).to.have.property(GAME_ID);
   })
 });

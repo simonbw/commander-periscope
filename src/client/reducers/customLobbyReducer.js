@@ -1,20 +1,25 @@
-import * as Immutable from 'immutable';
 import {
-  CUSTOM_LOBBY_JOINED, PLAYER_ADDED, PLAYER_LEFT, PLAYER_READIED, PLAYER_SET_USERNAME, PLAYER_UNREADIED,
-  ROLE_SELECTED
+  CUSTOM_LOBBY_JOINED_MESSAGE, PLAYER_ADDED_MESSAGE, PLAYER_LEFT_MESSAGE, PLAYER_READIED_MESSAGE,
+  PLAYER_SET_USERNAME_MESSAGE, PLAYER_UNREADIED_MESSAGE, ROLE_SELECTED_MESSAGE
 } from '../../common/Messages';
 import { jsonToImmutable } from '../../common/util/ImmutableUtil';
+import { JOIN_CUSTOM_LOBBY, LEAVE_CUSTOM_LOBBY } from '../actions/CustomLobbyActions';
 
 export default (state, action) => {
-  state = state || Immutable.Map();
+  state = state || null;
   switch (action.type) {
-    case CUSTOM_LOBBY_JOINED:
-    case PLAYER_READIED:
-    case PLAYER_UNREADIED:
-    case PLAYER_ADDED:
-    case PLAYER_LEFT:
-    case ROLE_SELECTED:
-    case PLAYER_SET_USERNAME:
+    case JOIN_CUSTOM_LOBBY:
+      return 'loading'; // TODO: Something better than this too
+    case LEAVE_CUSTOM_LOBBY:
+      return null;
+    // TODO: Don't just always replace everything
+    case CUSTOM_LOBBY_JOINED_MESSAGE:
+    case PLAYER_READIED_MESSAGE:
+    case PLAYER_UNREADIED_MESSAGE:
+    case PLAYER_ADDED_MESSAGE:
+    case PLAYER_LEFT_MESSAGE:
+    case ROLE_SELECTED_MESSAGE:
+    case PLAYER_SET_USERNAME_MESSAGE:
       return jsonToImmutable(action.lobby);
   }
   return state;
