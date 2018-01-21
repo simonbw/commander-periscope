@@ -1,0 +1,11 @@
+.ConnectionWarner {
+    background: #FAA;
+    border: 1px solid #F00;
+    box-shadow: 10px 0 10px 1px #333;
+    color: #A00;
+    margin: 15px;
+    padding: 10px;
+    position: absolute;
+    text-align: center;
+    width: calc(100% - 30px);
+}
