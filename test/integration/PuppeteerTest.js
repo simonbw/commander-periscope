@@ -18,7 +18,7 @@ import {
 const log = require('debug')('commander-periscope:test');
 
 describe('Integration', function () {
-  this.timeout(10000);
+  this.timeout(process.env.TRAVIS ? 60 * 1000 : 10 * 1000);
   let browser;
   let server;
   let pages;
