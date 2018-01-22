@@ -24,7 +24,12 @@ describe('Integration', function () {
   let pages;
   
   before(async () => {
-    browser = await puppeteer.launch({});
+    const args = [];
+    if (process.env.TRAVIS) {
+      // Disable sandbox on travis. See https://github.com/travis-ci/travis-ci/issues/8836
+      args.push('--no-sandbox', '--disable-setuid-sandbox');
+    }
+    browser = await puppeteer.launch({ args });
     server = initServer();
   });
   
