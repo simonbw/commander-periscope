@@ -2,14 +2,18 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import AppContainer from './components/AppContainer';
+import { initNavigation } from './navigation';
 import Socket from './socket';
 import Store from './store';
 
 window.addEventListener('DOMContentLoaded', () => {
-  // TODO: Maybe clean this up with dependency injection
-  let socket;
-  const store = Store(() => socket);
-  socket = Socket(() => store);
+  
+  // TODO: Maybe clean this up with dependency injection?
+  let socket, store;
+  socket = Socket(() => store.getState(), (action) => store.dispatch(action));
+  store = Store(() => socket);
+  
+  initNavigation(() => store);
   
   render(store);
 });

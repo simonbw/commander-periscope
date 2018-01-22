@@ -2,7 +2,8 @@ import { List } from 'immutable';
 import PubSub from 'pubsub-js';
 import {
   CHARGE_SYSTEM_MESSAGE, DETONATE_MINE_MESSAGE, DROP_MINE_MESSAGE, FIRE_TORPEDO_MESSAGE, GO_SILENT_MESSAGE,
-  HEAD_IN_DIRECTION_MESSAGE, SET_START_LOCATION_MESSAGE, TRACK_BREAKDOWN_MESSAGE, USE_DRONE_MESSAGE, USE_SONAR_MESSAGE
+  HEAD_IN_DIRECTION_MESSAGE, JOIN_GAME_MESSAGE, SET_START_LOCATION_MESSAGE, TRACK_BREAKDOWN_MESSAGE, USE_DRONE_MESSAGE,
+  USE_SONAR_MESSAGE
 } from '../../common/Messages';
 import { CAPTAIN, ENGINEER, FIRST_MATE, RADIO_OPERATOR } from '../../common/Role';
 import { COMMON, ID, TEAMS } from '../../common/StateFields';
@@ -17,7 +18,7 @@ const log = require('debug')('commander-periscope:server');
  */
 export default () => (socket, next) => {
   let joiningGame = false;
-  socket.on('join_game', async ({ gameId }) => {
+  socket.on(JOIN_GAME_MESSAGE, async ({ gameId }) => {
     if (joiningGame || socket.gameId) {
       throw new Error(`${socket.userId} already in a game. Cannot join another game.`);
     }

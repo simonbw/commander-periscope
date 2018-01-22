@@ -6,6 +6,4 @@ const LobbyLoadingPage = () => (
   </div>
 );
 
-LobbyLoadingPage.PropTypes = {};
-
 export default LobbyLoadingPage;

@@ -4,6 +4,7 @@ import { ID } from '../../common/StateFields';
 import { waitForSettled } from '../../common/util/AsyncUtil';
 
 // TODO: Consider renaming this to DAO (Data Access Object)
+// TODO: Garbage collection
 export default class Resource {
   
   constructor(resourceName, pubsubName, createInstance, createOnNotFound = false) {

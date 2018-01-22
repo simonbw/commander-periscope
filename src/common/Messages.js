@@ -5,10 +5,11 @@
 ///------///
 
 // Server to client
-export const JOINED_MESSAGE = 'game_joined';
-export const UPDATED_MESSAGE = 'game_update';
+export const GAME_JOINED_MESSAGE = 'game_joined';
+export const GAME_UPDATED_MESSAGE = 'game_update';
 
 // client to server
+export const JOIN_GAME_MESSAGE = 'join_game';
 export const SET_START_LOCATION_MESSAGE = 'set_start_location';
 export const HEAD_IN_DIRECTION_MESSAGE = 'head_in_direction';
 export const FIRE_TORPEDO_MESSAGE = 'fire_torpedo';
@@ -24,6 +25,7 @@ export const TRACK_BREAKDOWN_MESSAGE = 'track_breakdown';
 /// CUSTOM_LOBBY ///
 ///--------------///
 
+// Server to client
 export const CUSTOM_LOBBY_JOINED_MESSAGE = 'custom_lobby_joined';
 export const CUSTOM_LOBBY_GAME_START_MESSAGE = 'custom_lobby_game_start';
 export const PLAYER_ADDED_MESSAGE = 'custom_lobby_player_added';
@@ -33,6 +35,7 @@ export const PLAYER_UNREADIED_MESSAGE = 'custom_lobby_player_unreadied';
 export const ROLE_SELECTED_MESSAGE = 'custom_lobby_role_selected';
 export const PLAYER_SET_USERNAME_MESSAGE = 'custom_lobby_player_set_username';
 
+// Client to server
 export const JOIN_CUSTOM_LOBBY_MESSAGE = 'join_custom_lobby';
 export const LEAVE_CUSTOM_LOBBY_MESSAGE = 'leave_custom_lobby';
 export const CUSTOM_LOBBY_SELECT_ROLE_MESSAGE = 'custom_lobby_select_role';

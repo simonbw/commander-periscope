@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import styles from '../../../../styles/CustomLobbyPage.css';
-import { LOBBY } from '../../../common/StateFields';
-import { goToMainMenu } from '../../actions/NavigationActions';
+import { ID, LOBBY } from '../../../common/StateFields';
+import { leaveCustomLobby } from '../../actions/CustomLobbyActions';
 import DebugPane from '../DebugPane';
 import ReadyButton from './ReadyButton';
 import RoleSelect from './RoleSelect';
@@ -11,7 +11,7 @@ import UsernameInput from './UsernameInput';
 const UnconnectedCustomLobbyPage = ({ lobby, goToMainMenu }) => (
   <div className={styles.CustomLobbyPage} id="custom-lobby-page">
     <DebugPane data={lobby}/>
-    <h1 className={styles.LobbyId}>{lobby.get('id')}</h1>
+    <h1 className={styles.LobbyId}>{lobby.get(ID)}</h1>
     <RoleSelect/>
     <UsernameInput/>
     <ReadyButton/>
@@ -33,6 +33,6 @@ export default connect(
     lobby: state.get(LOBBY),
   }),
   (dispatch) => ({
-    goToMainMenu: () => dispatch(goToMainMenu())
+    goToMainMenu: () => dispatch(leaveCustomLobby())
   })
 )(UnconnectedCustomLobbyPage)
