@@ -2,11 +2,11 @@
 export const USER_ID = 'userId';
 export const GAME = 'game';
 export const LOBBY = 'lobby';
-export const PAGE = 'page'; // TODO: Is this really where we want this?
 export const CONNECTED = 'connected'; // TODO: Is this really where we want this?
 
 // Custom Lobby
 export const READIED = 'readied';
+export const GAME_ID = 'gameId';
 
 // Game
 export const ID = 'id';
@@ -27,7 +27,7 @@ export const SUBSYSTEMS = 'subsystems';
 export const PLAYERS = 'players';
 export const USERNAMES = 'usernames';
 export const TEAMS = 'teams';
-export const STARTED = 'started';
+export const STARTED = 'started'; // TODO: Change started and ended into GAME_PHASE
 export const WINNER = 'winner';
 export const CREATED = 'created';
 
