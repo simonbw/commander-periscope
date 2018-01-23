@@ -1,13 +1,20 @@
 import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
-import style from '../../../../styles/CaptainPage.css';
+import styles from '../../../../styles/CaptainPage.css';
 import { WATER_TILE } from '../../../common/Grid';
 import {
-  COMMON, GAME, GRID, STARTED, SUB_LOCATION, SUB_PATH, SYSTEMS, TURN_INFO, WAITING_FOR_ENGINEER,
+  COMMON,
+  GAME,
+  GRID,
+  STARTED,
+  SUB_LOCATION,
+  SUB_PATH,
+  SYSTEMS,
+  TURN_INFO,
+  WAITING_FOR_ENGINEER,
   WAITING_FOR_FIRST_MATE
 } from '../../../common/StateFields';
 import { headInDirection, setStartLocation } from '../../actions/GameActions';
-import DebugPane from '../DebugPane';
 import DirectionSelect from './DirectionSelect';
 import Grid from './GridView';
 
@@ -15,8 +22,7 @@ export class UnconnectedCaptainPage extends React.Component { // export for test
   render() {
     const { game } = this.props;
     return (
-      <div id="captain-page" className={style.CaptainPage}>
-        <DebugPane data={game}/>
+      <div id="captain-page" className={styles.CaptainPage}>
         {game.getIn([COMMON, STARTED]) ? this.renderStarted() : this.renderPreStart()}
       </div>
     );
@@ -61,7 +67,7 @@ export class UnconnectedCaptainPage extends React.Component { // export for test
 }
 
 const SystemsPanel = ({ systems }) => (
-  <div className={style.SystemsPanel}>
+  <div className={styles.SystemsPanel}>
     {systems.map((available, name) => (
       <button
         key={name}
@@ -75,10 +81,10 @@ const SystemsPanel = ({ systems }) => (
 );
 
 const MessagesPanel = ({ waitingForFirstMate, waitingForEngineer }) => (
-  <div className={style.Messages}>
+  <div className={styles.Messages}>
     <h2>Messages</h2>
-    {waitingForFirstMate && <div className={style.WaitingMessage}>Waiting for first mate...</div>}
-    {waitingForEngineer && <div className={style.WaitingMessage}>Waiting for engineer...</div>}
+    {waitingForFirstMate && <div className={styles.WaitingMessage}>Waiting for first mate...</div>}
+    {waitingForEngineer && <div className={styles.WaitingMessage}>Waiting for engineer...</div>}
   </div>
 );
 

@@ -1,25 +1,27 @@
 .CustomLobbyPage {
+    margin: auto;
+    max-width: 800px;
     min-height: 100vh;
+    padding: 20px;
+}
+
+.CustomLobbyPage h1 {
+    margin-bottom: 20px;
 }
 
 .LobbyId {
-
 }
 
-.ReadyButton {
-
-}
-
-.ReadyButton.ready {
-
-}
-
-.CancelButton {
-
-}
-
-.UsernameInput {
+.UsernamePaper {
     padding: 10px;
-    border: none;
-    font-size: 1em;
+}
+
+.ButtonBar {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+}
+
+.ButtonBar > * {
+    display: block;
 }

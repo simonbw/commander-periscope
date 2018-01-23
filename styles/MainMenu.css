@@ -1,3 +1,15 @@
 .MainMenu {
+    display: block;
+    margin: auto;
+    max-width: 420px;
+    padding: 50px;
+    width: 100%;
+}
 
+.JoinCustomGameInput {
+    margin: 10px 0;
+}
+
+.JoinCustomGameInput.open {
+    padding: 10px;
 }

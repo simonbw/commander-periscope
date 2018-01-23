@@ -1,3 +1,4 @@
+import { Paper, TextField } from 'material-ui';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import styles from '../../../../styles/CustomLobbyPage.css';
@@ -9,7 +10,7 @@ class UnconnectedUsernameInput extends Component {
     super(props);
     
     this.state = {
-      value: this.props.savedUsername
+      value: this.props.savedUsername || ''
     };
   }
   
@@ -20,14 +21,14 @@ class UnconnectedUsernameInput extends Component {
   
   render() {
     return (
-      <div>
-        <input
-          className={styles.UsernameInput}
-          onChange={(event) => this.onChange(event.target.value)}
+      <Paper className={styles.UsernamePaper}>
+        <TextField
+          label={'Your Name'}
           placeholder='Anonymous'
+          onChange={(event) => this.onChange(event.target.value)}
           value={this.state.value}
         />
-      </div>
+      </Paper>
     );
   }
 }

@@ -4,7 +4,12 @@
 
 import { WATER_TILE } from '../../common/Grid';
 import {
-  COMMON, STARTED, SYSTEMS, TURN_INFO, WAITING_FOR_ENGINEER, WAITING_FOR_FIRST_MATE,
+  COMMON,
+  STARTED,
+  SYSTEMS,
+  TURN_INFO,
+  WAITING_FOR_ENGINEER,
+  WAITING_FOR_FIRST_MATE,
   WINNER
 } from '../../common/StateFields';
 import { CHARGE, MAX_CHARGE } from '../../common/System';

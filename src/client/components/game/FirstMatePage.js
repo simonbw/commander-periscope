@@ -1,49 +1,75 @@
+import Immutable from 'immutable';
+import { Button, Paper, Tooltip } from 'material-ui';
 import React from 'react';
 import { connect } from 'react-redux';
-import { COMMON, GAME, STARTED, SYSTEMS } from '../../../common/StateFields';
-import { CHARGE, MAX_CHARGE } from '../../../common/System';
+import styles from '../../../../styles/FirstMatePage.css';
+import { GAME, SYSTEMS, WAITING_FOR_FIRST_MATE } from '../../../common/StateFields';
+import { CHARGE, getSystemType, MAX_CHARGE } from '../../../common/System';
 import { chargeSystem } from '../../actions/GameActions';
-import DebugPane from '../DebugPane';
+import { getIconForSystemType } from '../SystemIcons';
+import ChargeMeter from './ChargeMeter';
 
-export const UnconnectedFirstMatePage = ({ game, chargeSystem }) => (
-  <div id="first-mate-page">
-    <span>First Mate Page</span>
-    {game.getIn([COMMON, STARTED]) && <SystemPanel {...{ systems: game.get(SYSTEMS), chargeSystem }}/>}
-    {!game.getIn([COMMON, STARTED]) && <div>Game Not Started Yet</div>}
-    <DebugPane data={game}/>
-  </div>
-);
+export const UnconnectedFirstMatePage = ({ systems, readyToCharge, chargeSystem, skipCharging }) => {
+  return (
+    <div id="first-mate-page" className={styles.FirstMatePage}>
+      <div className={styles.SystemPanels}>
+        {(systems || Immutable.Map())
+          .map((system, name) => system.set('name', name))
+          .toIndexedSeq() // TODO: Is there an easier way to do this? Also, guarantee order.
+          .map((system, i) => (
+            <System
+              charge={system.get(CHARGE)}
+              chargeSystem={chargeSystem}
+              key={i}
+              maxCharge={system.get(MAX_CHARGE)}
+              name={system.get('name')}
+              readyToCharge={readyToCharge && system.get(CHARGE) < system.get(MAX_CHARGE)}
+            />
+          ))
+        }
+        <Button
+          className={styles.SkipChargingButton}
+          color="secondary"
+          disabled={!readyToCharge}
+          onClick={skipCharging}
+          raised
+        >
+          Skip Charging
+        </Button>
+      </div>
+    </div>
+  );
+};
 
-const SystemPanel = ({ systems, chargeSystem }) => (
-  <div>
-    {systems
-      .map((system, name) => system.set('name', name))
-      .toIndexedSeq() // TODO: Is there an easier way to do this? Also, guarantee order.
-      .map((system, i) => (
-        <System
-          key={i}
-          chargeSystem={chargeSystem}
-          name={system.get('name')}
-          charge={system.get(CHARGE)}
-          max={system.get(MAX_CHARGE)}
-        />
-      ))
-    }
-    <div onClick={() => chargeSystem(undefined)}>Skip Charging</div>
-  </div>
-);
-
-const System = ({ name, charge, max, chargeSystem }) => (
-  <div onClick={() => chargeSystem(name)}>
-    <b>{name}</b>: {charge} / {max}
-  </div>
-);
+const System = ({ name, charge, maxCharge, chargeSystem, readyToCharge }) => {
+  const systemType = getSystemType(name);
+  return (
+    <Paper className={styles.SystemPanel}>
+      <ChargeMeter charge={charge} maxCharge={maxCharge}/>
+      <div className={styles.SystemPanelRight}>
+        <div className={styles.SystemName}>{name}</div>
+        <Tooltip title={systemType} placement="right" enterDelay={500}>
+          {getIconForSystemType(systemType)}
+        </Tooltip>
+        <Button
+          color="primary"
+          disabled={!readyToCharge}
+          onClick={() => chargeSystem(name)}
+        >
+          Charge
+        </Button>
+      </div>
+    </Paper>
+  );
+};
 
 export default connect(
   (state) => ({
-    game: state.get(GAME),
+    systems: state.getIn([GAME, SYSTEMS]),
+    readyToCharge: state.getIn([GAME, WAITING_FOR_FIRST_MATE])
   }),
   (dispatch) => ({
-    chargeSystem: (systemName) => dispatch(chargeSystem(systemName))
+    chargeSystem: (systemName) => dispatch(chargeSystem(systemName)),
+    skipCharging: () => dispatch(chargeSystem())
   })
 )(UnconnectedFirstMatePage);

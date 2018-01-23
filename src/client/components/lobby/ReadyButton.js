@@ -1,8 +1,8 @@
-import classnames from 'classnames';
+import { Button } from 'material-ui';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import styles from '../../../../styles/CustomLobbyPage.css'; // TODO: Split these up?
-import { LOBBY, READIED, USER_ID } from '../../../common/StateFields';
+import { LOBBY, READIED, TEAMS, USER_ID } from '../../../common/StateFields';
+import { getPlayerPosition } from '../../../common/util/GameUtils';
 import { ready, unready } from '../../actions/CustomLobbyActions';
 
 class UnconnectedReadyButton extends Component {
@@ -12,22 +12,25 @@ class UnconnectedReadyButton extends Component {
   }
   
   render() {
-    const { ready, unready, userIsReady } = this.props;
+    const { ready, unready, userIsReady, userHasRole } = this.props;
     return (
-      <button
-        className={classnames(styles.ReadyButton, { [styles.ready]: userIsReady })}
+      <Button
+        raised
         onClick={userIsReady ? unready : ready}
         id="ready-button"
+        color={userIsReady ? 'secondary' : 'primary'}
+        disabled={!userHasRole}
       >
         {userIsReady ? 'Unready' : 'Ready'}
-      </button>
+      </Button>
     );
   }
 }
 
 export default connect(
   (state) => ({
-    userIsReady: state.hasIn([LOBBY, READIED, state.get(USER_ID)])
+    userIsReady: state.hasIn([LOBBY, READIED, state.get(USER_ID)]),
+    userHasRole: Boolean(getPlayerPosition(state.getIn([LOBBY, TEAMS]), state.get(USER_ID)))
   }),
   (dispatch) => ({
     ready: () => dispatch(ready()),

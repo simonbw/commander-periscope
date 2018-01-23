@@ -13,18 +13,19 @@
 }
 
 .RowLabel, .ColumnLabel {
-    color: #FFF;
+    font-family: 'Audiowide', sans-serif;
+    color: #FFFFFF;
     height: 35px;
     line-height: 35px;
     text-align: center;
-    text-shadow: 0 0 15px #FFFFFF, 0 0 10px #FFFFFF;
+    text-shadow: 0 0 15px #FFFFFF, 0 0 10px #FFFFFFAA;
     width: 35px;
 }
 
 .Cell {
-    border-right: 1px solid #DEF;
-    border-bottom: 1px solid #DEF;
-    color: #147;
+    border-right: 1px solid #DDEEFF;
+    border-bottom: 1px solid #DDEEFF;
+    color: #114477;
     display: inline-block;
     height: 35px;
     line-height: 33px;
@@ -37,16 +38,16 @@
 }
 
 .Cell.clickable:hover {
-    border: 1px solid #0BF;
-    box-shadow: inset 0 0 2px 1px #0BF;
+    border: 1px solid #00BBFF;
+    box-shadow: inset 0 0 2px 1px #00BBFF;
 }
 
 .Cell.water {
-    background: #CDF;
+    background: #CCDDFF;
 }
 
 .Cell.land {
-    background: #1A1;
+    background: #11AA11;
 }
 
 /* TODO: Less hard-coded stuff */
@@ -62,9 +63,10 @@
 }
 
 .Sector {
-    border: 1px solid #147;
-    color: #FFF6;
+    border: 1px solid #114477;
+    color: #FFFFFF66;
     font-size: 8em;
+    font-family: 'Audiowide', sans-serif;
     font-weight: bold;
     height: calc(35px * 5);
     line-height: calc(35px * 5);
@@ -78,6 +80,6 @@
 }
 
 .Sector.clickable:hover {
-    background: #1473;
-    color: #FFFD;
+    background: #11447733;
+    color: #FFFFFFDD;
 }

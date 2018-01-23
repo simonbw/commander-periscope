@@ -1,9 +1,11 @@
 import classnames from 'classnames';
 import React, { Component, Fragment } from 'react';
 import ReactJsonSyntaxHighlighter from 'react-json-pretty';
+import { connect } from 'react-redux';
 import styles from '../../../styles/DebugPane.css';
 
-class DebugPane extends Component {
+// TODO: Use Drawer?
+export class UnconnectedDebugPane extends Component {
   constructor(props) {
     super(props);
     this.state = { open: false };
@@ -31,4 +33,7 @@ class DebugPane extends Component {
   }
 }
 
-export default DebugPane;
+export default connect(
+  (state) => ({ data: state }),
+  () => ({}))
+(UnconnectedDebugPane);

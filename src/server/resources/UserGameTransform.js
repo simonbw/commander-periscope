@@ -1,15 +1,30 @@
-import Immutable from 'immutable/dist/immutable';
+import Immutable from 'immutable';
 import { CAPTAIN, ENGINEER, FIRST_MATE, RADIO_OPERATOR } from '../../common/Role';
 import {
-  BREAKDOWNS, COMMON, GRID, ID, SUB_LOCATION, SUB_PATH, SUBSYSTEMS, SYSTEMS, TEAMS, TURN_INFO,
+  ACTION_TYPE,
+  ACTIONS,
+  BREAKDOWNS,
+  COMMON,
+  DIRECTION_MOVED,
+  GRID,
+  ID, LAST_DIRECTION_MOVED,
+  OPPONENT_ACTIONS,
+  SUB_LOCATION,
+  SUB_PATH,
+  SUBSYSTEMS,
+  SYSTEMS,
+  TEAMS,
+  TURN_INFO,
+  WAITING_FOR_ENGINEER,
   WAITING_FOR_FIRST_MATE
 } from '../../common/StateFields';
-import { canUseSystem, getPlayerPosition } from '../../common/util/GameUtils';
+import { otherTeam } from '../../common/Team';
+import { canUseSystem, getLastDirectionMoved, getPlayerPosition } from '../../common/util/GameUtils';
 
 export const getDataForUser = (game, userId) => {
   let data = Immutable.Map({
-    id: game.get(ID),
-    common: game.get(COMMON)
+    [ID]: game.get(ID),
+    [COMMON]: game.get(COMMON)
   });
   
   const position = getPlayerPosition(game.getIn([COMMON, TEAMS]), userId);
@@ -30,16 +45,20 @@ export const getDataForUser = (game, userId) => {
       case FIRST_MATE:
         data = data
           .set(SYSTEMS, teamInfo.get(SYSTEMS))
-          .set(WAITING_FOR_FIRST_MATE, teamInfo.getIn([TURN_INFO, WAITING_FOR_FIRST_MATE])); // TODO: Do we want this to be a different key?
+          .set(WAITING_FOR_FIRST_MATE, teamInfo.getIn([TURN_INFO, WAITING_FOR_FIRST_MATE]));
         break;
       case ENGINEER:
         data = data
           .set(SUBSYSTEMS, game.get(SUBSYSTEMS))
-          .set(BREAKDOWNS, teamInfo.get(BREAKDOWNS));
+          .set(BREAKDOWNS, teamInfo.get(BREAKDOWNS))
+          .set(WAITING_FOR_ENGINEER, teamInfo.getIn([TURN_INFO, WAITING_FOR_ENGINEER]))
+          .set(LAST_DIRECTION_MOVED, getLastDirectionMoved(teamInfo.get(ACTIONS)));
         break;
       case RADIO_OPERATOR:
+        const opponentActions = game.getIn([otherTeam(team), ACTIONS]).takeLast(5).reverse(); // TODO: Constant
         data = data
-          .set(GRID, game.get(GRID));
+          .set(GRID, game.get(GRID))
+          .set(OPPONENT_ACTIONS, opponentActions);
         break;
     }
   }

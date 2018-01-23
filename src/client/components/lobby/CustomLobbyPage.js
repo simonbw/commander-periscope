@@ -1,31 +1,35 @@
+import { Button } from 'material-ui';
 import React from 'react';
 import { connect } from 'react-redux';
 import styles from '../../../../styles/CustomLobbyPage.css';
 import { ID, LOBBY } from '../../../common/StateFields';
 import { leaveCustomLobby } from '../../actions/CustomLobbyActions';
-import DebugPane from '../DebugPane';
+import FloatingText from '../FloatingText';
 import ReadyButton from './ReadyButton';
 import RoleSelect from './RoleSelect';
 import UsernameInput from './UsernameInput';
 
-const UnconnectedCustomLobbyPage = ({ lobby, goToMainMenu }) => (
+export const UnconnectedCustomLobbyPage = ({ lobby, goToMainMenu }) => (
   <div className={styles.CustomLobbyPage} id="custom-lobby-page">
-    <DebugPane data={lobby}/>
-    <h1 className={styles.LobbyId}>{lobby.get(ID)}</h1>
-    <RoleSelect/>
+    <FloatingText>
+      <h1>Lobby ID: <span className={styles.LobbyId}>{lobby.get(ID)}</span></h1>
+    </FloatingText>
     <UsernameInput/>
-    <ReadyButton/>
-    <MainMenuButton goToMainMenu={goToMainMenu}/>
+    <RoleSelect/>
+    <div className={styles.ButtonBar}>
+      <MainMenuButton goToMainMenu={goToMainMenu}/>
+      <ReadyButton/>
+    </div>
   </div>
 );
 
 const MainMenuButton = ({ goToMainMenu }) => (
-  <a
-    className={styles.CancelButton}
+  <Button
+    raised
     onClick={goToMainMenu}
   >
     Main Menu
-  </a>
+  </Button>
 );
 
 export default connect(

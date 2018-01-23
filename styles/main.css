@@ -1,5 +1,5 @@
-@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i|Source+Serif+Pro');
-/* TODO: Find some better fonts */
+@import './colors.css';
+@import './fonts.css';
 
 * {
     box-sizing: border-box;
@@ -11,22 +11,20 @@ html, body, pre {
     padding: 0;
 }
 
-body {
+body, p, input, button {
     font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    background: radial-gradient(#18B, #147), #147;
-    color: #FFF;
+}
+
+body {
+    background: radial-gradient(#1188BB, #114477), #114477;
+    color: #114477;
     min-height: 100vh;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1, h2 {
     margin: 0;
     padding: 0;
-    font-family: 'Source Serif Pro', serif;
-}
-
-hr {
-    border: 1px solid #147;
-    padding: 0;
+    font-family: 'Audiowide', sans-serif;
 }
 
 /* TODO: Use variables for colors. */

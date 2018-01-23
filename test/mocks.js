@@ -1,7 +1,7 @@
 import Immutable from 'immutable/dist/immutable';
 import { LAND_TILE } from '../src/common/Grid';
 import { CAPTAIN, ENGINEER, FIRST_MATE, RADIO_OPERATOR } from '../src/common/Role';
-import { GRID, PLAYERS, READIED, TEAMS, USERNAMES } from '../src/common/StateFields';
+import { GRID, PLAYERS, READIED, SYSTEMS, TEAMS, USERNAMES } from '../src/common/StateFields';
 import { BLUE, RED } from '../src/common/Team';
 import { createGame, createGrid } from '../src/server/resources/GameFactory';
 
@@ -27,6 +27,10 @@ export function mockGame(gameId = 'gameId') {
     [USERNAMES]: lobby.get(USERNAMES),
     [TEAMS]: lobby.get(TEAMS)
   }).set(GRID, mockGrid());
+}
+
+export function mockSystems() {
+  return mockGame().getIn([RED, SYSTEMS])
 }
 
 // TODO: Mock subsystems so that we don't have random test behavior

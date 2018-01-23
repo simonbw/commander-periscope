@@ -6,12 +6,19 @@ import Grid from '../src/client/components/game/GridView';
 import { LAND_TILE } from '../src/common/Grid';
 import '../styles/main.css';
 import { mockGrid } from '../test/mocks';
+import StoryWrapper from './StoryWrapper';
 
 const grid = mockGrid();
 
 const locationAction = decorateAction([(args) => [args[0].get(0), args[0].get(1)]]);
 
 storiesOf('Grid', module)
+  .addDecorator(StoryWrapper)
+  .addDecorator((story) => (
+    <div style={{ display: 'flex' }}>
+      {story()}
+    </div>
+  ))
   .add('Basic Grid', () => (
     <Grid grid={grid}/>
   ))

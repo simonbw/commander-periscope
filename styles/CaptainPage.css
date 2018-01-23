@@ -9,15 +9,15 @@
     margin: 36px 35px;
     padding: 0 10px;
     line-height: 35px;
-    background: #CDF;
+    background: #CCDDFF;
 }
 
 .WaitingMessage {
-    color: #D00;
+    color: #DD0000;
 }
 
 .SystemsPanel {
-    background: #CDF;
+    background: #CCDDFF;
     padding: 10px;
     margin: 35px;
 }

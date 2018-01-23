@@ -5,7 +5,7 @@ import expect from '../expect';
 import {
   clickReadyButton, createCustomLobby, joinCustomLobby, waitForGameStarted,
   waitForJoinGame
-} from './PageActions';
+} from './PuppeteerActions';
 import { expectNoErrors, expectTitle } from './PageAssertions';
 import { extractLobby, extractState, extractUserId } from './PageExtractors';
 import {
@@ -18,7 +18,7 @@ import {
 const log = require('debug')('commander-periscope:test');
 
 describe('Integration', function () {
-  this.timeout(10000);
+  this.timeout(30 * 1000);
   let browser;
   let server;
   let pages;

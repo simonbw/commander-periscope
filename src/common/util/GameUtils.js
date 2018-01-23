@@ -1,4 +1,5 @@
-import { BREAKDOWNS, SUBSYSTEMS, SYSTEMS } from '../StateFields';
+import Immutable from "immutable";
+import { ACTION_TYPE, ACTIONS, BREAKDOWNS, DIRECTION_MOVED, SUBSYSTEMS, SYSTEMS, WINNER } from '../StateFields';
 import { CHARGE, CIRCUIT, CIRCUITS, DIRECTION, getSystemType, MAX_CHARGE, NUCLEAR, SYSTEM_TYPE } from '../System';
 import { deepFind } from './ImmutableUtil';
 
@@ -56,4 +57,23 @@ export function checkEngineOverload(subsystems, breakdowns) {
       .filter((s) => s.get(SYSTEM_TYPE) === NUCLEAR)
       .keySeq()
       .isSubset(breakdowns);
+}
+
+export function getGamePhase(game) {
+  if (!game) {
+    return 'loading'; // TODO: Constants
+  } else if (game.get(WINNER)) {
+    return 'over'; // TODO: Constants
+  } else {
+    return 'middle'; // TODO: Constants
+  }
+}
+
+export function getLastDirectionMoved(actions) {
+  return actions
+    .findLast(
+      (action) => action.get(ACTION_TYPE) === 'move',
+      null,
+      Immutable.Map({})
+    ).get(DIRECTION_MOVED, null)
 }

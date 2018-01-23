@@ -13,10 +13,12 @@ import { RED } from '../src/common/Team';
 import { getDataForUser } from '../src/server/resources/UserGameTransform';
 import '../styles/main.css';
 import { mockGame } from '../test/mocks';
+import StoryWrapper from './StoryWrapper';
 
 const locationAction = decorateAction([(args) => [args[0].get(0), args[0].get(1)]]);
 
 storiesOf('CaptainPage', module)
+  .addDecorator(StoryWrapper)
   .add('Not Started', () => {
     const fullGame = mockGame();
     const gameData = getDataForUser(fullGame, fullGame.getIn([COMMON, TEAMS, RED, CAPTAIN]));

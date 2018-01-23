@@ -1,5 +1,6 @@
 import PubSub from 'pubsub-js';
 import shortid from 'shortid';
+import { wait } from '../../../test/testUtils';
 import { ID } from '../../common/StateFields';
 import { waitForSettled } from '../../common/util/AsyncUtil';
 
@@ -64,6 +65,9 @@ export default class Resource {
     // put all the async work into a promise so we can store it in _lastUpdates
     const updatePromise = (async () => {
       await waitForSettled(lastUpdate);
+      if (process.env.NODE_ENV === 'dev') {
+        await wait(400); // artificial delay in dev
+      }
       const instance = await updater(await this.get(id));
       if (!instance) {
         throw new Error(`updater returned ${instance}, ${this._resourceName} ${action}`);

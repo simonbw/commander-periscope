@@ -19,7 +19,9 @@ describe('GameUtils', () => {
     const game = mockGame();
     expect(getPlayerPosition(game.getIn([COMMON, TEAMS]), 'p1')).to.deep.equal({ team: RED, role: CAPTAIN });
     expect(getPlayerPosition(game.getIn([COMMON, TEAMS]), 'p8')).to.deep.equal({ team: BLUE, role: ENGINEER });
-    expect(getPlayerPosition(game.getIn([COMMON, TEAMS]), 'waldo')).to.be.undefined;
+    expect(getPlayerPosition(game.getIn([COMMON, TEAMS]), 'waldo')).to.equal(undefined);
+    expect(getPlayerPosition(undefined, 'waldo')).to.equal(undefined);
+    expect(getPlayerPosition(game.getIn([COMMON, TEAMS]), undefined)).to.equal(undefined);
   });
   
   // TODO: Test canUseSystem

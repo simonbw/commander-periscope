@@ -1,4 +1,5 @@
 // System Fields
+
 export const CHARGE = 'charge';
 export const MAX_CHARGE = 'max_charge';
 

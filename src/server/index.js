@@ -8,7 +8,7 @@ const log = require('debug')('commander-periscope:server');
 registerErrorHandlers();
 
 // TODO: Production mode
-const devMode = process.env.NODE_ENV !== 'prod';
+const devMode = process.env.NODE_ENV !== 'production';
 const server = Server(createApp({ devServer: devMode }));
 initSocketServer(server);
 

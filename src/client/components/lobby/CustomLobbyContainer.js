@@ -3,11 +3,11 @@ import { connect } from 'react-redux';
 import { GAME_ID, LOBBY } from '../../../common/StateFields';
 import GamePage from '../game/GamePage';
 import CustomLobbyPage from './CustomLobbyPage';
-import LobbyLoadingPage from './LobbyLoadingPage';
+import LoadingPage from '../LoadingPage';
 
-const UnconnectedCustomLobbyContainer = ({ loading, inGame }) => {
+export const UnconnectedCustomLobbyContainer = ({ loading, inGame }) => {
   if (loading) { // lobby is loading
-    return <LobbyLoadingPage/>;
+    return <LoadingPage/>;
   } else if (inGame) {
     return <GamePage/>
   } else {

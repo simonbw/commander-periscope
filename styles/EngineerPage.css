@@ -1,29 +1,48 @@
 .EngineerPage {
     display: flex;
+    justify-content: center;
+    padding: 0 20px;
+}
+
+.DirectionPanels {
+    align-items: flex-start;
+    display: flex;
     flex-flow: row wrap;
+    justify-content: center;
+    margin: 10px -10px;
+    max-width: 480px;
 }
 
-.DirectionPane {
-    padding: 10px;
+.DirectionPanel {
+    flex-grow: 1;
     margin: 10px;
-    color: #147;
-    background: #CDF;
+    max-width: 220px;
+    padding: 0 10px;
+    transition: all 0.35s ease;
 }
 
-.SubsystemSymbol {
-    display: inline-block;
+.DirectionPanel.active {
+    transform: perspective(1000px) translateZ(50px);
+    transition: all 0.35s ease;
+}
+
+.DirectionPanel:not(.active) {
+    background-color: #E0E0E0;
+}
+
+.DirectionPanel:not(.active) .ButtonRow {
+    opacity: 0.35;
+}
+
+.DirectionPanel h2 {
     padding: 10px;
-    cursor: pointer;
+    text-align: center;
 }
 
-.SubsystemSymbol:hover {
-    background: #DEF;
-}
-
-.SubsystemSymbol.broken {
-    color: #666;
-}
-
-.Circuit {
-    vertical-align: super;
+.ButtonRow {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    padding: 10px 0;
+    transition: opacity 0.5s ease;
 }

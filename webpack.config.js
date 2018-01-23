@@ -10,8 +10,12 @@ module.exports = {
   module: {
     rules: [{
       test: /\.jsx?$/,
-      
-      use: ['babel-loader'],
+      use: {
+        loader: 'babel-loader',
+        options: {
+          // cacheDirectory: true
+        }
+      },
       exclude: /node_modules/,
     }, {
       test: /\.(jpg|png|svg)$/,
@@ -32,5 +36,5 @@ module.exports = {
   plugins: [
     new HardSourceWebpackPlugin() // makes things faster
   ],
-  devtool: "inline-source-map"
+  devtool: "cheap-module-source-map"
 };

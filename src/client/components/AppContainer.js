@@ -1,18 +1,23 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
 import '../../../styles/main.css';
 import { LOBBY } from '../../common/StateFields';
 import ConnectionWarner from './ConnectionWarner';
+import DebugPane from './DebugPane';
 import CustomLobbyContainer from './lobby/CustomLobbyContainer';
-import MainMenu from './MainMenu';
+import MainMenu from './menu/MainMenu';
+import ThemeProvider from './ThemeProvider';
 
 // The top level component for commander periscope
 const UnconnectedAppContainer = ({ inLobby }) => {
   return (
-    <div>
-      <ConnectionWarner/>
-      {inLobby ? <CustomLobbyContainer/> : <MainMenu/>}
-    </div>
+    <ThemeProvider>
+      <Fragment>
+        <DebugPane/>
+        <ConnectionWarner/>
+        {inLobby ? <CustomLobbyContainer/> : <MainMenu/>}
+      </Fragment>
+    </ThemeProvider>
   );
 };
 

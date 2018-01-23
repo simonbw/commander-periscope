@@ -1,47 +1,54 @@
-import { action, decorateAction } from '@storybook/addon-actions';
 import { storiesOf } from '@storybook/react';
-import React from 'react';
+import React, { Component } from 'react';
 import { UnconnectedFirstMatePage } from '../src/client/components/game/FirstMatePage';
-import { FIRST_MATE } from '../src/common/Role';
-import { COMMON, STARTED, TEAMS, WAITING_FOR_FIRST_MATE } from '../src/common/StateFields';
-import { RED } from '../src/common/Team';
-import { getDataForUser } from '../src/server/resources/UserGameTransform';
+import { CHARGE, MAX_CHARGE } from '../src/common/System';
 import '../styles/main.css';
-import { mockGame } from '../test/mocks';
+import { mockSystems } from '../test/mocks';
+import StoryWrapper from './StoryWrapper';
 
 storiesOf('FirstMatePage', module)
-  .add('Not Started', () => {
-    const fullGame = mockGame();
-    const gameData = getDataForUser(fullGame, fullGame.getIn([COMMON, TEAMS, RED, FIRST_MATE]));
+  .addDecorator(StoryWrapper)
+  .add('Ready to charge', () => {
     return (
-      <UnconnectedFirstMatePage
-        game={gameData}
-        chargeSystem={action('chargeSystem')}
-      />
-    );
-  })
-  .add('Waiting', () => {
-    const fullGame = mockGame()
-      .set(WAITING_FOR_FIRST_MATE, false)
-      .setIn([COMMON, STARTED], true);
-    const gameData = getDataForUser(fullGame, fullGame.getIn([COMMON, TEAMS, RED, FIRST_MATE]));
-    return (
-      <UnconnectedFirstMatePage
-        game={gameData}
-        chargeSystem={action('chargeSystem')}
-      />
-    );
-  })
-  .add('Ready', () => {
-    const fullGame = mockGame()
-      .set(WAITING_FOR_FIRST_MATE, true)
-      .setIn([COMMON, STARTED], true);
-    const gameData = getDataForUser(fullGame, fullGame.getIn([COMMON, TEAMS, RED, FIRST_MATE]));
-    
-    return (
-      <UnconnectedFirstMatePage
-        game={gameData}
-        chargeSystem={action('chargeSystem')}
-      />
+      <SystemsWrapper>
+        {({ systems, chargeSystem, skipCharging, readyToCharge }) => (
+          <UnconnectedFirstMatePage
+            readyToCharge={readyToCharge}
+            systems={systems}
+            chargeSystem={chargeSystem}
+            skipCharging={skipCharging}
+          />
+        )}
+      </SystemsWrapper>
     );
   });
+
+class SystemsWrapper extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      systems: mockSystems(),
+      readyToCharge: true
+    }
+  }
+  
+  chargeSystem(systemName) {
+    const systems = this.state.systems;
+    this.setState({
+      systems: systemName ?
+        systems.update(systemName, system =>
+          system.set(CHARGE, Math.min(system.get(CHARGE) + 1, system.get(MAX_CHARGE))))
+        : systems,
+      readyToCharge: false
+    });
+    setTimeout(() => this.setState({ readyToCharge: true }), 1000);
+  }
+  
+  render() {
+    return this.props.children({
+      chargeSystem: (system) => this.chargeSystem(system),
+      skipCharging: () => this.chargeSystem(null),
+      ...this.state,
+    })
+  }
+}

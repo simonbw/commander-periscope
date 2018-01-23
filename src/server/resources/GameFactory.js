@@ -1,12 +1,42 @@
 import Immutable from 'immutable/dist/immutable';
 import { ALL_DIRECTIONS, WATER_TILE } from '../../common/Grid';
 import {
-  BREAKDOWNS, COMMON, CREATED, DIRECTION_MOVED, GRID, HIT_POINTS, ID, MINE_LOCATIONS, PLAYERS, STARTED,
-  SUB_LOCATION, SUB_PATH, SUBSYSTEMS, SYSTEM_IS_USED, SYSTEMS, TEAMS, TURN_INFO, TURN_NUMBER, USERNAMES,
-  WAITING_FOR_ENGINEER, WAITING_FOR_FIRST_MATE, WINNER
+  ACTIONS,
+  BREAKDOWNS,
+  COMMON,
+  CREATED,
+  DIRECTION_MOVED,
+  GRID,
+  HIT_POINTS,
+  ID,
+  MINE_LOCATIONS,
+  PLAYERS,
+  STARTED,
+  SUB_LOCATION,
+  SUB_PATH,
+  SUBSYSTEMS,
+  SYSTEM_IS_USED,
+  SYSTEMS,
+  TEAMS,
+  TURN_INFO,
+  TURN_NUMBER,
+  USERNAMES,
+  WAITING_FOR_ENGINEER,
+  WAITING_FOR_FIRST_MATE,
+  WINNER
 } from '../../common/StateFields';
 import {
-  CHARGE, CIRCUIT, CIRCUITS, DIRECTION, DRONE, MAX_CHARGE, MINE, SILENT, SONAR, SYSTEM_TYPE, SYSTEM_TYPES,
+  CHARGE,
+  CIRCUIT,
+  CIRCUITS,
+  DIRECTION,
+  DRONE,
+  MAX_CHARGE,
+  MINE,
+  SILENT,
+  SONAR,
+  SYSTEM_TYPE,
+  SYSTEM_TYPES,
   TORPEDO
 } from '../../common/System';
 import { BLUE, RED } from '../../common/Team';
@@ -14,40 +44,40 @@ import { BLUE, RED } from '../../common/Team';
 // TODO: Something so I don't have to worry about mixing immutable and vanilla types.
 export function createGame(id, { [PLAYERS]: players, [USERNAMES]: usernames, [TEAMS]: teams }) {
   return new Immutable.fromJS({
-    [ID]: id,
     [COMMON]: createCommon(players, usernames, teams),
     [GRID]: createGrid(),
+    [ID]: id,
     [SUBSYSTEMS]: createSubsystems(),
-    [RED]: createTeamInfo(),
     [BLUE]: createTeamInfo(),
+    [RED]: createTeamInfo(),
   });
 }
 
 export function createCommon(players, usernames, teams) {
   return Immutable.fromJS({
+    [CREATED]: Date.now(),
     [PLAYERS]: players,
-    [USERNAMES]: usernames,
-    [TEAMS]: teams,
     [STARTED]: false,
+    [TEAMS]: teams,
+    [USERNAMES]: usernames,
     [WINNER]: null,
-    [CREATED]: Date.now()
   });
 }
 
 export function createTeamInfo() {
   return Immutable.fromJS({
     [TURN_INFO]: {
-      [DIRECTION_MOVED]: false,
-      [WAITING_FOR_FIRST_MATE]: false,
-      [WAITING_FOR_ENGINEER]: false,
       [SYSTEM_IS_USED]: false,
-      [TURN_NUMBER]: 0
+      [TURN_NUMBER]: 0,
+      [WAITING_FOR_ENGINEER]: false,
+      [WAITING_FOR_FIRST_MATE]: false,
     },
+    [ACTIONS]: [],
+    [BREAKDOWNS]: Immutable.Set(), // indexes into ENGINE_LAYOUT
     [HIT_POINTS]: 4,
+    [MINE_LOCATIONS]: [],
     [SUB_LOCATION]: null,
     [SUB_PATH]: [],
-    [MINE_LOCATIONS]: [],
-    [BREAKDOWNS]: Immutable.Set(), // indexes into ENGINE_LAYOUT
     [SYSTEMS]: createSystems(),
   })
 }
@@ -88,6 +118,7 @@ export function createSubsystems() {
     .flatMap(systemType => Immutable.Repeat(systemType, 6))
     .sortBy(Math.random)
     .map((systemType, i) => Immutable.Map({
+      [ID]: i,
       [SYSTEM_TYPE]: systemType,
       [DIRECTION]: ALL_DIRECTIONS[i % ALL_DIRECTIONS.length],
       [CIRCUIT]: i < 12 ? circuits.get(i) : null

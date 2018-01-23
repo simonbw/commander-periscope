@@ -8,8 +8,11 @@ export async function createCustomLobby(page) {
 }
 
 export async function joinCustomLobby(page, lobbyId) {
-  await page.type('#custom-game-input', lobbyId);
   await page.click('#join-custom-game-button');
+  await page.waitForSelector('#custom-game-input', { timeout: 200 });
+  const customGameInput = await page.$('#custom-game-input');
+  await customGameInput.type(lobbyId);
+  await customGameInput.press('Enter');
   await page.waitForSelector('#custom-lobby-page');
 }
 

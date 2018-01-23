@@ -1,76 +1,31 @@
-/* TODO: Media query styles */
-
-.TeamLists {
+.RoleSelectContainer {
     display: flex;
     flex-flow: row wrap;
-    justify-content: space-around;
+    justify-content: space-between;
+    margin: 10px -10px;
 }
 
-.RoleSelect {
-    padding: 10px;
+.RoleSelectTeamList {
     flex-grow: 1;
-    flex-basis: 0;
-    user-select: none;
-    display: flex;
-    flex-flow: column;
-}
-
-.RoleSelect.red {
-    border-right: 1px solid #EEE;
-}
-
-.RoleSelect.blue {
-    border-left: 1px solid #EEE;
+    padding: 10px;
+    flex-basis: 250px; /* TODO: Is this dangerous? */
 }
 
 .RoleCard {
-    border: 1px solid #EEE;
-    cursor: pointer;
-    padding: 10px;
-    margin: 10px;
-    min-width: 200px;
-    position: relative;
+    transition: background-color 0.25s ease;
 }
 
-.red .RoleCard {
-    background: #FFAAAA;
-
+.RoleCard.isUser {
+    background: #E0E0E0;
 }
 
-.blue .RoleCard {
-    background: #AAAAFF;
+.RoleCard.isOther {
 }
 
-.RoleCard.empty {
-    opacity: 0.5;
+.Username {
+    font-weight: bold;
 }
 
-.RoleCard.empty:hover {
-    opacity: 0.75;
-}
-
-.RoleCard.ready {
-    background: #EEE;
-}
-
-.RoleCard.user {
-}
-
-.empty .UserName {
+.Available {
     font-style: italic;
-}
-
-.RoleName {
-    display: block;
-}
-
-.UserName {
-    display: block;
-}
-
-.Unselect {
-    padding: 10px;
-    position: absolute;
-    top: 0;
-    right: 0;
 }

@@ -1,14 +1,40 @@
+import Immutable from 'immutable';
 import { getDirection, getManhattanDistance, getNewLocation, isAdjacent } from '../../common/Grid';
 import {
-  BREAKDOWNS, COMMON, DIRECTION_MOVED, GRID, HIT_POINTS, MINE_LOCATIONS, PLAYERS, STARTED, SUB_LOCATION,
-  SUB_PATH, SUBSYSTEMS, SYSTEM_IS_USED, SYSTEMS, TEAMS, TURN_INFO, TURN_NUMBER, USERNAMES, WAITING_FOR_ENGINEER,
-  WAITING_FOR_FIRST_MATE, WINNER
+  ACTION_ID,
+  ACTION_TYPE,
+  ACTIONS,
+  BREAKDOWNS,
+  COMMON,
+  DIRECTION_MOVED,
+  GRID,
+  HIT_POINTS,
+  MINE_LOCATIONS,
+  PLAYERS,
+  STARTED,
+  SUB_LOCATION,
+  SUB_PATH,
+  SUBSYSTEMS,
+  SYSTEM_IS_USED,
+  SYSTEM_USED,
+  SYSTEMS,
+  TEAMS,
+  TURN_INFO,
+  TURN_NUMBER,
+  USERNAMES,
+  WAITING_FOR_ENGINEER,
+  WAITING_FOR_FIRST_MATE,
+  WINNER
 } from '../../common/StateFields';
 import { CHARGE, DIRECTION, DRONE, MAX_CHARGE, MINE, SILENT, SONAR, TORPEDO } from '../../common/System';
 import { BLUE, otherTeam, RED } from '../../common/Team';
-import { checkEngineOverload, fixCircuits } from '../../common/util/GameUtils';
+import { checkEngineOverload, fixCircuits, getLastDirectionMoved } from '../../common/util/GameUtils';
 import {
-  assert, assertCanMove, assertCanMoveTo, assertNotStarted, assertStartedAndNotEnded,
+  assert,
+  assertCanMove,
+  assertCanMoveTo,
+  assertNotStarted,
+  assertStartedAndNotEnded,
   assertSystemReady
 } from './GameAssertions';
 import { createGame } from './GameFactory';
@@ -54,14 +80,19 @@ Games.headInDirection = (gameId, team, direction) => (
     
     assertCanMoveTo(nextLocation, grid, game.getIn([team, SUB_PATH]), game.getIn([team, MINE_LOCATIONS]));
     
+    const action = Immutable.Map({
+      [ACTION_TYPE]: 'move', // TODO: Constants
+      [DIRECTION_MOVED]: direction,
+      [ACTION_ID]: game.getIn([team, ACTIONS]).size
+    });
     return game
       .updateIn([team, TURN_INFO], turnInfo => turnInfo
-        .set(DIRECTION_MOVED, direction)
         .set(WAITING_FOR_ENGINEER, true)
         .set(WAITING_FOR_FIRST_MATE, true)
         .set(SYSTEM_IS_USED, false)
         .update(TURN_NUMBER, n => n + 1))
       .updateIn([team, SUB_PATH], path => path.push(currentLocation))
+      .updateIn([team, ACTIONS], actions => actions.push(action))
       .setIn([team, SUB_LOCATION], nextLocation);
   })
 );
@@ -70,8 +101,17 @@ Games.useSystem = (gameId, team, systemName, onUse) => {
   return Games.update(gameId, `used_${systemName}`, {}, async (game) => {
     assertSystemReady(game, team, systemName);
     game = await onUse(game);
-    // TODO: System used
-    return game.setIn([team, SYSTEMS, systemName, CHARGE], 0);
+    
+    // TODO: Test Actions list
+    const action = Immutable.Map({
+      [ACTION_TYPE]: 'useSystem',//TODO: Constants
+      [SYSTEM_USED]: systemName,
+      [ACTION_ID]: game.getIn([team, ACTIONS]).size
+    });
+    return game
+      .setIn([team, SYSTEMS, systemName, CHARGE], 0)
+      .setIn([team, TURN_INFO, SYSTEM_IS_USED], true)
+      .updateIn([team, ACTIONS], actions => actions.push(action));
   })
 };
 
@@ -181,7 +221,7 @@ Games.trackBreakdown = (gameId, team, breakdownIndex) => {
     
     const brokenSubsystem = game.getIn([SUBSYSTEMS, breakdownIndex]);
     assert(brokenSubsystem, `Invalid Breakdown: ${breakdownIndex}`);
-    const directionMoved = game.getIn([team, TURN_INFO, DIRECTION_MOVED]);
+    const directionMoved = getLastDirectionMoved(game.getIn([team, ACTIONS]));
     assert(
       brokenSubsystem.get(DIRECTION) === directionMoved,
       `Breakdown must be in direction moved. Expected ${directionMoved}, Actual ${brokenSubsystem.get(DIRECTION)}`

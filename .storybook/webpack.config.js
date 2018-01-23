@@ -1,11 +1,16 @@
 const path = require('path');
-
+// const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 
 module.exports = {
   module: {
     rules: [{
       test: /\.jsx?$/,
-      loader: 'babel-loader',
+      use: {
+        loader: 'babel-loader',
+        options: {
+          cacheDirectory: true
+        }
+      },
       exclude: /node_modules/
     }, {
       test: /\.(jpg|png|svg)$/,
@@ -24,6 +29,7 @@ module.exports = {
   },
   plugins: [
     // your custom plugins
+    // new HardSourceWebpackPlugin() // makes things faster
   ],
   devtool: "inline-source-map",
 };

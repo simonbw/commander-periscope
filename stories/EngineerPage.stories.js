@@ -1,19 +1,60 @@
 import { action } from '@storybook/addon-actions';
 import { storiesOf } from '@storybook/react';
-import React from 'react';
+import React, { Component } from 'react';
 import { UnconnectedEngineerPage } from '../src/client/components/game/EngineerPage';
-import { ENGINEER } from '../src/common/Role';
-import { COMMON, TEAMS } from '../src/common/StateFields';
+import { ALL_DIRECTIONS, NORTH } from '../src/common/Grid';
+import { BREAKDOWNS, SUBSYSTEMS } from '../src/common/StateFields';
 import { RED } from '../src/common/Team';
-import { getDataForUser } from '../src/server/resources/UserGameTransform';
 import '../styles/main.css';
 import { mockGame } from '../test/mocks';
+import StoryWrapper from './StoryWrapper';
 
 storiesOf('EngineerPage', module)
-  .add('Not Started', () => {
-    const fullGame = mockGame();
-    const gameData = getDataForUser(fullGame, fullGame.getIn([COMMON, TEAMS, RED, ENGINEER]));
+  .addDecorator(StoryWrapper)
+  .add('Testable', () => {
     return (
-      <UnconnectedEngineerPage game={gameData} trackBreakdown={action('trackBreakdown')}/>
+      <StateWrapper>
+        {({ subsystems, breakdowns, directionMoved, readyToTrack, trackBreakdown }) => (
+          <UnconnectedEngineerPage
+            subsystems={subsystems}
+            breakdowns={breakdowns}
+            directionMoved={directionMoved}
+            readyToTrack={readyToTrack}
+            trackBreakdown={trackBreakdown}
+          />
+        )}
+      </StateWrapper>
     );
   });
+
+class StateWrapper extends Component {
+  constructor(props) {
+    super(props);
+    const game = mockGame();
+    const subsystems = game.get(SUBSYSTEMS);
+    const breakdowns = game.getIn([RED, BREAKDOWNS]);
+    this.state = {
+      subsystems,
+      breakdowns,
+      directionMoved: NORTH,
+      readyToTrack: true
+    }
+  }
+  
+  trackBreakdown(subsystemIndex) {
+    action('trackingBreakdown')(subsystemIndex);
+    this.setState({
+      breakdowns: this.state.breakdowns.add(subsystemIndex),
+      directionMoved: ALL_DIRECTIONS[Math.floor(Math.random() * ALL_DIRECTIONS.length)],
+      readyToTrack: false
+    }); // TODO: Circuits?
+    setTimeout(() => this.setState({ readyToTrack: true }), 1000);
+  }
+  
+  render() {
+    return this.props.children({
+      trackBreakdown: (subsystemIndex) => this.trackBreakdown(subsystemIndex),
+      ...this.state,
+    })
+  }
+}

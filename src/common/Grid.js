@@ -12,6 +12,21 @@ export const WEST = 'WEST';
 
 export const ALL_DIRECTIONS = [NORTH, EAST, SOUTH, WEST];
 
+export function getDirectionArrow(direction) {
+  switch (direction) {
+    case NORTH:
+      return '↑';
+    case EAST:
+      return '→';
+    case SOUTH:
+      return '↓';
+    case WEST:
+      return '←';
+    default:
+      throw new Error(`Invalid direction: ${direction}`);
+  }
+}
+
 export const WATER_TILE = 0;
 export const LAND_TILE = 1;
 
@@ -20,10 +35,10 @@ export function getNewLocation(location, direction) {
   switch (direction) {
     case NORTH:
       return Immutable.List([x, y - 1]);
-    case SOUTH:
-      return Immutable.List([x, y + 1]);
     case EAST:
       return Immutable.List([x + 1, y]);
+    case SOUTH:
+      return Immutable.List([x, y + 1]);
     case WEST:
       return Immutable.List([x - 1, y]);
     default:
@@ -33,14 +48,14 @@ export function getNewLocation(location, direction) {
 
 // Returns the direction from point a to b
 export function getDirection(a, b) {
-  if (b.get(0) > a.get(0)) {
+  if (b.get(1) < a.get(1)) {
+    return NORTH;
+  } else if (b.get(0) > a.get(0)) {
     return EAST;
-  } else if (b.get(0) < a.get(0)) {
-    return WEST;
   } else if (b.get(1) > a.get(1)) {
     return SOUTH;
-  } else if (b.get(1) < a.get(1)) {
-    return NORTH;
+  } else if (b.get(0) < a.get(0)) {
+    return WEST;
   }
   // a == b
   return null;

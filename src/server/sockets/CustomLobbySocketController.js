@@ -1,7 +1,13 @@
 import PubSub from 'pubsub-js';
+import { wait } from '../../../test/testUtils';
 import {
-  CUSTOM_LOBBY_JOINED_MESSAGE, CUSTOM_LOBBY_READY_MESSAGE, CUSTOM_LOBBY_SELECT_ROLE_MESSAGE,
-  CUSTOM_LOBBY_SET_USERNAME_MESSAGE, CUSTOM_LOBBY_UNREADY_MESSAGE, JOIN_CUSTOM_LOBBY_MESSAGE, LEAVE_CUSTOM_LOBBY_MESSAGE
+  CUSTOM_LOBBY_JOINED_MESSAGE,
+  CUSTOM_LOBBY_READY_MESSAGE,
+  CUSTOM_LOBBY_SELECT_ROLE_MESSAGE,
+  CUSTOM_LOBBY_SET_USERNAME_MESSAGE,
+  CUSTOM_LOBBY_UNREADY_MESSAGE,
+  JOIN_CUSTOM_LOBBY_MESSAGE,
+  LEAVE_CUSTOM_LOBBY_MESSAGE
 } from '../../common/Messages';
 import { ID } from '../../common/StateFields';
 import CustomLobby from '../resources/CustomLobbies';
@@ -27,6 +33,10 @@ export default () => (socket, next) => {
     }
     
     joiningCustomLobby = true;
+  
+    if (process.env.NODE_ENV === 'dev') {
+      await wait(1000); // artificial delay in dev
+    }
     
     const lobby = await CustomLobby.addPlayer(lobbyId, socket.userId, username);
     joiningCustomLobby = false;
