@@ -22,7 +22,7 @@ import { LOBBY, READIED, TEAMS, USER_ID, USERNAMES } from '../../../common/State
 import { BLUE, getDisplayName, RED } from '../../../common/Team';
 import { selectRole } from '../../actions/CustomLobbyActions';
 
-const UnconnectedRoleSelectContainer = ({ lobby, userId, selectRole }) => {
+const RoleSelect = ({ lobby, userId, selectRole }) => {
   return (
     <div className={styles.RoleSelectContainer}>
       <RoleSelectTeamList
@@ -139,12 +139,4 @@ class RoleCard extends Component {
   };
 }
 
-export default connect(
-  (state) => ({
-    lobby: state.get(LOBBY),
-    userId: state.get(USER_ID)
-  }),
-  (dispatch) => ({
-    selectRole: (role, team) => dispatch(selectRole(role, team))
-  })
-)(UnconnectedRoleSelectContainer);
+export default RoleSelect;
