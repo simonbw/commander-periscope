@@ -5,27 +5,20 @@ import { UnconnectedConnectionWarner } from '../src/client/components/Connection
 import '../styles/main.css';
 import StoryWrapper from './StoryWrapper';
 
-storiesOf('ConnectionWarner', module)
+storiesOf('Components', module)
   .addDecorator(StoryWrapper)
-  .add('Toggleable', () => {
+  .add('ConnectionWarner', () => {
     return (
-      <Paper style={{ display: 'inline-block', margin: '20px', padding: '10px' }}>
-        <FormControl>
-          <FormLabel>
-            Connection
-          </FormLabel>
-          <Togglebutton
-            initiallyOn={true}
-            render={(connected) =>
-              <UnconnectedConnectionWarner connected={connected}/>
-            }
-          />
-        </FormControl>
-      </Paper>
+      <StateWrapper
+        initiallyOn={true}
+        render={(connected) =>
+          <UnconnectedConnectionWarner connected={connected}/>
+        }
+      />
     );
   });
 
-class Togglebutton extends Component {
+class StateWrapper extends Component {
   constructor(props) {
     super(props);
     
@@ -37,13 +30,18 @@ class Togglebutton extends Component {
   render() {
     const on = this.state.on;
     return (
-      <Fragment>
-        <Switch
-          checked={on}
-          onChange={() => this.setState({ on: !on })}
-        />
-        {this.props.render(on)}
-      </Fragment>
+      <Paper style={{ display: 'inline-block', margin: '20px', padding: '10px' }}>
+        <FormControl>
+          <FormLabel>
+            Connection
+          </FormLabel>
+          <Switch
+            checked={on}
+            onChange={() => this.setState({ on: !on })}
+          />
+          {this.props.render(on)}
+        </FormControl>
+      </Paper>
     );
   }
 }

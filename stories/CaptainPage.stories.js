@@ -5,7 +5,14 @@ import React from 'react';
 import { UnconnectedCaptainPage } from '../src/client/components/game/CaptainPage';
 import { CAPTAIN } from '../src/common/Role';
 import {
-  COMMON, STARTED, SUB_LOCATION, SUB_PATH, SYSTEMS, TEAMS, TURN_INFO, WAITING_FOR_ENGINEER,
+  COMMON,
+  STARTED,
+  SUB_LOCATION,
+  SUB_PATH,
+  SYSTEMS,
+  TEAMS,
+  TURN_INFO,
+  WAITING_FOR_ENGINEER,
   WAITING_FOR_FIRST_MATE
 } from '../src/common/StateFields';
 import { CHARGE, DRONE, MAX_CHARGE } from '../src/common/System';
@@ -17,7 +24,7 @@ import StoryWrapper from './StoryWrapper';
 
 const locationAction = decorateAction([(args) => [args[0].get(0), args[0].get(1)]]);
 
-storiesOf('CaptainPage', module)
+storiesOf('Components/CaptainPage', module)
   .addDecorator(StoryWrapper)
   .add('Not Started', () => {
     const fullGame = mockGame();

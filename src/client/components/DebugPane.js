@@ -8,7 +8,7 @@ import styles from '../../../styles/DebugPane.css';
 export class UnconnectedDebugPane extends Component {
   constructor(props) {
     super(props);
-    this.state = { open: false };
+    this.state = { open: Boolean(this.props.initiallyOpen) };
   }
   
   toggle() {

@@ -10,9 +10,9 @@ import '../styles/main.css';
 import { mockGame } from '../test/mocks';
 import StoryWrapper from './StoryWrapper';
 
-storiesOf('RadioOperatorPage', module)
+storiesOf('Components', module)
   .addDecorator(StoryWrapper)
-  .add('Adding', () => {
+  .add('RadioOperator Adding', () => {
     const grid = mockGame().get(GRID);
     return (
       <StateWrapper>
@@ -25,7 +25,7 @@ storiesOf('RadioOperatorPage', module)
       </StateWrapper>
     );
   })
-  .add('Static', () => {
+  .add('RadioOperator Static', () => {
     const grid = mockGame().get(GRID);
     const mockedMoves = Immutable.Range(0, 10).map(() => mockMove()).toList();
     return (

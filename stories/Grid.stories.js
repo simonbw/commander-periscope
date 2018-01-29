@@ -12,7 +12,7 @@ const grid = mockGrid();
 
 const locationAction = decorateAction([(args) => [args[0].get(0), args[0].get(1)]]);
 
-storiesOf('Grid', module)
+storiesOf('Components/Grid', module)
   .addDecorator(StoryWrapper)
   .addDecorator((story) => (
     <div style={{ display: 'flex' }}>

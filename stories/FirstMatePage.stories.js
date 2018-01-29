@@ -6,11 +6,11 @@ import '../styles/main.css';
 import { mockSystems } from '../test/mocks';
 import StoryWrapper from './StoryWrapper';
 
-storiesOf('FirstMatePage', module)
+storiesOf('Components', module)
   .addDecorator(StoryWrapper)
-  .add('Ready to charge', () => {
+  .add('FirstMatePage', () => {
     return (
-      <SystemsWrapper>
+      <StateWrapper>
         {({ systems, chargeSystem, skipCharging, readyToCharge }) => (
           <UnconnectedFirstMatePage
             readyToCharge={readyToCharge}
@@ -19,11 +19,11 @@ storiesOf('FirstMatePage', module)
             skipCharging={skipCharging}
           />
         )}
-      </SystemsWrapper>
+      </StateWrapper>
     );
   });
 
-class SystemsWrapper extends Component {
+class StateWrapper extends Component {
   constructor(props) {
     super(props);
     this.state = {

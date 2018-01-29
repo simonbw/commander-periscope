@@ -9,9 +9,9 @@ import '../styles/main.css';
 import { mockGame } from '../test/mocks';
 import StoryWrapper from './StoryWrapper';
 
-storiesOf('EngineerPage', module)
+storiesOf('Components', module)
   .addDecorator(StoryWrapper)
-  .add('Testable', () => {
+  .add('EngineerPage', () => {
     return (
       <StateWrapper>
         {({ subsystems, breakdowns, directionMoved, readyToTrack, trackBreakdown }) => (

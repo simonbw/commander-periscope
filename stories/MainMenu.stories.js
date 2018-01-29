@@ -5,7 +5,7 @@ import { UnconnectedMainMenu } from '../src/client/components/menu/MainMenu';
 import '../styles/main.css';
 import StoryWrapper from './StoryWrapper';
 
-storiesOf('MainMenu', module)
+storiesOf('Components', module)
   .addDecorator(StoryWrapper)
   .add('MainMenu', () => (
     <UnconnectedMainMenu
