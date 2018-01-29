@@ -87,7 +87,7 @@ export class JoinCustomGameInput extends Component {
             endAdornment={
               <InputAdornment position="end">
                 <IconButton type="submit" disabled={Boolean(error)} color="primary">
-                  <Tooltip title="Join Lobby" enterDelay={500} placement="bottom">
+                  <Tooltip title="Join Lobby" enterDelay={300} placement="bottom">
                     <Forward/>
                   </Tooltip>
                 </IconButton>

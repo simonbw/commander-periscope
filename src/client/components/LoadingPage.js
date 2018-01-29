@@ -16,6 +16,7 @@ const FloatingCircularProgress = withTheme()(({ theme }) => {
   return (
     <CircularProgress
       style={{
+        // TODO: Use withStyles
         color: '#FFFFFF',
         // TODO: Pull shadow from theme
         filter: 'drop-shadow(0 1px 5px rgba(0, 0, 0, 0.2)) drop-shadow(0 2px 2px rgba(0, 0, 0, 0.14))',

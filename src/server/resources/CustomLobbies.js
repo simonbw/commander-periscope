@@ -64,7 +64,7 @@ CustomLobbies.setUsername = (lobbyId, playerId, username) => (
   )
 );
 
-// Pass null for team and role to unselect
+// Pass null for team and role to deselect
 CustomLobbies.selectRole = (lobbyId, playerId, team, role) => (
   CustomLobbies.update(lobbyId, 'role_selected', { team, role }, async (lobby) => {
     const currentPlayer = lobby.getIn([TEAMS, team, role]);

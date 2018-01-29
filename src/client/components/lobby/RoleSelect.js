@@ -1,23 +1,25 @@
 import classnames from 'classnames';
-import Immutable from 'immutable';
 import {
   Divider,
+  Fade,
   IconButton,
   List,
   ListItem,
+  ListItemAvatar,
   ListItemSecondaryAction,
   ListItemText,
   ListSubheader,
-  Paper
+  Paper,
+  Tooltip
 } from 'material-ui';
-import { Clear } from 'material-ui-icons';
+import { Clear, Done } from 'material-ui-icons';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import styles from '../../../../styles/RoleSelect.css';
 import * as Role from '../../../common/Role';
 import { ALL_ROLES, getAvatar } from '../../../common/Role'; // TODO: Rename this
 import { LOBBY, READIED, TEAMS, USER_ID, USERNAMES } from '../../../common/StateFields';
-import { BLUE, RED } from '../../../common/Team';
+import { BLUE, getDisplayName, RED } from '../../../common/Team';
 import { selectRole } from '../../actions/CustomLobbyActions';
 
 const UnconnectedRoleSelectContainer = ({ lobby, userId, selectRole }) => {
@@ -44,20 +46,27 @@ const RoleSelectTeamList = ({ lobby, team, userId, selectRole }) => {
     <div className={styles.RoleSelectTeamList}>
       <Paper>
         <List>
-          <ListSubheader style={{ color: team === RED ? '#F00' : '#00F' }}><h2>{team}</h2></ListSubheader>
+          <ListSubheader
+            className={classnames(
+              styles.TeamName,
+              team === RED ? styles.red : styles.blue)
+            }
+          >
+            <h2>{getDisplayName(team)}</h2>
+          </ListSubheader>
           <Divider/>
           {ALL_ROLES.map((role) => {
             const player = lobby.getIn([TEAMS, team, role]);
             return (
               <RoleCard
-                key={role}
-                team={team}
-                isReady={player && lobby.get(READIED).includes(player)}
+                isReady={Boolean(player) && lobby.get(READIED).includes(player)}
                 isUser={player === userId}
+                key={role}
                 onSelect={(() => selectRole(role, team))}
+                onUnSelect={(() => selectRole(null, null))}
                 playerId={player}
                 role={role}
-                onUnSelect={(() => selectRole(null, null))}
+                team={team}
                 username={player && lobby.getIn([USERNAMES, player], 'Anonymous')}
               />
             );
@@ -80,37 +89,51 @@ class RoleCard extends Component {
   }
   
   render() {
-    const { role, team, username, isUser, onUnSelect } = this.props;
+    const { isReady, isUser, onUnSelect, role, team, username } = this.props;
     const isOther = username && !isUser;
     return (
       <ListItem
-        button
         classes={{
           container: classnames(
             styles.RoleCard,
+            { [styles.isOther]: isOther },
+            { [styles.isReady]: isReady },
             { [styles.isUser]: isUser },
-            { [styles.isOther]: isOther }
           )
         }}
-        disabled={isOther}
+        button={!isOther}
         id={`${team}-${role}`}
         onClick={() => this.onClick()}
       >
-        {getAvatar(role)}
+        <ListItemAvatar>
+          {getAvatar(role)}
+        </ListItemAvatar>
         <ListItemText
           primary={Role.getDisplayName(role)}
-          secondary={username ?
-            (<span className={styles.Username}>{username}</span>)
-            :
-            (<span className={styles.Available}>Available</span>)}
+          secondary={
+            <span className={username ? styles.Username : styles.Available}>
+              {username ? username : 'Available'}
+            </span>
+          }
         />
+        {/* Hide instead of remove this element to avoid element swapping */}
         <ListItemSecondaryAction>
           {isUser && (
-            <IconButton onClick={onUnSelect}>
-              <Clear/>
+            <Tooltip enterDelay={300} title={'Deselect Role'} /*TODO: Tooltip delay in constant*/>
+              <IconButton onClick={onUnSelect}>
+                <Clear/>
+              </IconButton>
+            </Tooltip>
+          )}
+          {!isUser && isReady && (
+            <IconButton style={{ cursor: 'default', color: '#00CC00' }} disableRipple>
+              <Tooltip enterDelay={300} title={'User is Ready'}>
+                <Done/>
+              </Tooltip>
             </IconButton>
           )}
         </ListItemSecondaryAction>
+      
       </ListItem>
     );
   };

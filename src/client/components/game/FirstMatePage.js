@@ -48,7 +48,7 @@ const System = ({ name, charge, maxCharge, chargeSystem, readyToCharge }) => {
       <ChargeMeter charge={charge} maxCharge={maxCharge}/>
       <div className={styles.SystemPanelRight}>
         <div className={styles.SystemName}>{name}</div>
-        <Tooltip title={systemType} placement="right" enterDelay={500}>
+        <Tooltip title={systemType} placement="right" enterDelay={300}>
           {getIconForSystemType(systemType)}
         </Tooltip>
         <Button

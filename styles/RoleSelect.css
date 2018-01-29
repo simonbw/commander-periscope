@@ -11,6 +11,17 @@
     flex-basis: 250px; /* TODO: Is this dangerous? */
 }
 
+.TeamName {
+}
+
+.TeamName.red {
+    color: #FF0000;
+}
+
+.TeamName.blue {
+    color: #0000FF;
+}
+
 .RoleCard {
     transition: background-color 0.25s ease;
 }
@@ -20,6 +31,9 @@
 }
 
 .RoleCard.isOther {
+}
+
+.RoleCard.isReady {
 }
 
 .Username {

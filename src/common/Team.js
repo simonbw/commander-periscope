@@ -16,8 +16,8 @@ export function otherTeam(team) {
 export function getDisplayName(team) {
   switch (team) {
     case RED:
-      return 'Red Team';
+      return 'Red';
     case BLUE:
-      return 'Blue Team';
+      return 'Blue';
   }
 }
