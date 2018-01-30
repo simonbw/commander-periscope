@@ -1,7 +1,8 @@
 Commander Periscope
 ===================
 
-## Setup
+
+### Setup
 
 **Prerequisite:** You will need to have [yarn](https://yarnpkg.com/en/docs/install) installed.
 
@@ -12,7 +13,19 @@ yarn
 yarn start
 ```
 
-## Contributing
+
+### Storybook
+
+We use [storybook](https://storybook.js.org/) to test individual pages and components.
+To start the storybook server run:
+```$bash
+yarn storybook
+```
+
+We also publish the storybook for the code on master to the web. You can view that [here](simonbw.github.io/commander-periscope/index.html).
+
+
+### Contributing
 
 There are a number of open issues. Feel free to comment on one you're interested in and start working on it.
 When you think you're finished and the tests are passing, submit a pull request.
