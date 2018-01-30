@@ -2,6 +2,11 @@ const path = require('path');
 // const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 
 module.exports = {
+  // entry: "./src/client/index.js",
+  // output: {
+  //   filename: "index.js",
+  //   path: path.resolve('dist/client')
+  // },
   module: {
     rules: [{
       test: /\.jsx?$/,
@@ -18,6 +23,7 @@ module.exports = {
       include: path.resolve('images')
     }, {
       test: /\.css?$/,
+      include: path.resolve('styles'),
       use: ['style-loader', {
         loader: 'css-loader',
         options: {
@@ -28,8 +34,7 @@ module.exports = {
     }]
   },
   plugins: [
-    // your custom plugins
     // new HardSourceWebpackPlugin() // makes things faster
   ],
-  devtool: "inline-source-map",
+  devtool: "cheap-module-source-map",
 };
