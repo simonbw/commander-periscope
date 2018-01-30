@@ -1,71 +1,83 @@
-import { action, decorateAction } from '@storybook/addon-actions';
+import { action } from '@storybook/addon-actions';
 import { storiesOf } from '@storybook/react';
 import Immutable from 'immutable';
-import React from 'react';
-import { UnconnectedCaptainPage } from '../src/client/components/game/CaptainPage';
-import { CAPTAIN } from '../src/common/Role';
+import React, { Component } from 'react';
+import { UnconnectedCaptainContainer } from '../src/client/components/game/CaptainPage';
+import { getNewLocation } from '../src/common/Grid';
 import {
   COMMON,
+  GRID,
   STARTED,
   SUB_LOCATION,
   SUB_PATH,
   SYSTEMS,
-  TEAMS,
   TURN_INFO,
   WAITING_FOR_ENGINEER,
   WAITING_FOR_FIRST_MATE
 } from '../src/common/StateFields';
-import { CHARGE, DRONE, MAX_CHARGE } from '../src/common/System';
-import { RED } from '../src/common/Team';
 import { getDataForUser } from '../src/server/resources/UserGameTransform';
 import '../styles/main.css';
 import { mockGame } from '../test/mocks';
 import StoryWrapper from './StoryWrapper';
 
-const locationAction = decorateAction([(args) => [args[0].get(0), args[0].get(1)]]);
-
-storiesOf('Components/CaptainPage', module)
+storiesOf('Components', module)
   .addDecorator(StoryWrapper)
   .add('Not Started', () => {
-    const fullGame = mockGame();
-    const gameData = getDataForUser(fullGame, fullGame.getIn([COMMON, TEAMS, RED, CAPTAIN]));
     return (
-      <UnconnectedCaptainPage
-        game={gameData}
-        headInDirection={action('headInDirection')}
-        setStartLocation={locationAction('setStartLocation')}
-      />
+      <StateWrapper>
+        {({ game, setStartLocation, headInDirection }) => (
+          <UnconnectedCaptainContainer
+            grid={game.get(GRID)}
+            headInDirection={headInDirection}
+            setStartLocation={setStartLocation}
+            started={game.getIn([COMMON, STARTED])}
+            subLocation={game.get(SUB_LOCATION)}
+            subPath={game.get(SUB_PATH)}
+            systems={game.get(SYSTEMS)}
+            waitingForEngineer={game.getIn([TURN_INFO, WAITING_FOR_ENGINEER])}
+            waitingForFirstMate={game.getIn([TURN_INFO, WAITING_FOR_FIRST_MATE])}
+          />
+        )}
+      </StateWrapper>
     );
-  })
-  .add('Waiting', () => {
-    const fullGame = mockGame()
-      .setIn([RED, SUB_LOCATION], Immutable.List([4, 3]))
-      .setIn([RED, SUB_PATH], Immutable.fromJS([[4, 4], [4, 5], [5, 5]]))
-      .updateIn([RED, TURN_INFO], (turnInfo) => turnInfo
-        .set(WAITING_FOR_ENGINEER, true)
-        .set(WAITING_FOR_FIRST_MATE, true))
-      .setIn([COMMON, STARTED], true);
-    const gameData = getDataForUser(fullGame, fullGame.getIn([COMMON, TEAMS, RED, CAPTAIN]));
-    return (
-      <UnconnectedCaptainPage
-        game={gameData}
-        headInDirection={action('headInDirection')}
-        setStartLocation={locationAction('setStartLocation')}
-      />
-    );
-  })
-  .add('Started', () => {
-    const fullGame = mockGame()
-      .setIn([COMMON, STARTED], true)
-      .setIn([RED, SUB_LOCATION], Immutable.List([4, 3]))
-      .setIn([RED, SUB_PATH], Immutable.fromJS([[4, 4], [4, 5], [5, 5]]))
-      .updateIn([RED, SYSTEMS, DRONE], (drone) => drone.set(CHARGE, drone.get(MAX_CHARGE)));
-    const gameData = getDataForUser(fullGame, fullGame.getIn([COMMON, TEAMS, RED, CAPTAIN]));
-    return (
-      <UnconnectedCaptainPage
-        game={gameData}
-        headInDirection={action('headInDirection')}
-        setStartLocation={locationAction('setStartLocation')}
-      />
-    )
   });
+
+class StateWrapper extends Component {
+  constructor(props) {
+    super(props);
+    const game = getDataForUser(mockGame(), 'p1')
+      .update(SYSTEMS, systems => systems.map(() => true));
+    this.state = {
+      game: game
+    }
+  }
+  
+  setStartLocation(location) {
+    action('setStartLocation')(Immutable.get(location, 0), Immutable.get(location, 1));
+    this.setState({
+      game: this.state.game
+        .set(SUB_LOCATION, location)
+        .setIn([COMMON, STARTED], true)
+    })
+  }
+  
+  headInDirection(direction) {
+    action('headInDirection')(direction);
+    const game = this.state.game;
+    const oldLocation = game.get(SUB_LOCATION);
+    const newLocation = getNewLocation(oldLocation, direction);
+    this.setState({
+      game: game
+        .set(SUB_LOCATION, newLocation)
+        .update(SUB_PATH, path => path.push(oldLocation))
+    })
+  }
+  
+  render() {
+    return this.props.children({
+      setStartLocation: (location) => this.setStartLocation(location),
+      headInDirection: (direction) => this.headInDirection(direction),
+      ...this.state,
+    })
+  }
+}
