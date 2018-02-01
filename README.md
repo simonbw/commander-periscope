@@ -10,7 +10,7 @@ Commander Periscope
 git clone https://github.com/simonbw/commander-periscope
 cd commander-periscope
 yarn
-yarn start
+yarn dev
 ```
 
 
