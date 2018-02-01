@@ -19,6 +19,28 @@ export function mockGrid() {
     .setIn([4, 12], LAND_TILE);
 }
 
+
+export function mockPath() {
+  return Immutable.fromJS([
+    [7,8],
+    [7,9],
+    [7,10],
+    [8,10],
+    [9,10],
+    [9,9],
+    [10,9],
+  ])
+}
+
+export function mockMines() {
+  return Immutable.fromJS([
+    [8,8],
+    [5,10],
+    [11,10],
+    [2,1],
+  ])
+}
+
 // Create a game with players = ['p1',...] and usernames ['player1'...]
 export function mockGame(gameId = 'gameId') {
   const lobby = mockLobby();
