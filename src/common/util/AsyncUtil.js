@@ -7,3 +7,10 @@ export async function waitForSettled(promise) {
     // we just wanna do something when it's over
   }
 }
+
+// Resolves after the given number of milliseconds
+export function wait(millis) {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(), millis);
+  });
+}

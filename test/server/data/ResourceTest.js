@@ -2,7 +2,7 @@ import Immutable from 'immutable';
 import { ID } from '../../../src/common/StateFields';
 import Resource from '../../../src/server/resources/Resource';
 import expect from '../../expect';
-import { wait } from '../../testUtils';
+import { wait } from '../../../src/common/util/AsyncUtil';
 
 describe('Resource', () => {
   describe('.create', () => {
