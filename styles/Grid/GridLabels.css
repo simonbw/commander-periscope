@@ -1,0 +1,20 @@
+.GridContainer {
+    width: 100%;
+    max-width: 500px;
+    filter: drop-shadow(0 1px 5px rgba(0, 0, 0, 0.2)) drop-shadow(0 2px 2px rgba(0, 0, 0, 0.14));
+}
+
+.GridLabel {
+    fill: #FFFFFF;
+    font-family: 'Audiowide', sans-serif;
+    user-select: none;
+    /*text-shadow: 0 1px 5px rgba(0, 0, 0, 0.2), 0 2px 2px rgba(0, 0, 0, 0.14), 0 3px 1px rgba(0, 0, 0, 0.12);*/
+}
+
+.GridLabel.selected {
+    fill: #FF0000;
+}
+
+.GridTileSelect {
+    transition: all 1s ease;
+}

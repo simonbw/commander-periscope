@@ -1,45 +1,60 @@
-import { action, decorateAction } from '@storybook/addon-actions';
+import { action } from '@storybook/addon-actions';
 import { storiesOf } from '@storybook/react';
-import Immutable from 'immutable';
-import React from 'react';
-import Grid from '../src/client/components/game/GridView';
-import { LAND_TILE } from '../src/common/Grid';
+import React, { Component } from 'react';
+import { UnconnectedEngineerPage } from '../src/client/components/game/EngineerPage';
+import { ALL_DIRECTIONS, NORTH } from '../src/common/Grid';
+import { BREAKDOWNS, SUBSYSTEMS } from '../src/common/StateFields';
+import { RED } from '../src/common/Team';
 import '../styles/main.css';
-import { mockGrid } from '../test/mocks';
+import { mockGame } from '../test/mocks';
 import StoryWrapper from './StoryWrapper';
 
-const grid = mockGrid();
-
-const locationAction = decorateAction([(args) => [args[0].get(0), args[0].get(1)]]);
-
-storiesOf('Components/Grid', module)
+storiesOf('Components', module)
   .addDecorator(StoryWrapper)
-  .addDecorator((story) => (
-    <div style={{ display: 'flex' }}>
-      {story()}
-    </div>
-  ))
-  .add('Basic Grid', () => (
-    <Grid grid={grid}/>
-  ))
-  .add('Location and Path', () => (
-    <Grid
-      grid={grid}
-      subLocation={Immutable.List([4, 3])}
-      subPath={Immutable.fromJS([[4, 4], [4, 5], [5, 5]])}
-    />
-  ))
-  .add('Clickable Grid (water only)', () => (
-    <Grid
-      grid={grid}
-      canClick={(position) => grid.getIn(position) !== LAND_TILE}
-      onClick={locationAction('onClick')}
-    />
-  ))
-  .add('SectorChooser (evens only)', () => (
-    <Grid
-      grid={grid}
-      canClickSector={(sector) => sector % 2 === 0}
-      onClickSector={action('onClickSector')}
-    />
-  ));
+  .add('EngineerPage', () => {
+    return (
+      <StateWrapper>
+        {({ subsystems, breakdowns, directionMoved, readyToTrack, trackBreakdown }) => (
+          <UnconnectedEngineerPage
+            subsystems={subsystems}
+            breakdowns={breakdowns}
+            directionMoved={directionMoved}
+            readyToTrack={readyToTrack}
+            trackBreakdown={trackBreakdown}
+          />
+        )}
+      </StateWrapper>
+    );
+  });
+
+class StateWrapper extends Component {
+  constructor(props) {
+    super(props);
+    const game = mockGame();
+    const subsystems = game.get(SUBSYSTEMS);
+    const breakdowns = game.getIn([RED, BREAKDOWNS]);
+    this.state = {
+      subsystems,
+      breakdowns,
+      directionMoved: NORTH,
+      readyToTrack: true
+    }
+  }
+  
+  trackBreakdown(subsystemIndex) {
+    action('trackingBreakdown')(subsystemIndex);
+    this.setState({
+      breakdowns: this.state.breakdowns.add(subsystemIndex),
+      directionMoved: ALL_DIRECTIONS[Math.floor(Math.random() * ALL_DIRECTIONS.length)],
+      readyToTrack: false
+    }); // TODO: Circuits?
+    setTimeout(() => this.setState({ readyToTrack: true }), 1000);
+  }
+  
+  render() {
+    return this.props.children({
+      trackBreakdown: (subsystemIndex) => this.trackBreakdown(subsystemIndex),
+      ...this.state,
+    })
+  }
+}
