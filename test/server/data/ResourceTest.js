@@ -84,13 +84,13 @@ describe('Resource', () => {
       // Do a bunch of updates and verify that they happened in order
       const promises = [];
       const result = 'these letters should all come out in order';
-      for (let c of result) {
+      for (const c of result) {
         promises.push(resource.update('instance_id', 'action', {}, async (instance) => {
-          await wait(Math.random() * 10);
+          await wait(Math.random() * 3);
           return instance.update('foo', foo => foo + c);
         }));
       }
-      await Promise.all(promises);
+      await Promise.race(promises);
       
       expect((await resource.get('instance_id')).get('foo')).to.equal(result);
     });
@@ -110,9 +110,9 @@ describe('Resource', () => {
       // Do a bunch of updates and verify that they happened in order
       const promises = [];
       const result = 'these letters should all come out in order';
-      for (let c of result) {
+      for (const c of result) {
         promises.push(resource.update('instance_id', 'action', {}, async (instance) => {
-          await wait(Math.random() * 10);
+          await wait(Math.random() * 3);
           return instance.update('foo', foo => foo + c);
         }));
       }
