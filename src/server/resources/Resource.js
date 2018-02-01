@@ -1,8 +1,7 @@
 import PubSub from 'pubsub-js';
 import shortid from 'shortid';
-import { wait } from '../../../test/testUtils';
 import { ID } from '../../common/StateFields';
-import { waitForSettled } from '../../common/util/AsyncUtil';
+import { wait, waitForSettled } from '../../common/util/AsyncUtil';
 
 // TODO: Consider renaming this to DAO (Data Access Object)
 // TODO: Garbage collection

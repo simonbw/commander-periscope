@@ -1,5 +1,5 @@
 import PubSub from 'pubsub-js';
-import { wait } from '../../../test/testUtils';
+import { wait } from '../../common/util/AsyncUtil';
 import {
   CUSTOM_LOBBY_JOINED_MESSAGE,
   CUSTOM_LOBBY_READY_MESSAGE,

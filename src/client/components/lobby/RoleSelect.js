@@ -15,9 +15,10 @@ import { Clear, Done } from 'material-ui-icons';
 import React, { Component } from 'react';
 import styles from '../../../../styles/RoleSelect.css';
 import * as Role from '../../../common/Role';
-import { ALL_ROLES, getAvatar } from '../../../common/Role'; // TODO: Rename this
+import { ALL_ROLES} from '../../../common/Role'; // TODO: Rename this
 import { READIED, TEAMS, USERNAMES } from '../../../common/StateFields';
 import { BLUE, getDisplayName, RED } from '../../../common/Team';
+import { getAvatarForRole } from '../RoleAvatars';
 
 const RoleSelect = ({ lobby, userId, selectRole }) => {
   return (
@@ -103,7 +104,7 @@ class RoleCard extends Component {
         onClick={() => this.onClick()}
       >
         <ListItemAvatar>
-          {getAvatar(role)}
+          {getAvatarForRole(role)}
         </ListItemAvatar>
         <ListItemText
           primary={Role.getDisplayName(role)}

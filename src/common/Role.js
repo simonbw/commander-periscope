@@ -1,5 +1,3 @@
-import { CaptainAvatar, EngineerAvatar, FirstMateAvatar, RadioOperatorAvatar } from '../client/components/RoleAvatars';
-
 export const CAPTAIN = 'captain';
 export const FIRST_MATE = 'first_mate';
 export const RADIO_OPERATOR = 'radio_operator';
@@ -21,16 +19,3 @@ export const getDisplayName = (role) => {
   throw new Error(`Invalid role: ${role}`);
 };
 
-export const getAvatar = (role) => {
-  switch (role) {
-    case CAPTAIN:
-      return CaptainAvatar();
-    case FIRST_MATE:
-      return FirstMateAvatar();
-    case RADIO_OPERATOR:
-      return RadioOperatorAvatar();
-    case ENGINEER:
-      return EngineerAvatar();
-  }
-  throw new Error(`Invalid role: ${role}`);
-};
