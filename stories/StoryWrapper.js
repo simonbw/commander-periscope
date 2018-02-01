@@ -27,13 +27,4 @@ const StoryWrapper = (story) => {
   );
 };
 
-const oldError = console.error;
-console.error = (e) => {
-  if (typeof e === "string") {
-    throw new Error(e);
-  } else {
-    oldError.call(console, e)
-  }
-};
-
 export default StoryWrapper;

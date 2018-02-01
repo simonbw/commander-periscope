@@ -7,6 +7,7 @@ const ChargeMeter = ({ charge, maxCharge }) => (
   <div className={styles.ChargeMeter}>
     {Immutable.Range(0, maxCharge).map((i) => (
       <div
+        key={i}
         className={classnames(
           styles.ChargeMeterUnit,
           { [styles.charged]: i < charge }
