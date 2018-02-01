@@ -80,6 +80,7 @@
     "test": "NODE_ENV=test mocha --exit --require babel-register --recursive test",
     "test-unit": "NODE_ENV=test mocha --exit --require babel-register --recursive test/server test/client",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook -o docs"
+    "build-storybook": "build-storybook -o docs",
+    "postinstall": "$npm_execpath run build"
   }
 }
