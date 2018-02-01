@@ -1,8 +1,9 @@
 import { List } from 'immutable';
+import { EAST, NORTH, SOUTH } from '../../../src/common/Direction';
+import { WEST } from '../../../src/common/Direction';
 import {
-  EAST, getDirection, getManhattanDistance, getNewLocation, isAdjacent, NORTH, SOUTH,
-  WEST
-} from '../../../src/common/Grid';
+  getDirection,
+  getManhattanDistance, getNewLocation, isAdjacent} from '../../../src/common/Grid';
 import expect from '../../expect';
 
 describe('Grid', () => {

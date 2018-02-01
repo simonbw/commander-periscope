@@ -4,28 +4,9 @@
 // [1, 0] is one tile East of [0, 0], while [0, 1] is one tile South of [0, 0].
 
 import Immutable from 'immutable';
+import { EAST, NORTH, SOUTH, WEST } from './Direction';
 
-export const NORTH = 'NORTH';
-export const EAST = 'EAST';
-export const SOUTH = 'SOUTH';
-export const WEST = 'WEST';
-
-export const ALL_DIRECTIONS = [NORTH, EAST, SOUTH, WEST];
-
-export function getDirectionArrow(direction) {
-  switch (direction) {
-    case NORTH:
-      return '↑';
-    case EAST:
-      return '→';
-    case SOUTH:
-      return '↓';
-    case WEST:
-      return '←';
-    default:
-      throw new Error(`Invalid direction: ${direction}`);
-  }
-}
+// TODO: Separate out this file into other stuff
 
 export const WATER_TILE = 0;
 export const LAND_TILE = 1;

@@ -1,47 +1,34 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { LocationPropType } from '../../GamePropTypes';
 
-class GridMouseLocation extends Component {
+// TODO: Implement shouldComponentUpdate or something. Don't rerender children when tile doesn't change
+class GridTileSelect extends Component {
   static propTypes = {
-    children: PropTypes.func.isRequired
+    children: PropTypes.func.isRequired,
+    mouseLocation: LocationPropType,
   };
   
   constructor(props) {
     super(props);
-    this.state = {
-      mousePosition: null
-    };
-    this._gRef = null;
+    this.state = {};
   }
   
-  updateMousePosition(clientX, clientY) {
-    const svg = this._gRef.ownerSVGElement;
-    const p = svg.createSVGPoint();
-    
-    p.x = clientX;
-    p.y = clientY;
-    const p2 = p.matrixTransform(svg.getScreenCTM().inverse());
-    
-    const mousePosition = [p2.x, p2.y];
-    this.setState({ mousePosition });
+  getTile(mouseLocation) {
+    const tile = mouseLocation && mouseLocation.map((x) => Math.floor(x));
+    if (!tile || tile.some(x => x < 0 || tile[x] >= 15)) {
+      return null;
+    }
+    return tile;
   }
   
   render() {
     return (
-      <g ref={(gRef) => this._gRef = gRef}>
-        {this.props.children(this.state.mousePosition)}
-        <rect
-          fill="transparent"
-          height={15} // TODO: Don't hard code this
-          onMouseLeave={() => this.setState({ mousePosition: null })}
-          onMouseMove={(event) => this.updateMousePosition(event.clientX, event.clientY)}
-          width={15} // TODO: Don't hard code this
-          x={0}
-          y={0}
-        />
+      <g>
+        {this.props.children(this.getTile(this.props.mouseLocation))}
       </g>
     );
   }
 }
 
-export default GridMouseLocation;
+export default GridTileSelect;

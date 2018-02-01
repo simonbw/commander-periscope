@@ -1,32 +1,11 @@
-.GridSectorLabel {
-    alignment-baseline: middle;
-    fill: #11447722;
-    font-family: 'Audiowide', sans-serif;
-    font-size: 3.5px;
-    font-weight: bold;
-    transition: all 0.2s ease;
-    user-select: none;
+.MoveOption {
+    stroke-opacity: 0.3;
+    fill-opacity: 0.3;
+    fill: red;
+    stroke: red;
 }
 
-.GridSectorLabel.selected {
-    fill: #FFFFFF;
-    font-size: 4px;
-}
-
-.GridSectorBack {
-    fill-opacity: 0;
-    fill: #114477;
-    transition: fill-opacity 0.2s ease;
-}
-
-.GridSectorBack.selected {
-    fill-opacity: 0.6;
-    cursor: pointer;
-}
-
-.GridSectorLine {
-    stroke: #FFFFFFAA;
-    stroke-width: 0.04;
-    stroke-dashoffset: 0.2;
-    stroke-dasharray: 0.15 0.1;
+.selected {
+    stroke-opacity: 1;
+    fill-opacity: 1;
 }

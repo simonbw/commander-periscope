@@ -3,30 +3,32 @@ import React from 'react';
 import { LocationPropType } from '../../GamePropTypes';
 
 // TODO: This should probably be a PureComponent
-const SubMarker = ({ subLocation: location, color = "#000000" }) => {
+const MineMarker = ({ location, color = "#CC0000" }) => {
   return (
-    <g>
+    <g transform={`translate(${location.get(0) + 0.5},${location.get(1) + 0.5})`}>
       <circle
-        cx={location.get(0) + 0.5}
-        cy={location.get(1) + 0.5}
-        r={0.15}
         fill={color}
+        r={0.16}
+        stroke="none"
       />
-      <circle
-        cx={location.get(0) + 0.5}
-        cy={location.get(1) + 0.5}
-        r={0.25}
-        fill={"none"}
-        stroke={color}
-        strokeWidth={0.04}
-      />
+      {[0, 45, 90, 135].map((angle) => (
+        <line
+          key={angle}
+          x1={-0.25} y1={0}
+          x2={0.25} y2={0}
+          stroke={color}
+          strokeWidth={0.05}
+          strokeLinecap="round"
+          transform={`rotate(${angle})`}
+        />
+      ))}
     </g>
   );
 };
 
-SubMarker.propTypes = {
+MineMarker.propTypes = {
   location: LocationPropType.isRequired,
-  color: PropTypes.isRequired
+  color: PropTypes.string
 };
 
-export default SubMarker;
+export default MineMarker;

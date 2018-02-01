@@ -1,22 +1,16 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import styles from '../../../../../styles/Grid/GridTileSelect.css';
+import styles from '../../../../../styles/Grid/GridCrosshairs.css';
+import { LocationPropType } from '../../GamePropTypes';
 
-function isValidTile(tile) {
-  if (!tile || tile[0] < 0 || tile[1 < 0 || tile[0] >= 15 || tile[1] >= 15]) {
-    return false;
-  }
-  return true;
-}
-
-const GridTileSelect = ({ tile, color = "#FFFFFFDD" }) => {
-  if (!isValidTile(tile)) {
+const GridCrosshairs = ({ tile, color = "#FFFFFFDD" }) => {
+  if (!tile) {
     return <g/>;
   }
-  const [cx, cy] = tile.map(c => c + 0.5);
+  const [cx, cy] = tile.map(c => c + 0.5).toArray();
   const r = 0.25;
   return (
-    <g className={styles.GridTileSelect}>
+    <g className={styles.GridCrosshairs}>
       <circle
         cx={cx} cy={cy} r={r} fill="none" stroke={color} strokeWidth={0.08}
       />
@@ -29,9 +23,9 @@ const GridTileSelect = ({ tile, color = "#FFFFFFDD" }) => {
   );
 };
 
-GridTileSelect.propTypes = {
-  tile: PropTypes.array,
+GridCrosshairs.propTypes = {
+  tile: LocationPropType,
   color: PropTypes.string,
 };
 
-export default GridTileSelect;
+export default GridCrosshairs;

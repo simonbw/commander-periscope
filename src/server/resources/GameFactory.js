@@ -1,11 +1,11 @@
 import Immutable from 'immutable/dist/immutable';
-import { ALL_DIRECTIONS, WATER_TILE } from '../../common/Grid';
+import { ALL_DIRECTIONS } from '../../common/Direction';
+import { WATER_TILE } from '../../common/Grid';
 import {
   ACTIONS,
   BREAKDOWNS,
   COMMON,
   CREATED,
-  DIRECTION_MOVED,
   GRID,
   HIT_POINTS,
   ID,

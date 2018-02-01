@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Fragment } from 'react';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import styles from '../../../../../styles/CaptainPage.css';
 import { WATER_TILE } from '../../../../common/Grid';
@@ -14,18 +15,19 @@ import {
   WAITING_FOR_FIRST_MATE
 } from '../../../../common/StateFields';
 import { headInDirection, setStartLocation } from '../../../actions/GameActions';
-import DirectionSelect from '../DirectionSelect';
-import Grid from '../GridView';
+import { GridPropType, LocationListPropType, LocationPropType } from '../../GamePropTypes';
+import Grid from '../OldGridView';
+import DirectionSelect from './DirectionSelect';
 
 export class UnconnectedCaptainContainer extends React.Component { // export for testing
   static propTypes = {
-    grid: PropTypes.object.isRequired,
+    grid: GridPropType,
     headInDirection: PropTypes.func.isRequired,
     setStartLocation: PropTypes.func.isRequired,
     started: PropTypes.bool.isRequired,
-    subLocation: PropTypes.object,
-    subPath: PropTypes.object.isRequired,
-    systems: PropTypes.object.isRequired,
+    subLocation: LocationPropType.isRequired,
+    subPath: LocationListPropType.isRequired,
+    systems: ImmutablePropTypes.map.isRequired,
     waitingForEngineer: PropTypes.bool.isRequired,
     waitingForFirstMate: PropTypes.bool.isRequired,
   };

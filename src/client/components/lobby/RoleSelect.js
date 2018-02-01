@@ -1,7 +1,6 @@
 import classnames from 'classnames';
 import {
   Divider,
-  Fade,
   IconButton,
   List,
   ListItem,
@@ -14,13 +13,11 @@ import {
 } from 'material-ui';
 import { Clear, Done } from 'material-ui-icons';
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import styles from '../../../../styles/RoleSelect.css';
 import * as Role from '../../../common/Role';
 import { ALL_ROLES, getAvatar } from '../../../common/Role'; // TODO: Rename this
-import { LOBBY, READIED, TEAMS, USER_ID, USERNAMES } from '../../../common/StateFields';
+import { READIED, TEAMS, USERNAMES } from '../../../common/StateFields';
 import { BLUE, getDisplayName, RED } from '../../../common/Team';
-import { selectRole } from '../../actions/CustomLobbyActions';
 
 const RoleSelect = ({ lobby, userId, selectRole }) => {
   return (

@@ -22,7 +22,7 @@ import StoryWrapper from './StoryWrapper';
 
 storiesOf('Components', module)
   .addDecorator(StoryWrapper)
-  .add('Not Started', () => {
+  .add('Captain Page', () => {
     return (
       <StateWrapper>
         {({ game, setStartLocation, headInDirection }) => (

@@ -3,7 +3,7 @@ import { Badge, Divider, IconButton, Paper, withStyles } from 'material-ui';
 import React from 'react';
 import { connect } from 'react-redux';
 import styles from '../../../../styles/EngineerPage.css';
-import { ALL_DIRECTIONS, getDirectionArrow } from '../../../common/Grid';
+import { ALL_DIRECTIONS, getDirectionArrow } from '../../../common/Direction';
 import { BREAKDOWNS, GAME, ID, LAST_DIRECTION_MOVED, SUBSYSTEMS } from '../../../common/StateFields';
 import { CIRCUIT, DIRECTION, SYSTEM_TYPE } from '../../../common/System';
 import { trackBreakdown } from '../../actions/GameActions';

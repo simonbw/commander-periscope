@@ -1,5 +1,5 @@
 import { SvgIcon } from 'material-ui';
-import { Camera, Clear, GpsFixed, RssFeed, VolumeOff } from 'material-ui-icons';
+import { Clear, GpsFixed, RssFeed, VolumeOff } from 'material-ui-icons';
 import React from 'react';
 import { COMMS, getSystemType, NUCLEAR, SPECIAL, WEAPONS } from '../../common/System';
 

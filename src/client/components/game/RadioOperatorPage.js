@@ -3,7 +3,7 @@ import { Avatar, Collapse, Divider, Fade, List, ListItem, ListItemText, ListSubh
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import styles from '../../../../styles/RadioOperatorPage.css';
-import { getDirectionArrow } from '../../../common/Grid';
+import { getDirectionArrow } from '../../../common/Direction';
 import {
   ACTION_ID,
   ACTION_TYPE,
@@ -14,7 +14,7 @@ import {
   SYSTEM_USED
 } from '../../../common/StateFields';
 import { getIconForSystem } from '../SystemIcons';
-import Grid from './GridView';
+import Grid from './OldGridView';
 
 const MAX_VISIBLE_ACTIONS = 10;
 

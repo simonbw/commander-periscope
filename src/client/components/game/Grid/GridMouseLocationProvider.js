@@ -1,6 +1,6 @@
+import Immutable from 'immutable';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import Immutable from 'immutable';
 
 // TODO: Find a way to have multiple of these without the performance penalty
 // Consider moving this stuff into the context of the top component
@@ -24,8 +24,8 @@ class GridMouseLocationProvider extends Component {
     p.x = clientX;
     p.y = clientY;
     const p2 = p.matrixTransform(svg.getScreenCTM().inverse());
-
-    this.setState({ mousePosition: Immutable.List(p2.x, p2.y) });
+    
+    this.setState({ mousePosition: Immutable.List([p2.x, p2.y]) });
   }
   
   render() {

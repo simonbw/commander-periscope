@@ -1,13 +1,32 @@
-.GridLabel {
-    fill: #FFFFFF;
+.GridSectorLabel {
+    alignment-baseline: middle;
+    fill: #11447722;
     font-family: 'Audiowide', sans-serif;
+    font-size: 3.5px;
+    font-weight: bold;
+    transition: all 0.2s ease;
     user-select: none;
-    /*text-shadow: 0 1px 5px rgba(0, 0, 0, 0.2), 0 2px 2px rgba(0, 0, 0, 0.14), 0 3px 1px rgba(0, 0, 0, 0.12);*/
-    font-size: 0.5px;
-    transition: font-size, fill 0.2s ease;
 }
 
-.GridLabel.selected {
-    fill: #FF0000;
-    font-size: 0.6px;
+.GridSectorLabel.selected {
+    fill: #FFFFFF;
+    font-size: 4px;
+}
+
+.GridSectorBack {
+    fill-opacity: 0;
+    fill: #114477;
+    transition: fill-opacity 0.2s ease;
+}
+
+.GridSectorBack.selected {
+    fill-opacity: 0.6;
+    cursor: pointer;
+}
+
+.GridSectorLine {
+    stroke: #FFFFFFAA;
+    stroke-width: 0.04;
+    stroke-dashoffset: 0.2;
+    stroke-dasharray: 0.15 0.1;
 }

@@ -33,7 +33,7 @@ export default () => (socket, next) => {
     }
     
     joiningCustomLobby = true;
-  
+    
     if (process.env.NODE_ENV === 'dev') {
       await wait(1000); // artificial delay in dev
     }

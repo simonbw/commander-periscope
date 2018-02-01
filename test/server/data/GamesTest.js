@@ -1,5 +1,7 @@
 import Immutable, { List } from 'immutable';
-import { EAST, LAND_TILE, NORTH, SOUTH, WEST } from '../../../src/common/Grid';
+import { EAST, NORTH, SOUTH } from '../../../src/common/Direction';
+import { WEST } from '../../../src/common/Direction';
+import { LAND_TILE} from '../../../src/common/Grid';
 import {
   BREAKDOWNS, COMMON, GRID, HIT_POINTS, PLAYERS, STARTED, SUB_LOCATION, SUB_PATH, SUBSYSTEMS, SYSTEMS, TURN_INFO,
   USERNAMES, WINNER

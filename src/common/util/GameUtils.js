@@ -1,5 +1,7 @@
-import Immutable from "immutable";
-import { ACTION_TYPE, ACTIONS, BREAKDOWNS, DIRECTION_MOVED, SUBSYSTEMS, SYSTEMS, WINNER } from '../StateFields';
+import Immutable from 'immutable/dist/immutable';
+import { ALL_DIRECTIONS } from '../Direction';
+import { getNewLocation, WATER_TILE } from '../Grid';
+import { ACTION_TYPE, BREAKDOWNS, DIRECTION_MOVED, SUBSYSTEMS, SYSTEMS, WINNER } from '../StateFields';
 import { CHARGE, CIRCUIT, CIRCUITS, DIRECTION, getSystemType, MAX_CHARGE, NUCLEAR, SYSTEM_TYPE } from '../System';
 import { deepFind } from './ImmutableUtil';
 
@@ -76,4 +78,12 @@ export function getLastDirectionMoved(actions) {
       null,
       Immutable.Map({})
     ).get(DIRECTION_MOVED, null)
+}
+
+export function getMoveOptions(subLocation, grid, path, mines) {
+  return Immutable.List(ALL_DIRECTIONS)
+    .map(direction => getNewLocation(subLocation, direction))
+    .filter(location => grid.getIn(location) === WATER_TILE)
+    .filter(location => !path.includes(location))
+    .filter(location => !mines.includes(location));
 }

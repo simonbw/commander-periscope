@@ -3,7 +3,7 @@ import Immutable from 'immutable';
 import Random from 'random-js';
 import React, { Component } from 'react';
 import { UnconnectedRadioOperatorPage } from '../src/client/components/game/RadioOperatorPage';
-import { ALL_DIRECTIONS } from '../src/common/Grid';
+import { ALL_DIRECTIONS } from '../src/common/Direction';
 import { ACTION_ID, ACTION_TYPE, DIRECTION_MOVED, GRID, SYSTEM_USED } from '../src/common/StateFields';
 import { ALL_SYSTEMS } from '../src/common/System';
 import '../styles/main.css';

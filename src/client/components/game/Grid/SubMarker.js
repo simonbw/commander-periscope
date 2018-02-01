@@ -3,19 +3,20 @@ import React from 'react';
 import { LocationPropType } from '../../GamePropTypes';
 
 // TODO: This should probably be a PureComponent
-const SubMarker = ({ subLocation: location, color = "#000000" }) => {
+const SubMarker = ({ location, color = "#000000" }) => {
   return (
     <g>
       <circle
         cx={location.get(0) + 0.5}
         cy={location.get(1) + 0.5}
-        r={0.15}
+        r={0.12}
         fill={color}
+        stroke={"none"}
       />
       <circle
         cx={location.get(0) + 0.5}
         cy={location.get(1) + 0.5}
-        r={0.25}
+        r={0.22}
         fill={"none"}
         stroke={color}
         strokeWidth={0.04}
@@ -26,7 +27,7 @@ const SubMarker = ({ subLocation: location, color = "#000000" }) => {
 
 SubMarker.propTypes = {
   location: LocationPropType.isRequired,
-  color: PropTypes.isRequired
+  color: PropTypes.string
 };
 
 export default SubMarker;

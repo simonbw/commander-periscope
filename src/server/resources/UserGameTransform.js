@@ -1,13 +1,12 @@
 import Immutable from 'immutable';
 import { CAPTAIN, ENGINEER, FIRST_MATE, RADIO_OPERATOR } from '../../common/Role';
 import {
-  ACTION_TYPE,
   ACTIONS,
   BREAKDOWNS,
   COMMON,
-  DIRECTION_MOVED,
   GRID,
-  ID, LAST_DIRECTION_MOVED,
+  ID,
+  LAST_DIRECTION_MOVED,
   OPPONENT_ACTIONS,
   SUB_LOCATION,
   SUB_PATH,

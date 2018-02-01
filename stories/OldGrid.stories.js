@@ -2,7 +2,7 @@ import { action, decorateAction } from '@storybook/addon-actions';
 import { storiesOf } from '@storybook/react';
 import Immutable from 'immutable';
 import React from 'react';
-import Grid from '../src/client/components/game/GridView';
+import Grid from '../src/client/components/game/OldGridView';
 import { LAND_TILE } from '../src/common/Grid';
 import '../styles/main.css';
 import { mockGrid } from '../test/mocks';
@@ -12,7 +12,7 @@ const grid = mockGrid();
 
 const locationAction = decorateAction([(args) => [args[0].get(0), args[0].get(1)]]);
 
-storiesOf('Components/Grid', module)
+storiesOf('Components/OldGrid', module)
   .addDecorator(StoryWrapper)
   .addDecorator((story) => (
     <div style={{ display: 'flex' }}>
