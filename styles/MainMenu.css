@@ -1,8 +1,8 @@
 .MainMenu {
     display: block;
     margin: auto;
-    max-width: 420px;
-    padding: 50px;
+    max-width: 320px;
+    padding: 50px 20px;
     width: 100%;
 }
 
@@ -12,4 +12,11 @@
 
 .JoinCustomGameInput.open {
     padding: 10px;
+}
+
+@media (min-width: 420px) {
+    .MainMenu {
+        padding: 50px;
+        max-width: 420px;
+    }
 }

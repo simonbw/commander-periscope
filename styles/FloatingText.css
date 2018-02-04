@@ -5,11 +5,21 @@
 }
 
 .FloatingText h1 {
-    font-size: 3em;
+    font-size: 2.4em;
     margin-bottom: 20px;
 }
 
 .FloatingText h2 {
-    font-size: 2em;
+    font-size: 1.8em;
     margin-bottom: 20px;
+}
+
+@media (min-width: 420px) {
+    .FloatingText h1 {
+        font-size: 3em;
+    }
+
+    .FloatingText h2 {
+        font-size: 2em;
+    }
 }
