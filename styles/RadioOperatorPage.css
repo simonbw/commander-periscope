@@ -1,13 +1,14 @@
 .RadioOperatorPage {
-    align-items: flex-start;
+    align-items: flex-end;
     display: flex;
     flex-flow: row wrap;
     justify-content: center;
     padding: 20px;
 }
 
-.GridContainer {
+.GridBox {
     margin: 10px;
+    flex-basis: 500px;
 }
 
 .RecentMovesPaper {

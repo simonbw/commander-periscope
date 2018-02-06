@@ -36,5 +36,5 @@ module.exports = {
   plugins: [
     // new HardSourceWebpackPlugin() // makes things faster
   ],
-  devtool: "cheap-module-source-map",
+  devtool: "module-source-map",
 };

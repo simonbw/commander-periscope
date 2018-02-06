@@ -1,23 +1,26 @@
-
 .CaptainPage {
+    align-items: center;
     display: flex;
     flex-flow: row wrap;
-    margin: auto;
+    justify-content: center;
+    padding: 10px;
 }
 
-.Messages {
-    margin: 36px 35px;
-    padding: 0 10px;
-    line-height: 35px;
-    background: #CCDDFF;
+.GridBox, .SystemsPanel {
+    margin: 10px;
 }
 
-.WaitingMessage {
-    color: #DD0000;
+.GridBox {
+    flex-basis: 500px;
 }
 
 .SystemsPanel {
-    background: #CCDDFF;
-    padding: 10px;
-    margin: 35px;
+    display: flex;
+    flex-flow: column nowrap;
+    width: 100%;
+    max-width: 320px;
+}
+
+.SystemButton.active {
+    background: #E0E0E0;
 }

@@ -1,20 +1,20 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { LocationPropType } from '../../GamePropTypes';
+import GridMouseLocationProvider from './GridMouseLocationProvider';
 
 // TODO: Implement shouldComponentUpdate or something. Don't rerender children when sector doesn't change
+// TODO: Figure out how to make multiple of these possible
 class GridSectorSelect extends Component {
   static propTypes = {
     children: PropTypes.func.isRequired,
-    mouseLocation: LocationPropType,
+    onSelect: PropTypes.func
   };
   
   constructor(props) {
     super(props);
   }
   
-  getSector() {
-    const mouseLocation = this.props.mouseLocation;
+  getSector(mouseLocation) {
     if (!mouseLocation) {
       return null;
     }
@@ -27,10 +27,13 @@ class GridSectorSelect extends Component {
   }
   
   render() {
+    const onSelect = this.props.onSelect;
     return (
-      <g>
-        {this.props.children(this.getSector())}
-      </g>
+      <GridMouseLocationProvider
+        onClick={onSelect && ((mouseLocation) => onSelect(this.getSector(mouseLocation)))}
+      >
+        {(mouseLocation) => this.props.children(this.getSector(mouseLocation))}
+      </GridMouseLocationProvider>
     );
   }
 }

@@ -3,15 +3,10 @@ import React from 'react';
 import { LocationPropType } from '../../GamePropTypes';
 
 // TODO: This should probably be a PureComponent
-const MineMarker = ({ location, color = "#CC0000", ...otherProps }) => {
+const TorpedoMarker = ({ location, color = "#CC0000", ...otherProps }) => {
   return (
     <g transform={`translate(${location.get(0) + 0.5},${location.get(1) + 0.5})`} {...otherProps}>
-      <circle
-        fill={color}
-        r={0.16}
-        stroke="none"
-      />
-      {[0, 45, 90, 135].map((angle) => (
+      {[0, 90].map((angle) => (
         <line
           key={angle}
           x1={-0.25} y1={0}
@@ -22,13 +17,19 @@ const MineMarker = ({ location, color = "#CC0000", ...otherProps }) => {
           transform={`rotate(${angle})`}
         />
       ))}
+      <circle
+        fill="none"
+        r={0.25}
+        stroke={color}
+        strokeWidth={0.05}
+      />
     </g>
   );
 };
 
-MineMarker.propTypes = {
+TorpedoMarker.propTypes = {
   location: LocationPropType.isRequired,
   color: PropTypes.string
 };
 
-export default MineMarker;
+export default TorpedoMarker;

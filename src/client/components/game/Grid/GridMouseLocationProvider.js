@@ -3,10 +3,12 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
 // TODO: Find a way to have multiple of these without the performance penalty
-// Consider moving this stuff into the context of the top component
+// TODO: Consider moving this stuff into the context of the top component
+// TODO: Figure out how to get mouse clicks out of this
 class GridMouseLocationProvider extends Component {
   static propTypes = {
-    children: PropTypes.func.isRequired
+    children: PropTypes.func.isRequired,
+    onClick: PropTypes.func
   };
   
   constructor(props) {
@@ -17,26 +19,30 @@ class GridMouseLocationProvider extends Component {
     this._gRef = null;
   }
   
-  updateMousePosition(clientX, clientY) {
+  extractMousePosition(event) {
     const svg = this._gRef.ownerSVGElement;
     const p = svg.createSVGPoint();
-    
-    p.x = clientX;
-    p.y = clientY;
+    p.x = event.clientX;
+    p.y = event.clientY;
     const p2 = p.matrixTransform(svg.getScreenCTM().inverse());
-    
-    this.setState({ mousePosition: Immutable.List([p2.x, p2.y]) });
+    return Immutable.List([p2.x, p2.y]);
   }
   
   render() {
+    const onClick = this.props.onClick;
     return (
-      <g ref={(gRef) => this._gRef = gRef}>
+      <g
+        ref={(gRef) => this._gRef = gRef}
+        onClick={onClick && ((event) => onClick(this.extractMousePosition(event)))}
+      >
         {this.props.children(this.state.mousePosition)}
         <rect
           fill="transparent"
           height={15} // TODO: Don't hard code this
           onMouseLeave={() => this.setState({ mousePosition: null })}
-          onMouseMove={(event) => this.updateMousePosition(event.clientX, event.clientY)}
+          onMouseMove={(event) => {
+            this.setState({ mousePosition: this.extractMousePosition(event) });
+          }}
           width={15} // TODO: Don't hard code this
           x={0}
           y={0}

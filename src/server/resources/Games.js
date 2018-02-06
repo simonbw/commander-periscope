@@ -1,5 +1,5 @@
 import Immutable from 'immutable';
-import { getDirection, getManhattanDistance, getNewLocation, isAdjacent } from '../../common/Grid';
+import { getDirection, getManhattanDistance, getLocationFromDirection, isAdjacent } from '../../common/Grid';
 import {
   ACTION_ID,
   ACTION_TYPE,
@@ -35,7 +35,8 @@ import {
   assertCanMoveTo,
   assertNotStarted,
   assertStartedAndNotEnded,
-  assertSystemReady
+  assertSystemReady,
+  assertValidStartLocation
 } from './GameAssertions';
 import { createGame } from './GameFactory';
 import Resource from './Resource';
@@ -60,7 +61,9 @@ Games.setStartLocation = (gameId, team, location) => (
   Games.update(gameId, 'start_location_set', {}, (game) => {
     log('setting start location', team);
     assertNotStarted(game);
+    assertValidStartLocation(location, game.get(GRID));
     game = game.setIn([team, SUB_LOCATION], location);
+    // TODO: Don't allow starting on water
     if (game.getIn([RED, SUB_LOCATION]) && game.getIn([BLUE, SUB_LOCATION])) {
       game = game.setIn([COMMON, STARTED], true);
       Games.publish(game, 'started');
@@ -76,7 +79,7 @@ Games.headInDirection = (gameId, team, direction) => (
     
     const grid = game.get(GRID);
     const currentLocation = game.getIn([team, SUB_LOCATION]);
-    const nextLocation = getNewLocation(currentLocation, direction);
+    const nextLocation = getLocationFromDirection(currentLocation, direction);
     
     assertCanMoveTo(nextLocation, grid, game.getIn([team, SUB_PATH]), game.getIn([team, MINE_LOCATIONS]));
     
@@ -165,7 +168,7 @@ Games.goSilent = (gameId, team, destination) => (
       const direction = getDirection(startLocation, destination);
       let current = startLocation;
       while (!current.equals(destination)) {
-        current = getNewLocation(current, direction);
+        current = getLocationFromDirection(current, direction);
         assertCanMoveTo(current, grid, game.getIn([team, SUB_PATH]), game.getIn([team, MINE_LOCATIONS]));
         game = game.updateIn([team, SUB_PATH], path => path.push(current));
       }
@@ -178,7 +181,6 @@ Games.goSilent = (gameId, team, destination) => (
 );
 
 // Not the same as drop mine. Can be used whenever you have a mine.
-//       This could lead to bad things when trying to detonate two mines in quick succession
 Games.detonateMine = (gameId, team, mineLocation) => {
   return Games.update(gameId, 'fired_torpedo', {}, (game) => {
     assert(game.getIn([team, MINE_LOCATIONS]).includes(mineLocation), `You don't have a mine at: ${mineLocation}`);

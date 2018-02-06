@@ -11,7 +11,7 @@ import { EAST, NORTH, SOUTH, WEST } from './Direction';
 export const WATER_TILE = 0;
 export const LAND_TILE = 1;
 
-export function getNewLocation(location, direction) {
+export function getLocationFromDirection(location, direction) {
   const [x, y] = location.toArray();
   switch (direction) {
     case NORTH:
@@ -51,4 +51,8 @@ export function isAdjacent(a, b) {
   return !a.equals(b)
     && (Math.abs(a.get(0) - b.get(0)) <= 1)
     && (Math.abs(a.get(1) - b.get(1)) <= 1)
+}
+
+export function getLocationList(grid) {
+  return grid.flatMap((column, x) => column.map((tile, y) => Immutable.List([x, y])))
 }

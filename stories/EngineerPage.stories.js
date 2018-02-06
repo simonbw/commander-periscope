@@ -7,6 +7,7 @@ import { ALL_DIRECTIONS} from '../src/common/Direction';
 import { BREAKDOWNS, SUBSYSTEMS } from '../src/common/StateFields';
 import { RED } from '../src/common/Team';
 import '../styles/main.css';
+import { fixCircuits } from '../src/common/util/GameUtils';
 import { mockGame } from '../test/mocks';
 import StoryWrapper from './StoryWrapper';
 

@@ -34,7 +34,7 @@ module.exports = {
     }],
   },
   plugins: [
-    new HardSourceWebpackPlugin() // makes things faster
+    new HardSourceWebpackPlugin() // TODO: Don't use this on heroku
   ],
   devtool: "cheap-module-source-map"
 };

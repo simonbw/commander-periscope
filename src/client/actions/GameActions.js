@@ -36,8 +36,8 @@ export const useDrone = (sector) => (
   sendMessage(Messages.USE_DRONE_MESSAGE, { sector })
 );
 
-export const goSilent = () => (
-  sendMessage(Messages.GO_SILENT_MESSAGE, {})
+export const goSilent = (location) => (
+  sendMessage(Messages.GO_SILENT_MESSAGE, { location })
 );
 
 /// ------------------ ///

@@ -7,14 +7,13 @@ import GridBackground from '../src/client/components/game/Grid/GridBackground';
 import GridContainer from '../src/client/components/game/Grid/GridContainer';
 import GridCrosshairs from '../src/client/components/game/Grid/GridCrosshairs';
 import GridLabels from '../src/client/components/game/Grid/GridLabels';
-import GridMouseLocationProvider from '../src/client/components/game/Grid/GridMouseLocationProvider';
+import GridMines from '../src/client/components/game/Grid/GridMines';
 import GridMoveChooser from '../src/client/components/game/Grid/GridMoveChooser';
 import GridPath from '../src/client/components/game/Grid/GridPath';
 import GridSectors from '../src/client/components/game/Grid/GridSectors';
 import GridSectorSelect from '../src/client/components/game/Grid/GridSectorSelect';
 import GridTiles from '../src/client/components/game/Grid/GridTiles';
 import GridTileSelect from '../src/client/components/game/Grid/GridTileSelect';
-import MineMarker from '../src/client/components/game/Grid/MineMarker';
 import SubMarker from '../src/client/components/game/Grid/SubMarker';
 import { getMoveOptions } from '../src/common/util/GameUtils';
 import '../styles/main.css';
@@ -38,65 +37,57 @@ storiesOf('Components', module)
           >
             <LayerToggles toggleLayer={toggleLayer} layers={layers}/>
             <GridContainer style={{ margin: '10px' }}>
-              <GridMouseLocationProvider>
-                {(mouse) => (
-                  <Fragment>
-                    <Fade in={layers.get('background')}>
-                      <GridBackground height={15} width={15}/>
+              <Fragment>
+                <Fade in={layers.get('background')}>
+                  <GridBackground height={15} width={15}/>
+                </Fade>
+                <Fade in={layers.get('sectors')}>
+                  <GridSectors/>
+                </Fade>
+                <Fade in={layers.get('tiles')}>
+                  <GridTiles grid={grid}/>
+                </Fade>
+                <Fade in={layers.get('path')}>
+                  <GridPath path={path.push(subLocation)}/>
+                </Fade>
+                <Fade in={layers.get('mines')}>
+                  <GridMines mines={mines}/>
+                </Fade>
+                <GridSectorSelect>
+                  {(sector) => (
+                    <Fade in={layers.get('sectorSelect')}>
+                      <GridSectors selected={sector}/>
                     </Fade>
-                    <Fade in={layers.get('sectors')}>
-                      <GridSectors/>
-                    </Fade>
-                    <Fade in={layers.get('tiles')}>
-                      <GridTiles grid={grid}/>
-                    </Fade>
-                    <Fade in={layers.get('path')}>
-                      <GridPath path={path.push(subLocation)}/>
-                    </Fade>
-                    <Fade in={layers.get('mines')}>
-                      <g>
-                        {mines.map((location) => (
-                          <MineMarker location={location} key={location.join(',')}/>
-                        ))}
-                      </g>
-                    </Fade>
-                    <GridSectorSelect mouseLocation={mouse}>
-                      {(sector) => (
-                        <Fade in={layers.get('sectorSelect')}>
-                          <GridSectors selected={sector}/>
-                        </Fade>
-                      )}
-                    </GridSectorSelect>
-                    <GridTileSelect mouseLocation={mouse}>
-                      {(tile) => (
-                        <Fragment>
-                          <Fade in={layers.get('labels')}>
-                            <GridLabels
-                              width={15}
-                              height={15}
-                              selectedX={tile && layers.get('tileSelect') ? tile.get(0) : undefined}
-                              selectedY={tile && layers.get('tileSelect') ? tile.get(1) : undefined}
-                            />
-                          </Fade>
-                          <Fade in={layers.get('tileSelect')}>
-                            <GridCrosshairs tile={tile}/>
-                          </Fade>
-                          <Fade in={layers.get('moveChooser')}>
-                            <GridMoveChooser
-                              subLocation={subLocation}
-                              mouseTile={tile}
-                              moveOptions={getMoveOptions(subLocation, grid, path, mines)}
-                            />
-                          </Fade>
-                          <Fade in={layers.get('subLocation')}>
-                            <SubMarker location={subLocation}/>
-                          </Fade>
-                        </Fragment>
-                      )}
-                    </GridTileSelect>
-                  </Fragment>
-                )}
-              </GridMouseLocationProvider>
+                  )}
+                </GridSectorSelect>
+                <GridTileSelect>
+                  {(tile) => (
+                    <Fragment>
+                      <Fade in={layers.get('labels')}>
+                        <GridLabels
+                          width={15}
+                          height={15}
+                          selectedX={tile && layers.get('tileSelect') ? tile.get(0) : undefined}
+                          selectedY={tile && layers.get('tileSelect') ? tile.get(1) : undefined}
+                        />
+                      </Fade>
+                      <Fade in={layers.get('tileSelect')}>
+                        <GridCrosshairs tile={tile}/>
+                      </Fade>
+                      <Fade in={layers.get('moveChooser')}>
+                        <GridMoveChooser
+                          subLocation={subLocation}
+                          mouseTile={tile}
+                          moveOptions={getMoveOptions(subLocation, grid, path, mines)}
+                        />
+                      </Fade>
+                      <Fade in={layers.get('subLocation')}>
+                        <SubMarker location={subLocation}/>
+                      </Fade>
+                    </Fragment>
+                  )}
+                </GridTileSelect>
+              </Fragment>
             </GridContainer>
           </div>
         )}

@@ -1,11 +1,11 @@
 import Immutable from 'immutable/dist/immutable';
 import { ALL_DIRECTIONS } from '../Direction';
-import { getNewLocation, WATER_TILE } from '../Grid';
+import { getLocationFromDirection, getLocationList, getManhattanDistance, WATER_TILE } from '../Grid';
 import { ACTION_TYPE, BREAKDOWNS, DIRECTION_MOVED, SUBSYSTEMS, SYSTEMS, WINNER } from '../StateFields';
 import { CHARGE, CIRCUIT, CIRCUITS, DIRECTION, getSystemType, MAX_CHARGE, NUCLEAR, SYSTEM_TYPE } from '../System';
 import { deepFind } from './ImmutableUtil';
 
-export const getPlayerPosition = (teams, playerId) => {
+export function getPlayerPosition(teams, playerId) {
   const path = deepFind(teams, playerId);
   if (path) {
     const [team, role] = path.toArray();
@@ -13,7 +13,15 @@ export const getPlayerPosition = (teams, playerId) => {
   }
   // not found
   return undefined;
-};
+}
+
+export function isValidStartLocation(location, grid) {
+  if (!location) {
+    return false;
+  }
+  return grid.getIn(location) === WATER_TILE;
+  
+}
 
 export function canUseSystem(game, team, systemName) {
   // TODO: Check system already used
@@ -80,10 +88,51 @@ export function getLastDirectionMoved(actions) {
     ).get(DIRECTION_MOVED, null)
 }
 
+export function isValidMoveTile(location, grid, path, mines) {
+  return isInGrid(location, grid)
+    && !path.includes(location)
+    && !mines.includes(location)
+    && grid.getIn(location) === WATER_TILE;
+}
+
+const isInGrid = (location, grid) => (
+  location.get(0) >= 0
+  && location.get(1) >= 0
+  && location.get(0) <= grid.size
+  && location.get(1) <= grid.get(0).size
+);
+
 export function getMoveOptions(subLocation, grid, path, mines) {
   return Immutable.List(ALL_DIRECTIONS)
-    .map(direction => getNewLocation(subLocation, direction))
+    .map(direction => getLocationFromDirection(subLocation, direction))
+    .filter(location => isValidMoveTile(location, grid, path, mines));
+}
+
+export function getSilentOptions(subLocation, grid, path, mines) {
+  return Immutable.List(ALL_DIRECTIONS)
+    .flatMap(direction => {
+      let tiles = Immutable.List();
+      let current = subLocation;
+      for (const i of Immutable.Range(0, 4)) {
+        current = getLocationFromDirection(current, direction);
+        if (!isValidMoveTile(current, grid, path, mines)) {
+          break;
+        }
+        tiles = tiles.push(current);
+      }
+      return tiles;
+    })
+}
+
+export function getMineOptions(subLocation, grid, path, mines) {
+  // It turns out that laying mines has all the same rules as moving
+  return getMoveOptions(subLocation, grid, path, mines);
+}
+
+// TODO: This is slightly incorrect. We want to do a flood fill on water tiles from this location
+export function getTorpedoOptions(subLocation, grid) {
+  return getLocationList(grid)
+    .filter(location => isInGrid(location, grid))
     .filter(location => grid.getIn(location) === WATER_TILE)
-    .filter(location => !path.includes(location))
-    .filter(location => !mines.includes(location));
+    .filter(tile => Immutable.Range(1, 4).includes(getManhattanDistance(tile, subLocation)));
 }

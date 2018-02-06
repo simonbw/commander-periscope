@@ -40,6 +40,10 @@ export function assertStartedAndNotEnded(game) {
   assert(!game.getIn([COMMON, WINNER]), 'Game already ended');
 }
 
+export function assertValidStartLocation(location, grid) {
+  assert(grid.getIn(Location) === WATER_TILE, 'Must start on water tile');
+}
+
 export function assertCanMove(game, team) {
   assertStartedAndNotEnded(game);
   

@@ -1,4 +1,5 @@
 import classnames from 'classnames';
+import PropTypes from 'prop-types';
 import React, { Component, Fragment } from 'react';
 import ReactJsonSyntaxHighlighter from 'react-json-pretty';
 import { connect } from 'react-redux';
@@ -6,6 +7,10 @@ import styles from '../../../styles/DebugPane.css';
 
 // TODO: Use Drawer?
 export class UnconnectedDebugPane extends Component {
+  static propTypes = {
+    data: PropTypes.object.isRequired
+  };
+  
   constructor(props) {
     super(props);
     this.state = { open: Boolean(this.props.initiallyOpen) };

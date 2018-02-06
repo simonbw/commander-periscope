@@ -1,17 +1,17 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { LocationPropType } from '../../GamePropTypes';
+import GridMouseLocationProvider from './GridMouseLocationProvider';
 
 // TODO: Implement shouldComponentUpdate or something. Don't rerender children when tile doesn't change
+// TODO: Figure out how to make multiple of these possible
 class GridTileSelect extends Component {
   static propTypes = {
     children: PropTypes.func.isRequired,
-    mouseLocation: LocationPropType,
+    onSelect: PropTypes.func
   };
   
   constructor(props) {
     super(props);
-    this.state = {};
   }
   
   getTile(mouseLocation) {
@@ -23,10 +23,13 @@ class GridTileSelect extends Component {
   }
   
   render() {
+    const onSelect = this.props.onSelect;
     return (
-      <g>
-        {this.props.children(this.getTile(this.props.mouseLocation))}
-      </g>
+      <GridMouseLocationProvider
+        onClick={onSelect && ((mouseLocation) => onSelect(this.getTile(mouseLocation)))}
+      >
+        {(mouseLocation) => this.props.children(this.getTile(mouseLocation))}
+      </GridMouseLocationProvider>
     );
   }
 }

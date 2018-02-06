@@ -77,4 +77,11 @@ describe('GameUtils', () => {
     const allBreakdowns = subsystems.map((s, i) => i).toSet();
     expect(checkEngineOverload(subsystems, allBreakdowns), `All breakdowns.`).to.equal(true);
   });
+  
+  // TODO: Test .getGamePhase()
+  // TODO: Test .getLastDirectionMoved()
+  // TODO: Test .getMoveOptions()
+  // TODO: Test .getMineOptions()
+  // TODO: Test .getTorpedoOptions()
+  // TODO: Test .getSilentOptions()
 });

@@ -14,14 +14,23 @@ import {
   SYSTEM_USED
 } from '../../../common/StateFields';
 import { getIconForSystem } from '../SystemIcons';
-import Grid from './OldGridView';
+import GridBackground from './Grid/GridBackground';
+import GridContainer from './Grid/GridContainer';
+import GridLabels from './Grid/GridLabels';
+import GridSectors from './Grid/GridSectors';
+import GridTiles from './Grid/GridTiles';
 
 const MAX_VISIBLE_ACTIONS = 10;
 
 export const UnconnectedRadioOperatorPage = ({ grid, opponentActions }) => (
   <div id="radio-operator-page" className={styles.RadioOperatorPage}>
-    <div className={styles.GridContainer}>
-      <Grid grid={grid}/>
+    <div className={styles.GridBox}>
+      <GridContainer>
+        <GridBackground height={15} width={15}/> {/* TODO: Don't hard code*/}
+        <GridSectors/>
+        <GridTiles grid={grid}/>
+        <GridLabels height={15} width={15}/>
+      </GridContainer>
     </div>
     <Paper className={styles.RecentMovesPaper}>
       <List

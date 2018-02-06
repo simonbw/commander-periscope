@@ -1,9 +1,10 @@
 import Immutable from 'immutable/dist/immutable';
 import { LAND_TILE } from '../src/common/Grid';
 import { CAPTAIN, ENGINEER, FIRST_MATE, RADIO_OPERATOR } from '../src/common/Role';
-import { GRID, PLAYERS, READIED, SYSTEMS, TEAMS, USERNAMES } from '../src/common/StateFields';
+import { COMMON, GRID, PLAYERS, READIED, SYSTEMS, TEAMS, USERNAMES } from '../src/common/StateFields';
 import { BLUE, RED } from '../src/common/Team';
 import { createGame, createGrid } from '../src/server/resources/GameFactory';
+import { getDataForUser } from '../src/server/resources/UserGameTransform';
 
 export function mockGrid() {
   return createGrid()
@@ -19,25 +20,24 @@ export function mockGrid() {
     .setIn([4, 12], LAND_TILE);
 }
 
-
 export function mockPath() {
   return Immutable.fromJS([
-    [7,8],
-    [7,9],
-    [7,10],
-    [8,10],
-    [9,10],
-    [9,9],
-    [10,9],
+    [7, 8],
+    [7, 9],
+    [7, 10],
+    [8, 10],
+    [9, 10],
+    [9, 9],
+    [10, 9],
   ])
 }
 
 export function mockMines() {
   return Immutable.fromJS([
-    [8,8],
-    [5,10],
-    [11,10],
-    [2,1],
+    [8, 8],
+    [5, 10],
+    [11, 10],
+    [2, 1],
   ])
 }
 
@@ -53,6 +53,12 @@ export function mockGame(gameId = 'gameId') {
 
 export function mockSystems() {
   return mockGame().getIn([RED, SYSTEMS])
+}
+
+export function mockPlayerData(role = CAPTAIN, team = RED) {
+  const game = mockGame();
+  const useriId = game.getIn([COMMON, TEAMS, team, role]);
+  return getDataForUser(game, useriId);
 }
 
 // TODO: Mock subsystems so that we don't have random test behavior
