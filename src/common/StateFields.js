@@ -22,6 +22,7 @@ export const SUB_PATH = 'subPath';
 export const SUBSYSTEMS = 'subsystems';
 export const SYSTEMS = 'systems';
 export const TURN_INFO = 'turnInfo';
+export const SURFACED = 'SURFACED';
 
 // Action
 export const ACTION_TYPE = 'actionType'; //

@@ -1,5 +1,5 @@
 import PubSub from 'pubsub-js';
-import { wait } from '../../common/util/AsyncUtil';
+import { sleep } from '../../common/util/AsyncUtil';
 import {
   CUSTOM_LOBBY_JOINED_MESSAGE,
   CUSTOM_LOBBY_READY_MESSAGE,
@@ -35,7 +35,7 @@ export default () => (socket, next) => {
     joiningCustomLobby = true;
     
     if (process.env.NODE_ENV === 'dev') {
-      await wait(1000); // artificial delay in dev
+      await sleep(1000); // artificial delay in dev
     }
     
     const lobby = await CustomLobby.addPlayer(lobbyId, socket.userId, username);

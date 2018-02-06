@@ -14,7 +14,7 @@ import {
   STARTED,
   SUB_LOCATION,
   SUB_PATH,
-  SUBSYSTEMS,
+  SUBSYSTEMS, SURFACED,
   SYSTEM_IS_USED,
   SYSTEMS,
   TEAMS,
@@ -78,6 +78,7 @@ export function createTeamInfo() {
     [MINE_LOCATIONS]: [],
     [SUB_LOCATION]: null,
     [SUB_PATH]: [],
+    [SURFACED]: false,
     [SYSTEMS]: createSystems(),
   })
 }

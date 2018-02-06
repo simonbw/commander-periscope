@@ -9,6 +9,7 @@ import {
   HEAD_IN_DIRECTION_MESSAGE,
   JOIN_GAME_MESSAGE,
   SET_START_LOCATION_MESSAGE,
+  SURFACE_MESSAGE,
   TRACK_BREAKDOWN_MESSAGE,
   USE_DRONE_MESSAGE,
   USE_SONAR_MESSAGE
@@ -105,6 +106,7 @@ function getRoleHandlers(role, team, gameId) {
         [USE_SONAR_MESSAGE]: ({}) => Games.useSonar(gameId, team),
         [USE_DRONE_MESSAGE]: ({ sector }) => Games.useDrone(gameId, team, sector),
         [GO_SILENT_MESSAGE]: ({ location }) => Games.goSilent(gameId, team, List(location)),
+        [SURFACE_MESSAGE]: () => Games.surface(gameId, team),
       };
     case FIRST_MATE:
       return {

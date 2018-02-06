@@ -1,5 +1,5 @@
 import Immutable from 'immutable';
-import { getDirection, getManhattanDistance, getLocationFromDirection, isAdjacent } from '../../common/Grid';
+import { getDirection, getLocationFromDirection, getManhattanDistance, isAdjacent } from '../../common/Grid';
 import {
   ACTION_ID,
   ACTION_TYPE,
@@ -15,6 +15,7 @@ import {
   SUB_LOCATION,
   SUB_PATH,
   SUBSYSTEMS,
+  SURFACED,
   SYSTEM_IS_USED,
   SYSTEM_USED,
   SYSTEMS,
@@ -28,6 +29,7 @@ import {
 } from '../../common/StateFields';
 import { CHARGE, DIRECTION, DRONE, MAX_CHARGE, MINE, SILENT, SONAR, TORPEDO } from '../../common/System';
 import { BLUE, otherTeam, RED } from '../../common/Team';
+import { sleep } from '../../common/util/AsyncUtil';
 import { checkEngineOverload, fixCircuits, getLastDirectionMoved } from '../../common/util/GameUtils';
 import {
   assert,
@@ -42,6 +44,8 @@ import { createGame } from './GameFactory';
 import Resource from './Resource';
 
 const log = require('debug')('commander-periscope:server');
+
+const SURFACE_DURATION = 30 * 1000;
 
 // TODO: Consider renaming this to GameDAO
 const Games = new Resource('game', 'game', createGame, false);
@@ -194,7 +198,21 @@ Games.detonateMine = (gameId, team, mineLocation) => {
   });
 };
 
-// TODO: Start Surface
+Games.surface = async (gameId, team) => {
+  await Games.update(gameId, 'surface_start', {}, (game) => {
+    return game
+      .setIn([team, SURFACED], true)
+  });
+  
+  await sleep(SURFACE_DURATION);
+  
+  await Games.update(gameId, 'surface_end', {}, (game) => {
+    return game
+      .setIn([team, SURFACED], false)
+      .setIn([team, SUB_PATH], Immutable.List([]))
+      .setIn([team, BREAKDOWNS], Immutable.List([]))
+  });
+};
 
 /// First Mate ///
 

@@ -1,7 +1,7 @@
 import PubSub from 'pubsub-js';
 import shortid from 'shortid';
 import { ID } from '../../common/StateFields';
-import { wait, waitForSettled } from '../../common/util/AsyncUtil';
+import { sleep, waitForSettled } from '../../common/util/AsyncUtil';
 
 // TODO: Consider renaming this to DAO (Data Access Object)
 // TODO: Garbage collection
@@ -65,7 +65,7 @@ export default class Resource {
     const updatePromise = (async () => {
       await waitForSettled(lastUpdate);
       if (process.env.NODE_ENV === 'dev') {
-        await wait(400); // artificial delay in dev
+        await sleep(400); // artificial delay in dev
       }
       const instance = await updater(await this.get(id));
       if (!instance) {

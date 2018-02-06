@@ -2,7 +2,7 @@ import Immutable from 'immutable';
 import { ID } from '../../../src/common/StateFields';
 import Resource from '../../../src/server/resources/Resource';
 import expect from '../../expect';
-import { wait } from '../../../src/common/util/AsyncUtil';
+import { sleep } from '../../../src/common/util/AsyncUtil';
 
 describe('Resource', () => {
   describe('.create', () => {
@@ -86,11 +86,11 @@ describe('Resource', () => {
       const result = 'these letters should all come out in order';
       for (const c of result) {
         promises.push(resource.update('instance_id', 'action', {}, async (instance) => {
-          await wait(Math.random() * 3);
+          await sleep(Math.random() * 3);
           return instance.update('foo', foo => foo + c);
         }));
       }
-      await Promise.race(promises);
+      await Promise.all(promises);
       
       expect((await resource.get('instance_id')).get('foo')).to.equal(result);
     });
@@ -112,7 +112,7 @@ describe('Resource', () => {
       const result = 'these letters should all come out in order';
       for (const c of result) {
         promises.push(resource.update('instance_id', 'action', {}, async (instance) => {
-          await wait(Math.random() * 3);
+          await sleep(Math.random() * 3);
           return instance.update('foo', foo => foo + c);
         }));
       }

@@ -41,7 +41,7 @@ export function assertStartedAndNotEnded(game) {
 }
 
 export function assertValidStartLocation(location, grid) {
-  assert(grid.getIn(Location) === WATER_TILE, 'Must start on water tile');
+  assert(grid.getIn(location) === WATER_TILE, 'Must start on water tile');
 }
 
 export function assertCanMove(game, team) {

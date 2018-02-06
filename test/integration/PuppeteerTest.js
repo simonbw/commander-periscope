@@ -2,16 +2,10 @@ import puppeteer from 'puppeteer';
 import { LOBBY, PLAYERS, READIED, TEAMS, USER_ID } from '../../src/common/StateFields';
 import CustomLobbies from '../../src/server/resources/CustomLobbies';
 import expect from '../expect';
-import {
-  clickReadyButton, createCustomLobby, joinCustomLobby, waitForGameStarted,
-  waitForJoinGame
-} from './PuppeteerActions';
 import { expectNoErrors, expectTitle } from './PageAssertions';
-import { extractLobby, extractState, extractUserId } from './PageExtractors';
-import {
-  closePageWithContext, initServer,
-  newPageWithContext
-} from './PuppeteerUtils';
+import { extractState, extractUserId } from './PageExtractors';
+import { clickReadyButton, createCustomLobby, joinCustomLobby, waitForJoinGame } from './PuppeteerActions';
+import { closePageWithContext, initServer, newPageWithContext } from './PuppeteerUtils';
 
 // registerErrorHandlers();
 
@@ -143,12 +137,12 @@ describe('Integration', function () {
     log(`all players on game pages`);
     
     // Select locations
-    await redTeam[0].click('.Cell:nth-of-type(3)');
-    await blueTeam[0].click('.Cell:nth-of-type(7)');
-    expectNoErrors(pages);
+    // TODO: Select Locations
     
-    await Promise.all(pages.map(waitForGameStarted));
-    log(`game started`);
+    // expectNoErrors(pages);
+    
+    // await Promise.all(pages.map(waitForGameStarted));
+    // log(`game started`);
     
     // TODO: Play rest of game
     // TODO: Test losing connection

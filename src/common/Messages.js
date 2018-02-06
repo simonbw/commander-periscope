@@ -20,6 +20,7 @@ export const USE_DRONE_MESSAGE = 'use_drone';
 export const GO_SILENT_MESSAGE = 'go_silent';
 export const CHARGE_SYSTEM_MESSAGE = 'charge_system';
 export const TRACK_BREAKDOWN_MESSAGE = 'track_breakdown';
+export const SURFACE_MESSAGE = 'surface';
 
 ///--------------///
 /// CUSTOM_LOBBY ///

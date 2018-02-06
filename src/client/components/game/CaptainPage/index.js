@@ -90,7 +90,7 @@ export class UnconnectedCaptainContainer extends React.Component { // export for
         systemStatuses={this.props.systems}
       >
         {({ mode, setMode }) => (
-          <div className={styles.CaptainPage}>
+          <div id="captain-page" className={styles.CaptainPage}>
             <div className={styles.GridBox}>
               <GridContainer>
                 {this.renderGridCommon(mode)}
