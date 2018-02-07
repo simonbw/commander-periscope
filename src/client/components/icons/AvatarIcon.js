@@ -1,7 +1,8 @@
 import { Avatar, withStyles } from 'material-ui';
 import React from 'react';
 
-const DenseAvatar = withStyles(() =>
+// An avatar the size of an icon
+export default withStyles(() =>
   ({
     root: {
       'height': '24px',
@@ -10,5 +11,3 @@ const DenseAvatar = withStyles(() =>
       'font-family': 'sans-serif',
     }
   }))(Avatar);
-
-export default DenseAvatar;

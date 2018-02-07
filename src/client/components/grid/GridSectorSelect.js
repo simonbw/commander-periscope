@@ -20,7 +20,7 @@ class GridSectorSelect extends Component {
     const onSelect = this.props.onSelect;
     return (
       <GridMouseLocationProvider
-        onClick={!this.props.disabled && onSelect && (
+        onClick={this.props.disabled ? undefined : onSelect && (
           (mouseLocation) => onSelect(tileToSector(mouseLocation, getGridSize()))) /*TODO: Real grid size*/}
       >
         {(mouseLocation) => this.props.children(

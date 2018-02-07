@@ -27,13 +27,13 @@ import {
 import { COMMON, GAME, GRID, NOTIFICATIONS, TEAMS, USER_ID } from '../../../common/StateFields';
 import { DRONE, MINE, SILENT, SONAR, TORPEDO } from '../../../common/System';
 import { getPlayerPosition } from '../../../common/util/GameUtils';
-import DenseAvatar from '../DenseAvatar';
+import AvatarIcon from '../icons/AvatarIcon';
 import GridBackground from '../grid/GridBackground';
 import GridContainer from '../grid/GridContainer';
 import GridLabels, { ROW_LABELS } from '../grid/GridLabels';
 import GridSectors from '../grid/GridSectors';
 import GridTiles from '../grid/GridTiles';
-import { getIconForSystem } from '../SystemIcons';
+import { getIconForSystem } from '../icons/SystemIcons';
 
 const MAX_VISIBLE_NOTIFICATIONS = 10;
 
@@ -47,9 +47,9 @@ export const UnconnectedRadioOperatorPage = ({ grid, notifications, team }) => (
         <GridLabels height={15} width={15}/>
       </GridContainer>
     </div>
-    <Paper className={styles.RecentMovesPaper}>
+    <Paper className={styles.NotificationListPaper}>
       <List
-        classes={{ root: styles.RecentMovesList }}
+        classes={{ root: styles.NotificationList }}
         subheader={<div/>}
       >
         <ListSubheader>Notifications</ListSubheader>
@@ -92,9 +92,9 @@ class NotificationListItem extends Component {
                     const direction = notification.get(NOTIFICATION_DIRECTION);
                     return (
                       <Fragment>
-                        <DenseAvatar>
+                        <AvatarIcon>
                           {getDirectionArrow(direction)}
-                        </DenseAvatar>
+                        </AvatarIcon>
                         <ListItemText primary={direction}/>
                       </Fragment>
                     );
@@ -191,9 +191,9 @@ class NotificationListItem extends Component {
                     const surfaceSector = notification.get(NOTIFICATION_SECTOR);
                     return (
                       <Fragment>
-                        <DenseAvatar>
+                        <AvatarIcon>
                           S
-                        </DenseAvatar>
+                        </AvatarIcon>
                         <ListItemText
                           primary={
                             <span>Surfaced in sector <b>{surfaceSector + 1}</b></span>}

@@ -1,23 +1,28 @@
-import { Avatar } from 'material-ui';
+import { Avatar, withStyles } from 'material-ui';
 import React from 'react';
-import { CAPTAIN, ENGINEER, FIRST_MATE, RADIO_OPERATOR } from '../../common/Role';
+import { CAPTAIN, ENGINEER, FIRST_MATE, RADIO_OPERATOR } from '../../../common/Role';
+
+const RoleAvatar = withStyles({
+  root: {
+    fontFamily: 'sans-serif'
+  }
+})(Avatar);
 
 // TODO: Real icons
-const style = { fontFamily: 'sans-serif' }; // Using the main font makes these not line up
 export const CaptainAvatar = () => (
-  <Avatar style={style}>C</Avatar>
+  <RoleAvatar>C</RoleAvatar>
 );
 
 export const FirstMateAvatar = () => (
-  <Avatar style={style}>F</Avatar>
+  <RoleAvatar>F</RoleAvatar>
 );
 
 export const EngineerAvatar = () => (
-  <Avatar style={style}>E</Avatar>
+  <RoleAvatar>E</RoleAvatar>
 );
 
 export const RadioOperatorAvatar = () => (
-  <Avatar style={style}>R</Avatar>
+  <RoleAvatar>R</RoleAvatar>
 );
 
 export const getAvatarForRole = (role) => {

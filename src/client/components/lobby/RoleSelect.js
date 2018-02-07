@@ -18,7 +18,7 @@ import * as Role from '../../../common/Role';
 import { ALL_ROLES} from '../../../common/Role'; // TODO: Rename this
 import { READIED, TEAMS, USERNAMES } from '../../../common/StateFields';
 import { BLUE, getDisplayName, RED } from '../../../common/Team';
-import { getAvatarForRole } from '../RoleAvatars';
+import { getAvatarForRole } from '../icons/RoleAvatars';
 
 const RoleSelect = ({ lobby, userId, selectRole }) => {
   return (

@@ -11,22 +11,15 @@
     flex-basis: 500px;
 }
 
-.RecentMovesPaper {
+.NotificationListPaper {
     flex-grow: 1;
     margin: 10px;
     max-width: 240px;
 }
 
-.RecentMovesList {
+.NotificationList {
     overflow: hidden;
     max-height: calc(48px + 10 * 41px);
-}
-
-.RecentMovesHeader {
-    /*background-color: #FFFFFF;*/
-    /*border-bottom: 2px solid #114477;*/
-    /*font-family: 'Audiowide', sans-serif;*/
-    /*text-align: center;*/
 }
 
 .NotificationListItem {

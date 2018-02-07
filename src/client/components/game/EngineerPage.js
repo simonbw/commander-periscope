@@ -7,7 +7,7 @@ import { ALL_DIRECTIONS, getDirectionArrow } from '../../../common/Direction';
 import { BREAKDOWNS, GAME, ID, LAST_DIRECTION_MOVED, SUBSYSTEMS } from '../../../common/StateFields';
 import { CIRCUIT, DIRECTION, SYSTEM_TYPE } from '../../../common/System';
 import { trackBreakdown } from '../../actions/GameActions';
-import { getIconForSystemType } from '../SystemIcons';
+import { getIconForSystemType } from '../icons/SystemTypeIcons';
 
 const INDEX = ID;
 

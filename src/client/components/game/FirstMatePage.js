@@ -6,7 +6,7 @@ import styles from '../../../../styles/FirstMatePage.css';
 import { GAME, SYSTEMS, WAITING_FOR_FIRST_MATE } from '../../../common/StateFields';
 import { CHARGE, getSystemType, MAX_CHARGE } from '../../../common/System';
 import { chargeSystem } from '../../actions/GameActions';
-import { getIconForSystemType } from '../SystemIcons';
+import { getIconForSystemType } from '../icons/SystemTypeIcons';
 import ChargeMeter from './ChargeMeter';
 
 export const UnconnectedFirstMatePage = ({ systems, readyToCharge, chargeSystem, skipCharging }) => {

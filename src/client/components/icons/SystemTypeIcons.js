@@ -1,23 +1,18 @@
 import { SvgIcon } from 'material-ui';
 import { Clear, GpsFixed, RssFeed, VolumeOff } from 'material-ui-icons';
 import React from 'react';
-import { COMMS, getSystemType, NUCLEAR, SPECIAL, WEAPONS } from '../../common/System';
+import { COMMS, NUCLEAR, SPECIAL, WEAPONS } from '../../../common/System';
 
-// TODO: Real icons
-// TODO: Make them bigger?
-export const WeaponsAvatar = () => (
-  <GpsFixed nativeColor="#FF0000"/>
-);
-
-export const CommsAvatar = () => (
+export const CommsIcon = () => (
   <RssFeed nativeColor="#00CC00"/>
 );
-
-export const SpecialAvatar = () => (
+export const SpecialIcon = () => (
   <VolumeOff nativeColor="#00DDFF"/>
 );
-
-export const NuclearAvatar = () => (
+export const WeaponsIcon = () => (
+  <GpsFixed nativeColor="#FF0000"/>
+);
+export const NuclearIcon = () => (
   <SvgIcon viewBox='0 0 100 100'>
     <circle
       cx="50"
@@ -59,19 +54,14 @@ export function getIconForSystemType(systemType, broken = false) {
   }
   switch (systemType) {
     case WEAPONS:
-      return WeaponsAvatar();
+      return WeaponsIcon();
     case COMMS:
-      return CommsAvatar();
+      return CommsIcon();
     case SPECIAL:
-      return SpecialAvatar();
+      return SpecialIcon();
     case NUCLEAR:
-      return NuclearAvatar();
+      return NuclearIcon();
     default:
       throw Error(`Unrecognized system type: ${systemType}`);
   }
-}
-
-// TODO: Actual icons for each system
-export function getIconForSystem(system) {
-  return getIconForSystemType(getSystemType(system));
 }
