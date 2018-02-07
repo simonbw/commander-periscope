@@ -22,7 +22,7 @@ To start the storybook server run:
 yarn storybook
 ```
 
-We also publish the storybook for the code on master to the web. You can view that [here](simonbw.github.io/commander-periscope/index.html).
+We also publish the storybook for the code on master to the web. You can view that [here](https://simonbw.github.io/commander-periscope/index.html).
 
 
 ### Contributing
