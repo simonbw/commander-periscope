@@ -1,8 +1,8 @@
 import classnames from 'classnames';
 import React from 'react';
-import styles from '../../../../../styles/Grid/GridMoveChooser.css'
-import { getDirection } from '../../../../common/Grid';
-import { LocationListPropType, LocationPropType } from '../../GamePropTypes';
+import styles from '../../../../styles/Grid/GridMoveChooser.css'
+import { getDirection } from '../../../common/Grid';
+import { LocationListPropType, LocationPropType } from '../GamePropTypes';
 import DirectionMarker from './DirectionMarker';
 import SubMarker from './SubMarker';
 

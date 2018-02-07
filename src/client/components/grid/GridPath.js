@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { getDirection } from '../../../../common/Grid';
-import { LocationListPropType } from '../../GamePropTypes';
+import { getDirection } from '../../../common/Grid';
+import { LocationListPropType } from '../GamePropTypes';
 import DirectionMarker from './DirectionMarker';
 
 // TODO: This should probably be a PureComponent

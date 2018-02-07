@@ -1,7 +1,17 @@
 import Immutable from 'immutable/dist/immutable';
+import Random from 'random-js';
 import { ALL_DIRECTIONS } from '../Direction';
-import { getLocationFromDirection, getLocationList, getManhattanDistance, WATER_TILE } from '../Grid';
-import { ACTION_TYPE, BREAKDOWNS, DIRECTION_MOVED, SUBSYSTEMS, SYSTEMS, WINNER } from '../StateFields';
+import {
+  getGridSize,
+  getLocationFromDirection,
+  getLocationList,
+  getManhattanDistance,
+  isInGrid,
+  tileToSector,
+  WATER_TILE
+} from '../Grid';
+import { MOVE_NOTIFICATION, NOTIFICATION_DIRECTION, NOTIFICATION_TEAM, NOTIFICATION_TYPE } from '../Notifications';
+import { BREAKDOWNS, SUBSYSTEMS, SYSTEMS, WINNER } from '../StateFields';
 import { CHARGE, CIRCUIT, CIRCUITS, DIRECTION, getSystemType, MAX_CHARGE, NUCLEAR, SYSTEM_TYPE } from '../System';
 import { deepFind } from './ImmutableUtil';
 
@@ -79,28 +89,22 @@ export function getGamePhase(game) {
   }
 }
 
-export function getLastDirectionMoved(actions) {
-  return actions
-    .findLast(
-      (action) => action.get(ACTION_TYPE) === 'move',
-      null,
-      Immutable.Map({})
-    ).get(DIRECTION_MOVED, null)
+export function getLastDirectionMoved(notifications, team) {
+  return notifications.findLast(
+    (notification) =>
+      notification.get(NOTIFICATION_TEAM) === team
+      && notification.get(NOTIFICATION_TYPE) === MOVE_NOTIFICATION,
+    null,
+    Immutable.Map({})
+  ).get(NOTIFICATION_DIRECTION, null)
 }
 
 export function isValidMoveTile(location, grid, path, mines) {
-  return isInGrid(location, grid)
+  return isInGrid(location, getGridSize(grid))
     && !path.includes(location)
     && !mines.includes(location)
     && grid.getIn(location) === WATER_TILE;
 }
-
-const isInGrid = (location, grid) => (
-  location.get(0) >= 0
-  && location.get(1) >= 0
-  && location.get(0) <= grid.size
-  && location.get(1) <= grid.get(0).size
-);
 
 export function getMoveOptions(subLocation, grid, path, mines) {
   return Immutable.List(ALL_DIRECTIONS)
@@ -132,7 +136,42 @@ export function getMineOptions(subLocation, grid, path, mines) {
 // TODO: This is slightly incorrect. We want to do a flood fill on water tiles from this location
 export function getTorpedoOptions(subLocation, grid) {
   return getLocationList(grid)
-    .filter(location => isInGrid(location, grid))
+    .filter(location => isInGrid(location, getGridSize(grid)))
     .filter(location => grid.getIn(location) === WATER_TILE)
     .filter(tile => Immutable.Range(1, 4).includes(getManhattanDistance(tile, subLocation)));
+}
+
+const r = Random();
+
+export function generateSonarResult(location) {
+  const [truth, lie] = r.sample(['row', 'column', 'sector'], 2);
+  
+  return Immutable.Map({
+    [truth]: getTruth(location, truth),
+    [lie]: getLie(location, lie)
+  }).sortBy((v, k) => k);
+}
+
+function getTruth(location, type) {
+  switch (type) {
+    case 'column':
+      return location.get(0);
+    case 'row':
+      return location.get(1);
+    case 'sector':
+      return tileToSector(location, getGridSize()); // TODO: Real grid size
+  }
+}
+
+function getLie(location, type) {
+  const gridSize = getGridSize(); // TODO: Real grid size
+  switch (type) {
+    case 'column':
+      return r.pick(Immutable.Range(0, gridSize.get(0)).filter(x => x !== location.get(0)).toArray());
+    case 'row':
+      return r.pick(Immutable.Range(0, gridSize.get(1)).filter(x => x !== location.get(1)).toArray());
+    case 'sector':
+      const truthSector = tileToSector(location, gridSize);
+      return r.pick(Immutable.Range(0, 9).filter(s => s !== truthSector).toArray()); // TODO: Don't hardcode 9
+  }
 }

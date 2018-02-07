@@ -11,7 +11,6 @@ export const MOVE_MODE = 'MOVE_MODE';
 export const PICK_START_LOCATION_MODE = 'PICK_START_LOCATION_MODE';
 export const SILENT_MODE = 'SILENT_MODE';
 export const TORPEDO_MODE = 'TORPEDO_MODE';
-export const WAITING_MODE = 'WAITING_MODE';
 
 // Keeps track of what mode the component is in
 class ModeWrapper extends Component {
@@ -24,19 +23,21 @@ class ModeWrapper extends Component {
   
   constructor(props) {
     super(props);
-    this.state = { mode: MOVE_MODE };
+    this.state = {
+      targetMode: MOVE_MODE,
+    };
     console.log(this.props.systemStatuses.toJS());
   }
   
   componentWillReceiveProps(props) {
     const currentSystem = this.getRequiredSystem();
     if (currentSystem && !props.systemStatuses.get(currentSystem)) {
-      this.setState({ mode: MOVE_MODE });
+      this.setState({ targetMode: MOVE_MODE });
     }
   }
   
   getRequiredSystem() {
-    switch (this.state.mode) {
+    switch (this.state.targetMode) {
       case DRONE_MODE:
         return DRONE;
       case DROP_MINE_MODE:
@@ -50,21 +51,21 @@ class ModeWrapper extends Component {
     }
   }
   
-  setMode(mode) {
-    this.setState({ mode });
+  setMode(targetMode) {
+    this.setState({ targetMode });
   }
   
   getMode() {
     if (!this.props.gameStarted) {
       return PICK_START_LOCATION_MODE;
     }
-    return this.state.mode
+    return this.state.targetMode
   }
   
   render() {
     return this.props.children({
       mode: this.getMode(),
-      setMode: (mode) => this.setMode(mode)
+      setMode: (mode) => this.setMode(mode),
     });
   }
 }

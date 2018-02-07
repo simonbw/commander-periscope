@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { LocationPropType } from '../../GamePropTypes';
+import { LocationPropType } from '../GamePropTypes';
 
 // TODO: This should probably be a PureComponent
 const TorpedoMarker = ({ location, color = "#CC0000", ...otherProps }) => {

@@ -2,7 +2,7 @@ import classnames from 'classnames';
 import Immutable from 'immutable';
 import PropTypes from 'prop-types';
 import React from 'react';
-import styles from '../../../../../styles/Grid/GridSectors.css'
+import styles from '../../../../styles/Grid/GridSectors.css'
 
 const GridSectors = ({ selected }) => {
   return (

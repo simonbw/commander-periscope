@@ -27,6 +27,15 @@ export function getLocationFromDirection(location, direction) {
   }
 }
 
+export function tileToSector(tile, gridSize) {
+  if (!tile || !isInGrid(tile, gridSize)) {
+    return null;
+  }
+  const col = Math.floor(tile.get(0) / 5); // TODO: Don't hardcode
+  const row = Math.floor(tile.get(1) / 5); // TODO: Don't hardcode
+  return 3 * row + col;
+}
+
 // Returns the direction from point a to b
 export function getDirection(a, b) {
   if (b.get(1) < a.get(1)) {
@@ -56,3 +65,17 @@ export function isAdjacent(a, b) {
 export function getLocationList(grid) {
   return grid.flatMap((column, x) => column.map((tile, y) => Immutable.List([x, y])))
 }
+
+export function getGridSize(grid = null) {
+  if (grid == null) {
+    return Immutable.List([15, 15]); // TODO: We shouldn't be using this anywhere
+  }
+  return Immutable.List([grid.size, grid.get(0).size]);
+}
+
+export const isInGrid = (location, gridSize) => (
+  location.get(0) >= 0
+  && location.get(1) >= 0
+  && location.get(0) <= gridSize.get(0)
+  && location.get(1) <= gridSize.get(1)
+);

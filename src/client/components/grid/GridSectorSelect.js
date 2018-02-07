@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { getGridSize, tileToSector } from '../../../common/Grid';
 import GridMouseLocationProvider from './GridMouseLocationProvider';
 
 // TODO: Implement shouldComponentUpdate or something. Don't rerender children when sector doesn't change
@@ -14,25 +15,13 @@ class GridSectorSelect extends Component {
     super(props);
   }
   
-  getSector(mouseLocation) {
-    if (!mouseLocation) {
-      return null;
-    }
-    const col = Math.floor(mouseLocation.get(0) / 5); // TODO: Don't hardcode
-    const row = Math.floor(mouseLocation.get(1) / 5); // TODO: Don't hardcode
-    if (row < 0 || col < 0) {
-      return null
-    }
-    return 3 * row + col
-  }
-  
   render() {
     const onSelect = this.props.onSelect;
     return (
       <GridMouseLocationProvider
-        onClick={onSelect && ((mouseLocation) => onSelect(this.getSector(mouseLocation)))}
+        onClick={onSelect && ((mouseLocation) => onSelect(tileToSector(mouseLocation, getGridSize()))) /*TODO: Real grid size*/}
       >
-        {(mouseLocation) => this.props.children(this.getSector(mouseLocation))}
+        {(mouseLocation) => this.props.children(tileToSector(mouseLocation, getGridSize())) /*TODO: Real grid size*/}
       </GridMouseLocationProvider>
     );
   }

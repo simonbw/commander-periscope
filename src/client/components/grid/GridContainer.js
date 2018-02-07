@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import styles from '../../../../../styles/Grid/GridContainer.css';
+import styles from '../../../../styles/Grid/GridContainer.css';
 
 const GridContainer = ({ children, ...props }) => (
   <div className={styles.GridContainer} {...props}>

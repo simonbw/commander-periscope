@@ -56,6 +56,8 @@ storiesOf('Components', module)
     );
   });
 
+const ROUND_TRIP_TIME = 300;
+
 class StateWrapper extends Component {
   constructor(props) {
     super(props);
@@ -66,25 +68,47 @@ class StateWrapper extends Component {
   }
   
   setStartLocation(location) {
-    action('setStartLocation')(Immutable.get(location, 0), Immutable.get(location, 1));
-    this.setState({
-      game: this.state.game
-        .set(SUB_LOCATION, location)
-        .setIn([COMMON, STARTED], true)
-    })
+    action('setStartLocation')(...location.toArray());
+    setTimeout(() => {
+      this.setState((state) => ({
+        game: state.game
+          .set(SUB_LOCATION, location)
+          .setIn([COMMON, STARTED], true)
+      }));
+    }, ROUND_TRIP_TIME);
   }
   
   headInDirection(direction) {
     action('headInDirection')(direction);
-    const game = this.state.game;
-    const oldLocation = game.get(SUB_LOCATION);
-    const newLocation = getLocationFromDirection(oldLocation, direction);
-    this.setState({
-      game: game
-        .set(SUB_LOCATION, newLocation)
-        .update(SUB_PATH, path => path.push(oldLocation))
-        .update(SYSTEMS, systems => systems.map(() => true))
-    })
+    setTimeout(() => {
+      
+      this.setState((state) => {
+        const oldLocation = state.game.get(SUB_LOCATION);
+        const newLocation = getLocationFromDirection(oldLocation, direction);
+        return {
+          game: state.game
+            .set(SUB_LOCATION, newLocation)
+            .update(SUB_PATH, path => path.push(oldLocation))
+            .setIn([TURN_INFO, WAITING_FOR_ENGINEER], true)
+            .setIn([TURN_INFO, WAITING_FOR_FIRST_MATE], true)
+        };
+      });
+      
+      setTimeout(() => {
+        this.setState((state) => ({
+          game: state.game
+            .update(SYSTEMS, systems => systems.map(() => true))
+            .setIn([TURN_INFO, WAITING_FOR_ENGINEER], false)
+        }))
+      }, Math.random() * 2000 + 1500);
+      
+      setTimeout(() => {
+        this.setState((state) => ({
+          game: state.game
+            .setIn([TURN_INFO, WAITING_FOR_FIRST_MATE], false)
+        }))
+      }, Math.random() * 2000 + 1500);
+    }, ROUND_TRIP_TIME)
   }
   
   dropMine(location) {
@@ -98,49 +122,60 @@ class StateWrapper extends Component {
   
   fireTorpedo(location) {
     action('fireTorpedo')(...location);
-    this.setState({
-      game: this.state.game.setIn([SYSTEMS, TORPEDO], false)
-    });
+    setTimeout(() => {
+      this.setState((state) => ({
+        game: state.game.setIn([SYSTEMS, TORPEDO], false)
+      }));
+    }, ROUND_TRIP_TIME);
   }
   
   goSilent(location) {
     action('goSilent')(...location);
-    const game = this.state.game;
-    this.setState({
-      game: game
-        .setIn([SYSTEMS, SILENT], false)
-        .update(SUB_PATH, path => path.push(game.get(SUB_LOCATION)))
-        .set(SUB_LOCATION, location)
-    });
+    setTimeout(() => {
+      this.setState((state) => ({
+        game: state.game
+          .setIn([SYSTEMS, SILENT], false)
+          .update(SUB_PATH, path => path.push(state.game.get(SUB_LOCATION)))
+          .set(SUB_LOCATION, location)
+      }));
+    }, ROUND_TRIP_TIME);
   }
   
   useDrone(sector) {
     action('useDrone')(sector);
-    this.setState({
-      game: this.state.game.setIn([SYSTEMS, DRONE], false)
-    });
+    setTimeout(() => {
+      this.setState((state) => ({
+        game: state.game.setIn([SYSTEMS, DRONE], false)
+      }));
+    }, ROUND_TRIP_TIME);
   }
   
   useSonar() {
     action('useSonar')();
-    this.setState({
-      game: this.state.game.setIn([SYSTEMS, SONAR], false)
-    });
+    setTimeout(() => {
+      this.setState(state => ({
+        game: state.game.setIn([SYSTEMS, SONAR], false)
+      }));
+    }, ROUND_TRIP_TIME)
   }
   
   detonateMine(mine) {
     action('detonateMine')(...mine);
-    this.setState({
-      game: this.state.game
-        .update(MINE_LOCATIONS, mines => mines.filter((m) => !m.equals(mine)))
-    });
+    setTimeout(() => {
+      this.setState(state => ({
+        game: state.game
+          .update(MINE_LOCATIONS, mines => mines.filter((m) => !m.equals(mine)))
+      }));
+    }, ROUND_TRIP_TIME);
   }
   
   surface() {
     action('surface')();
-    this.setState({
-      game: this.state.game.set(SUB_PATH, Immutable.List([]))
-    });
+    setTimeout(() => {
+      this.setState(state => ({
+        game: state.game.set(SUB_PATH, Immutable.List([]))
+      }));
+    }, ROUND_TRIP_TIME);
   }
   
   render() {

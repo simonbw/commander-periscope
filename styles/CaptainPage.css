@@ -6,19 +6,35 @@
     padding: 10px;
 }
 
-.GridBox, .SystemsPanel {
+.RightPane {
+    display: flex;
+    flex-flow: column;
+}
+
+.RightPane .Messages {
     margin: 10px;
+    text-align: left;
+}
+
+.waiting {
+    color: #FF0000;
+}
+
+.notWaiting {
+    color: #FFFFFFAA;
 }
 
 .GridBox {
+    margin: 10px;
     flex-basis: 500px;
 }
 
 .SystemsPanel {
     display: flex;
     flex-flow: column nowrap;
-    width: 100%;
+    margin: 10px;
     max-width: 320px;
+    width: 100%;
 }
 
 .SystemButton.active {

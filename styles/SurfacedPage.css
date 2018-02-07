@@ -1,0 +1,9 @@
+.SurfacedPage {
+    align-items: center;
+    background: #0007;
+    display: flex;
+    flex-flow: column nowrap;
+    height: 100vh;
+    justify-content: center;
+    width: 100%;
+}

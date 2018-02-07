@@ -1,6 +1,6 @@
 import React from 'react';
-import { WATER_TILE } from '../../../../common/Grid';
-import { GridPropType } from '../../GamePropTypes';
+import { WATER_TILE } from '../../../common/Grid';
+import { GridPropType } from '../GamePropTypes';
 
 // TODO: This should probably be a PureComponent
 const GridTiles = ({ grid }) => (

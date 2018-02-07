@@ -2,9 +2,9 @@ import classnames from 'classnames';
 import Immutable from 'immutable';
 import PropTypes from 'prop-types';
 import React from 'react';
-import styles from '../../../../../styles/Grid/GridLabels.css';
+import styles from '../../../../styles/Grid/GridLabels.css';
 
-const ROW_LABELS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+export const ROW_LABELS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 // TODO: This should probably be a PureComponent
 const GridLabels = ({ height, width, selectedX, selectedY }) => (

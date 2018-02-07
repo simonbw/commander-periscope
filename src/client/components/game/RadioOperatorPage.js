@@ -1,28 +1,43 @@
 import classnames from 'classnames';
-import { Avatar, Collapse, Divider, Fade, List, ListItem, ListItemText, ListSubheader, Paper } from 'material-ui';
+import { Collapse, Divider, Fade, List, ListItem, ListItemText, ListSubheader, Paper } from 'material-ui';
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import styles from '../../../../styles/RadioOperatorPage.css';
 import { getDirectionArrow } from '../../../common/Direction';
+import { getHitDisplayName } from '../../../common/Explosion';
 import {
-  ACTION_ID,
-  ACTION_TYPE,
-  DIRECTION_MOVED,
-  GAME,
-  GRID,
-  OPPONENT_ACTIONS,
-  SYSTEM_USED
-} from '../../../common/StateFields';
+  DETONATE_MINE_NOTIFICATION,
+  DRONE_NOTIFICATION,
+  DROP_MINE_NOTIFICATION,
+  MOVE_NOTIFICATION,
+  NOTIFICATION_DIRECTION,
+  NOTIFICATION_DRONE_RESULT,
+  NOTIFICATION_HIT_RESULT,
+  NOTIFICATION_ID,
+  NOTIFICATION_LOCATION,
+  NOTIFICATION_SECTOR,
+  NOTIFICATION_SONAR_RESULT,
+  NOTIFICATION_TEAM,
+  NOTIFICATION_TYPE,
+  SILENT_NOTIFICATION,
+  SONAR_NOTIFICATION,
+  SURFACE_NOTIFICATION,
+  TORPEDO_NOTIFICATION
+} from '../../../common/Notifications';
+import { COMMON, GAME, GRID, NOTIFICATIONS, TEAMS, USER_ID } from '../../../common/StateFields';
+import { DRONE, MINE, SILENT, SONAR, TORPEDO } from '../../../common/System';
+import { getPlayerPosition } from '../../../common/util/GameUtils';
+import DenseAvatar from '../DenseAvatar';
+import GridBackground from '../grid/GridBackground';
+import GridContainer from '../grid/GridContainer';
+import GridLabels, { ROW_LABELS } from '../grid/GridLabels';
+import GridSectors from '../grid/GridSectors';
+import GridTiles from '../grid/GridTiles';
 import { getIconForSystem } from '../SystemIcons';
-import GridBackground from './Grid/GridBackground';
-import GridContainer from './Grid/GridContainer';
-import GridLabels from './Grid/GridLabels';
-import GridSectors from './Grid/GridSectors';
-import GridTiles from './Grid/GridTiles';
 
-const MAX_VISIBLE_ACTIONS = 10;
+const MAX_VISIBLE_NOTIFICATIONS = 10;
 
-export const UnconnectedRadioOperatorPage = ({ grid, opponentActions }) => (
+export const UnconnectedRadioOperatorPage = ({ grid, notifications, team }) => (
   <div id="radio-operator-page" className={styles.RadioOperatorPage}>
     <div className={styles.GridBox}>
       <GridContainer>
@@ -37,17 +52,23 @@ export const UnconnectedRadioOperatorPage = ({ grid, opponentActions }) => (
         classes={{ root: styles.RecentMovesList }}
         subheader={<div/>}
       >
-        <ListSubheader>Opponent Actions</ListSubheader>
+        <ListSubheader>Notifications</ListSubheader>
         <Divider/>
-        {opponentActions.take(MAX_VISIBLE_ACTIONS + 1).map((action, i) => ( //last one isn't visible
-          <ActionInfo action={action} key={action.get(ACTION_ID)} i={i}/>
+        {notifications.take(MAX_VISIBLE_NOTIFICATIONS + 1).map((notification, i) => ( //last one isn't visible
+          <NotificationListItem
+            first={i === 0}
+            last={i === MAX_VISIBLE_NOTIFICATIONS}
+            key={notification.get(NOTIFICATION_ID)}
+            notification={notification}
+            team={team}
+          />
         ))}
       </List>
     </Paper>
   </div>
 );
 
-class ActionInfo extends Component {
+class NotificationListItem extends Component {
   constructor(props) {
     super(props);
     this.state = { hasBeenAdded: false };
@@ -55,43 +76,136 @@ class ActionInfo extends Component {
   }
   
   render() {
-    const { action, i } = this.props;
+    const { notification, team, first, last } = this.props;
     const { hasBeenAdded } = this.state;
     return (
       <Fragment>
         <Collapse in={hasBeenAdded}>
-          <Fade in={i < MAX_VISIBLE_ACTIONS}>
+          <Fade in={!last}>
             <ListItem
               dense
-              className={classnames(
-                styles.ActionInfo,
-                { [styles.first]: i === 0 },
-                { [styles.last]: i >= MAX_VISIBLE_ACTIONS },
-              )}
+              className={classnames(styles.NotificationListItem, { [styles.first]: first }, { [styles.last]: last })}
             >
               {(() => {
-                switch (action.get(ACTION_TYPE)) {
-                  case 'move':
+                switch (notification.get(NOTIFICATION_TYPE)) {
+                  case MOVE_NOTIFICATION: {
+                    const direction = notification.get(NOTIFICATION_DIRECTION);
                     return (
                       <Fragment>
-                        <Avatar className={styles.ActionAvatar}>
-                          {getDirectionArrow(action.get(DIRECTION_MOVED))}
-                        </Avatar>
-                        <ListItemText primary={action.get(DIRECTION_MOVED)}/>
+                        <DenseAvatar>
+                          {getDirectionArrow(direction)}
+                        </DenseAvatar>
+                        <ListItemText primary={direction}/>
                       </Fragment>
                     );
-                  case 'useSystem':
-                    const system = action.get(SYSTEM_USED);
+                  }
+                  case DRONE_NOTIFICATION: {
+                    const sector = notification.get(NOTIFICATION_SECTOR);
+                    const droneResult = notification.get(NOTIFICATION_DRONE_RESULT);
                     return (
                       <Fragment>
-                        {getIconForSystem(system)}
-                        <ListItemText primary={system}/>
+                        {getIconForSystem(DRONE)}
+                        <ListItemText primary={`Enemy ${droneResult ? 'in' : 'not in'} sector ${sector}`}/>
                       </Fragment>
                     );
-                  default:
+                  }
+                  case SONAR_NOTIFICATION: {
+                    const sonarResult = notification.get(NOTIFICATION_SONAR_RESULT);
+                    sonarResult.map((v, k) => `${k}: ${v}`);
                     return (
-                      <ListItemText primary={JSON.stringify(action)}/>
+                      <Fragment>
+                        {getIconForSystem(SONAR)}
+                        <ListItemText primary={sonarResult.map((v, k) => `${k}: ${v}`).join(' ')}/>
+                      </Fragment>
                     );
+                  }
+                  case SILENT_NOTIFICATION: {
+                    return (
+                      <Fragment>
+                        {getIconForSystem(SILENT)}
+                        <ListItemText primary="Silent"/>
+                      </Fragment>
+                    );
+                  }
+                  case DETONATE_MINE_NOTIFICATION: {
+                    const mineLocation = formatLocation(notification.get(NOTIFICATION_LOCATION));
+                    if (notification.get(NOTIFICATION_TEAM) === team) {
+                      const hitResult = getHitDisplayName(notification.get(NOTIFICATION_HIT_RESULT));
+                      return (
+                        <Fragment>
+                          {getIconForSystem(MINE)}
+                          <ListItemText
+                            primary={
+                              <span>{hitResult} at {mineLocation}</span>}
+                          />
+                        </Fragment>
+                      );
+                    } else {
+                      return (
+                        <Fragment>
+                          {getIconForSystem(MINE)}
+                          <ListItemText
+                            primary={
+                              <span>Mine detonated at {mineLocation}</span>
+                            }
+                          />
+                        </Fragment>
+                      );
+                    }
+                  }
+                  case DROP_MINE_NOTIFICATION: {
+                    return (
+                      <Fragment>
+                        {getIconForSystem(MINE)}
+                        <ListItemText primary="Mine Dropped"/>
+                      </Fragment>
+                    );
+                  }
+                  case TORPEDO_NOTIFICATION: {
+                    const torpedoLocation = formatLocation(notification.get(NOTIFICATION_LOCATION));
+                    if (notification.get(NOTIFICATION_TEAM) === team) {
+                      const hitResult = getHitDisplayName(notification.get(NOTIFICATION_HIT_RESULT));
+                      return (
+                        <Fragment>
+                          {getIconForSystem(TORPEDO)}
+                          <ListItemText
+                            primary={
+                              <span>{hitResult} at {torpedoLocation})</span>
+                            }
+                          />
+                        </Fragment>
+                      );
+                    } else {
+                      return (
+                        <Fragment>
+                          {getIconForSystem(TORPEDO)}
+                          <ListItemText
+                            primary={
+                              <span>Torpedo at {torpedoLocation})</span>}
+                          />
+                        </Fragment>
+                      );
+                    }
+                  }
+                  case SURFACE_NOTIFICATION: {
+                    const surfaceSector = notification.get(NOTIFICATION_SECTOR);
+                    return (
+                      <Fragment>
+                        <DenseAvatar>
+                          S
+                        </DenseAvatar>
+                        <ListItemText
+                          primary={
+                            <span>Surfaced in sector <b>{surfaceSector + 1}</b></span>}
+                        />
+                      </Fragment>
+                    );
+                  }
+                  default: {
+                    return (
+                      <ListItemText primary={JSON.stringify(notification)}/>
+                    );
+                  }
                 }
               })()}
             </ListItem>
@@ -103,10 +217,15 @@ class ActionInfo extends Component {
   }
 }
 
+function formatLocation(location) {
+  return <b>{ROW_LABELS[location.get(0)]}-{location.get(1)}</b>
+}
+
 export default connect(
   (state) => ({
     grid: state.getIn([GAME, GRID]),
-    opponentActions: state.getIn([GAME, OPPONENT_ACTIONS])
+    notifications: state.getIn([GAME, NOTIFICATIONS]),
+    team: getPlayerPosition(state.getIn([GAME, COMMON, TEAMS]), state.get(USER_ID)).team
   }),
   (dispatch) => ({})
 )(UnconnectedRadioOperatorPage);

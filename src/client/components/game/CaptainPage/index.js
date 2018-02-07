@@ -1,5 +1,5 @@
 import classnames from 'classnames';
-import { List, ListItem, Paper } from 'material-ui';
+import { List, ListItem, ListItemAvatar, ListItemText, Paper } from 'material-ui';
 import PropTypes from 'prop-types';
 import React, { Fragment } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
@@ -36,21 +36,24 @@ import {
   useDrone,
   useSonar
 } from '../../../actions/GameActions';
+import DenseAvatar from '../../DenseAvatar';
+import FloatingText from '../../FloatingText';
 import { GridPropType, LocationListPropType, LocationPropType } from '../../GamePropTypes';
-import GridBackground from '../Grid/GridBackground';
-import GridContainer from '../Grid/GridContainer';
-import GridCrosshairs from '../Grid/GridCrosshairs';
-import GridLabels from '../Grid/GridLabels';
-import GridMines from '../Grid/GridMines';
-import GridMoveChooser from '../Grid/GridMoveChooser';
-import GridPath from '../Grid/GridPath';
-import GridSectors from '../Grid/GridSectors';
-import GridSectorSelect from '../Grid/GridSectorSelect';
-import GridTiles from '../Grid/GridTiles';
-import GridTileSelect from '../Grid/GridTileSelect';
-import MineChooser from '../Grid/MineChooser';
-import SubMarker from '../Grid/SubMarker';
-import TorpedoChooser from '../Grid/TorpedoChooser';
+import GridBackground from '../../grid/GridBackground';
+import GridContainer from '../../grid/GridContainer';
+import GridCrosshairs from '../../grid/GridCrosshairs';
+import GridLabels from '../../grid/GridLabels';
+import GridMines from '../../grid/GridMines';
+import GridMoveChooser from '../../grid/GridMoveChooser';
+import GridPath from '../../grid/GridPath';
+import GridSectors from '../../grid/GridSectors';
+import GridSectorSelect from '../../grid/GridSectorSelect';
+import GridTiles from '../../grid/GridTiles';
+import GridTileSelect from '../../grid/GridTileSelect';
+import MineChooser from '../../grid/MineChooser';
+import SubMarker from '../../grid/SubMarker';
+import TorpedoChooser from '../../grid/TorpedoChooser';
+import { getIconForSystem } from '../../SystemIcons';
 import ModeWrapper, {
   DETONATE_MINE_MODE,
   DRONE_MODE,
@@ -83,6 +86,34 @@ export class UnconnectedCaptainContainer extends React.Component { // export for
     waitingForFirstMate: PropTypes.bool.isRequired,
   };
   
+  constructor(props) {
+    super(props);
+    this.state = {
+      waitingForResponse: false
+    }
+  }
+  
+  startWaiting() {
+    this.setState({ waiting: true });
+  }
+  
+  stopWaiting() {
+    this.setState({ waiting: false });
+  }
+  
+  componentWillReceiveProps(nextProps) {
+    // TODO: This is really hacky and fragile and wrong
+    if (
+      !Immutable.is(nextProps.mines, this.props.mines) ||
+      !Immutable.is(nextProps.started, this.props.started) ||
+      !Immutable.is(nextProps.subLocation, this.props.subLocation) ||
+      !Immutable.is(nextProps.subPath, this.props.subPath) ||
+      !Immutable.is(nextProps.systems, this.props.systems)
+    ) {
+      this.stopWaiting();
+    }
+  }
+  
   render() {
     return (
       <ModeWrapper
@@ -98,12 +129,26 @@ export class UnconnectedCaptainContainer extends React.Component { // export for
               </GridContainer>
             </div>
             
-            <Paper className={styles.SystemsPanel}>
-              {mode === PICK_START_LOCATION_MODE && (
-                <h2>Choose Start Location</h2>
-              )}
-              {mode !== PICK_START_LOCATION_MODE && this.renderButtonList(mode, setMode)}
-            </Paper>
+            <div className={styles.RightPane}>
+              <FloatingText className={styles.Messages}>
+                {mode === PICK_START_LOCATION_MODE ? (
+                  <div>Choose Start Location</div>
+                ) : (
+                  <Fragment>
+                    {this.props.waitingForEngineer ?
+                      <div className={styles.waiting}>Waiting for Engineer</div> :
+                      <div className={styles.notWaiting}>Engineer has gone</div>}
+                    {this.props.waitingForFirstMate ?
+                      <div className={styles.waiting}>Waiting for First Mate</div> :
+                      <div className={styles.notWaiting}>First Mate has gone</div>}
+                  </Fragment>
+                )}
+              
+              </FloatingText>
+              <Paper className={styles.SystemsPanel}>
+                {this.renderButtonList(mode, setMode)}
+              </Paper>
+            </div>
           </div>
         )}
       </ModeWrapper>
@@ -155,6 +200,7 @@ export class UnconnectedCaptainContainer extends React.Component { // export for
         onSelect={(tile) => {
           if (isValidStartLocation(tile, this.props.grid)) {
             this.props.setStartLocation(tile);
+            this.startWaiting();
           }
         }}
       >
@@ -181,6 +227,7 @@ export class UnconnectedCaptainContainer extends React.Component { // export for
           if (moveOptions.includes(tile)) {
             const direction = getDirection(subLocation, tile);
             this.props.headInDirection(direction);
+            this.startWaiting();
           }
         }}
       >
@@ -292,13 +339,16 @@ export class UnconnectedCaptainContainer extends React.Component { // export for
     return (
       <List>
         <ModeButton mode={MOVE_MODE} currentMode={mode} setMode={setMode}>
-          Move
+          <ListItemAvatar><DenseAvatar>M</DenseAvatar></ListItemAvatar>
+          <ListItemText primary={"Move"}/>
         </ModeButton>
         <ModeButton mode={TORPEDO_MODE} currentMode={mode} setMode={setMode} disabled={!systems.get(TORPEDO)}>
-          Fire Torpedo
+          {getIconForSystem(TORPEDO)}
+          <ListItemText primary={"Fire Torpedo"}/>
         </ModeButton>
         <ModeButton mode={DROP_MINE_MODE} currentMode={mode} setMode={setMode} disabled={!systems.get(MINE)}>
-          Drop Mine
+          {getIconForSystem(MINE)}
+          <ListItemText primary={"Drop Mine"}/>
         </ModeButton>
         <ModeButton
           mode={DETONATE_MINE_MODE}
@@ -306,18 +356,25 @@ export class UnconnectedCaptainContainer extends React.Component { // export for
           setMode={setMode}
           disabled={this.props.mines.isEmpty()}
         >
-          Detonate Mine
+          {getIconForSystem(MINE)}
+          <ListItemText primary={"Detonate Mine"}/>
         </ModeButton>
         <ModeButton mode={DRONE_MODE} currentMode={mode} setMode={setMode} disabled={!systems.get(DRONE)}>
-          Launch Drone
+          {getIconForSystem(DRONE)}
+          <ListItemText primary={"Launch Drone"}/>
         </ModeButton>
         <ListItem dense button disabled={!systems.get(SONAR)} onClick={() => this.props.useSonar()}>
-          Use Sonar
+          {getIconForSystem(SONAR)}
+          <ListItemText primary={"Use Sonar"}/>
         </ListItem>
         <ModeButton mode={SILENT_MODE} currentMode={mode} setMode={setMode} disabled={!systems.get(SILENT)}>
-          Go Silent
+          {getIconForSystem(SILENT)}
+          <ListItemText primary={"Go Silent"}/>
         </ModeButton>
-        <ListItem dense button onClick={() => this.props.surface()}>Surface</ListItem>
+        <ListItem dense button onClick={() => this.props.surface()}>
+          <ListItemAvatar><DenseAvatar>S</DenseAvatar></ListItemAvatar>
+          <ListItemText primary={"Surface"}/>
+        </ListItem>
       </List>
     );
   }

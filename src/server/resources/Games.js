@@ -1,15 +1,31 @@
 import Immutable from 'immutable';
-import { getDirection, getLocationFromDirection, getManhattanDistance, isAdjacent } from '../../common/Grid';
+import { getExplosionDamage, getExplosionResult } from '../../common/Explosion';
 import {
-  ACTION_ID,
-  ACTION_TYPE,
-  ACTIONS,
+  getDirection,
+  getGridSize,
+  getLocationFromDirection,
+  getManhattanDistance,
+  isAdjacent,
+  tileToSector
+} from '../../common/Grid';
+import {
+  createDetonateMineNotification,
+  createDroneNotification,
+  createDropMineNotification,
+  createMoveNotification,
+  createSilentNotification,
+  createSonarNotification,
+  createSurfaceNotification,
+  createTorpedoNotification,
+  notificationAdder
+} from '../../common/Notifications';
+import {
   BREAKDOWNS,
   COMMON,
-  DIRECTION_MOVED,
   GRID,
   HIT_POINTS,
   MINE_LOCATIONS,
+  NOTIFICATIONS,
   PLAYERS,
   STARTED,
   SUB_LOCATION,
@@ -17,7 +33,6 @@ import {
   SUBSYSTEMS,
   SURFACED,
   SYSTEM_IS_USED,
-  SYSTEM_USED,
   SYSTEMS,
   TEAMS,
   TURN_INFO,
@@ -30,7 +45,12 @@ import {
 import { CHARGE, DIRECTION, DRONE, MAX_CHARGE, MINE, SILENT, SONAR, TORPEDO } from '../../common/System';
 import { BLUE, otherTeam, RED } from '../../common/Team';
 import { sleep } from '../../common/util/AsyncUtil';
-import { checkEngineOverload, fixCircuits, getLastDirectionMoved } from '../../common/util/GameUtils';
+import {
+  checkEngineOverload,
+  fixCircuits,
+  generateSonarResult,
+  getLastDirectionMoved
+} from '../../common/util/GameUtils';
 import {
   assert,
   assertCanMove,
@@ -86,12 +106,6 @@ Games.headInDirection = (gameId, team, direction) => (
     const nextLocation = getLocationFromDirection(currentLocation, direction);
     
     assertCanMoveTo(nextLocation, grid, game.getIn([team, SUB_PATH]), game.getIn([team, MINE_LOCATIONS]));
-    
-    const action = Immutable.Map({
-      [ACTION_TYPE]: 'move', // TODO: Constants
-      [DIRECTION_MOVED]: direction,
-      [ACTION_ID]: game.getIn([team, ACTIONS]).size
-    });
     return game
       .updateIn([team, TURN_INFO], turnInfo => turnInfo
         .set(WAITING_FOR_ENGINEER, true)
@@ -99,7 +113,7 @@ Games.headInDirection = (gameId, team, direction) => (
         .set(SYSTEM_IS_USED, false)
         .update(TURN_NUMBER, n => n + 1))
       .updateIn([team, SUB_PATH], path => path.push(currentLocation))
-      .updateIn([team, ACTIONS], actions => actions.push(action))
+      .update(NOTIFICATIONS, notificationAdder(createMoveNotification(team, direction)))
       .setIn([team, SUB_LOCATION], nextLocation);
   })
 );
@@ -108,17 +122,9 @@ Games.useSystem = (gameId, team, systemName, onUse) => {
   return Games.update(gameId, `used_${systemName}`, {}, async (game) => {
     assertSystemReady(game, team, systemName);
     game = await onUse(game);
-    
-    // TODO: Test Actions list
-    const action = Immutable.Map({
-      [ACTION_TYPE]: 'useSystem',//TODO: Constants
-      [SYSTEM_USED]: systemName,
-      [ACTION_ID]: game.getIn([team, ACTIONS]).size
-    });
     return game
       .setIn([team, SYSTEMS, systemName, CHARGE], 0)
-      .setIn([team, TURN_INFO, SYSTEM_IS_USED], true)
-      .updateIn([team, ACTIONS], actions => actions.push(action));
+      .setIn([team, TURN_INFO, SYSTEM_IS_USED], true);
   })
 };
 
@@ -128,8 +134,9 @@ Games.fireTorpedo = (gameId, team, targetLocation) => {
     const opponentLocation = game.getIn([otherTeam(team), SUB_LOCATION]);
     const distance = getManhattanDistance(currentLocation, targetLocation);
     assert(distance <= 4, `Torpedo target must within 4 squares (was ${distance})`);
-    
-    return explosion(game, team, targetLocation, currentLocation, opponentLocation);
+    const hitResult = getExplosionResult(targetLocation, opponentLocation);
+    game = applyExplosion(game, team, targetLocation, currentLocation, opponentLocation);
+    return game.update(NOTIFICATIONS, notificationAdder(createTorpedoNotification(team, targetLocation, hitResult)));
   });
 };
 
@@ -141,18 +148,26 @@ Games.dropMine = (gameId, team, location) => {
     assert(!game.getIn([team, SUB_PATH]).includes(location), 'cannot drop a mine on your path');
     assert(!game.getIn([team, MINE_LOCATIONS]).includes(location), 'cannot drop a mine on an existing mine');
     
-    return game.updateIn([team, MINE_LOCATIONS], mineLocations => mineLocations.push(location));
+    return game
+      .updateIn([team, MINE_LOCATIONS], mineLocations => mineLocations.push(location))
+      .update(NOTIFICATIONS, notificationAdder(createDropMineNotification(team, location)));
   })
 };
 
 Games.useSonar = (gameId, team) => {
-  return Games.useSystem(gameId, team, SONAR, (game) => game)
+  return Games.useSystem(gameId, team, SONAR, (game) => {
+    const sonarResult = generateSonarResult(game.getIn([otherTeam(team), SUB_LOCATION]));
+    return game.update(NOTIFICATIONS, notificationAdder(createSonarNotification(team, sonarResult)));
+  })
 };
 
 Games.useDrone = (gameId, team, sector) => {
   return Games.useSystem(gameId, team, DRONE, (game) => {
     assert(sector > 0 && sector <= 9, 'Must choose a sector 1 <= sector <= 9');
-    return game;
+    const opponentLocation = game.getIn([otherTeam(team), SUB_LOCATION]);
+    const gridSize = getGridSize(game.get(GRID));
+    const result = tileToSector(opponentLocation, gridSize) === sector;
+    return game.update(NOTIFICATIONS, notificationAdder(createDroneNotification(team, sector, result)));
   });
 };
 
@@ -180,7 +195,8 @@ Games.goSilent = (gameId, team, destination) => (
     
     return game
       .setIn([team, SUB_LOCATION], destination)
-      .setIn([team, SYSTEMS, SILENT, CHARGE], 0);
+      .setIn([team, SYSTEMS, SILENT, CHARGE], 0)
+      .update(NOTIFICATIONS, notificationAdder(createSilentNotification(team, destination)));
   })
 );
 
@@ -192,16 +208,20 @@ Games.detonateMine = (gameId, team, mineLocation) => {
     const currentLocation = game.getIn([team, SUB_LOCATION]);
     const opponentLocation = game.getIn([otherTeam(team), SUB_LOCATION]);
     
-    game = explosion(game, team, mineLocation, currentLocation, opponentLocation);
-    game = game.updateIn([team, MINE_LOCATIONS], (mines) => mines.filterNot(m => m.equals(mineLocation)));
-    return game;
+    game = applyExplosion(game, team, mineLocation, currentLocation, opponentLocation);
+    const result = getExplosionResult(opponentLocation, mineLocation);
+    return game
+      .updateIn([team, MINE_LOCATIONS], (mines) => mines.filterNot(m => m.equals(mineLocation)))
+      .update(NOTIFICATIONS, notificationAdder(createDetonateMineNotification(team, mineLocation, result)));
   });
 };
 
 Games.surface = async (gameId, team) => {
   await Games.update(gameId, 'surface_start', {}, (game) => {
+    const sector = tileToSector(game.getIn(team, SUB_LOCATION), getGridSize(game.get(GRID)));
     return game
       .setIn([team, SURFACED], true)
+      .update(NOTIFICATIONS, notificationAdder(createSurfaceNotification(team, sector)))
   });
   
   await sleep(SURFACE_DURATION);
@@ -241,7 +261,7 @@ Games.trackBreakdown = (gameId, team, breakdownIndex) => {
     
     const brokenSubsystem = game.getIn([SUBSYSTEMS, breakdownIndex]);
     assert(brokenSubsystem, `Invalid Breakdown: ${breakdownIndex}`);
-    const directionMoved = getLastDirectionMoved(game.getIn([team, ACTIONS]));
+    const directionMoved = getLastDirectionMoved(game.get(NOTIFICATIONS), team);
     assert(
       brokenSubsystem.get(DIRECTION) === directionMoved,
       `Breakdown must be in direction moved. Expected ${directionMoved}, Actual ${brokenSubsystem.get(DIRECTION)}`
@@ -273,18 +293,15 @@ function causeDamage(game, team, amount) {
   return game.updateIn([team, HIT_POINTS], hp => hp - amount);
 }
 
-function explosion(game, team, explosionLocation, currentLocation, opponentLocation) {
-  if (opponentLocation.equals(explosionLocation)) { // direct hit
-    game = causeDamage(game, otherTeam(team), 2);
-  } else if (isAdjacent(opponentLocation, explosionLocation)) { // indirect hit
-    game = causeDamage(game, otherTeam(team), 1);
-  }
+function applyExplosion(game, team, explosionLocation, currentLocation, opponentLocation) {
+  game = causeDamage(game, otherTeam(team),
+    getExplosionDamage(
+      getExplosionResult(opponentLocation, explosionLocation)));
   
-  if (currentLocation.equals(explosionLocation)) { // direct hit
-    game = causeDamage(game, team, 2);
-  } else if (isAdjacent(currentLocation, explosionLocation)) { // indirect hit
-    game = causeDamage(game, team, 1);
-  }
+  game = causeDamage(game, team,
+    getExplosionDamage(
+      getExplosionResult(currentLocation, explosionLocation)));
+  
   return game;
 }
 

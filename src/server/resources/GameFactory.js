@@ -2,7 +2,7 @@ import Immutable from 'immutable/dist/immutable';
 import { ALL_DIRECTIONS } from '../../common/Direction';
 import { WATER_TILE } from '../../common/Grid';
 import {
-  ACTIONS,
+  NOTIFICATIONS,
   BREAKDOWNS,
   COMMON,
   CREATED,
@@ -14,7 +14,8 @@ import {
   STARTED,
   SUB_LOCATION,
   SUB_PATH,
-  SUBSYSTEMS, SURFACED,
+  SUBSYSTEMS,
+  SURFACED,
   SYSTEM_IS_USED,
   SYSTEMS,
   TEAMS,
@@ -44,6 +45,7 @@ import { BLUE, RED } from '../../common/Team';
 // TODO: Something so I don't have to worry about mixing immutable and vanilla types.
 export function createGame(id, { [PLAYERS]: players, [USERNAMES]: usernames, [TEAMS]: teams }) {
   return new Immutable.fromJS({
+    [NOTIFICATIONS]: [],
     [COMMON]: createCommon(players, usernames, teams),
     [GRID]: createGrid(),
     [ID]: id,
@@ -72,7 +74,6 @@ export function createTeamInfo() {
       [WAITING_FOR_ENGINEER]: false,
       [WAITING_FOR_FIRST_MATE]: false,
     },
-    [ACTIONS]: [],
     [BREAKDOWNS]: Immutable.Set(), // indexes into ENGINE_LAYOUT
     [HIT_POINTS]: 4,
     [MINE_LOCATIONS]: [],

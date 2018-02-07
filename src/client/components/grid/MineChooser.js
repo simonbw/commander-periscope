@@ -1,17 +1,17 @@
 import React from 'react';
-import { LocationListPropType, LocationPropType } from '../../GamePropTypes';
-import TorpedoMarker from './TorpedoMarker';
+import { LocationListPropType, LocationPropType } from '../GamePropTypes';
+import MineMarker from './MineMarker';
 
 // TODO: This should probably be a PureComponent
-const TorpedoChooser = ({ torpedoOptions, mouseTile }) => {
+const MineChooser = ({ mineOptions, mouseTile }) => {
   return (
     <g>
-      {torpedoOptions.map(location => (
+      {mineOptions.map(location => (
         <g
           fill={"none"}
           key={location}
         >
-          <TorpedoMarker
+          <MineMarker
             color={'#FF0000'}
             fillOpacity={location.equals(mouseTile) ? 1 : 0.2}
             strokeOpacity={location.equals(mouseTile) ? 1 : 0.2}
@@ -23,9 +23,9 @@ const TorpedoChooser = ({ torpedoOptions, mouseTile }) => {
   );
 };
 
-TorpedoChooser.propTypes = {
-  torpedoOptions: LocationListPropType.isRequired,
+MineChooser.propTypes = {
+  mineOptions: LocationListPropType.isRequired,
   mouseTile: LocationPropType
 };
 
-export default TorpedoChooser;
+export default MineChooser;

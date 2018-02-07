@@ -3,9 +3,22 @@ import Immutable from 'immutable';
 import Random from 'random-js';
 import React, { Component } from 'react';
 import { UnconnectedRadioOperatorPage } from '../src/client/components/game/RadioOperatorPage';
-import { ALL_DIRECTIONS } from '../src/common/Direction';
-import { ACTION_ID, ACTION_TYPE, DIRECTION_MOVED, GRID, SYSTEM_USED } from '../src/common/StateFields';
-import { ALL_SYSTEMS } from '../src/common/System';
+import { EAST, NORTH, SOUTH, WEST } from '../src/common/Direction';
+import { DIRECT_HIT, INDIRECT_HIT, MISS } from '../src/common/Explosion';
+import {
+  createDetonateMineNotification,
+  createDroneNotification,
+  createDropMineNotification,
+  createMoveNotification,
+  createSilentNotification,
+  createSonarNotification,
+  createSurfaceNotification,
+  createTorpedoNotification,
+  NOTIFICATION_ID
+} from '../src/common/Notifications';
+import { GRID } from '../src/common/StateFields';
+import { BLUE, RED } from '../src/common/Team';
+import { generateSonarResult } from '../src/common/util/GameUtils';
 import '../styles/main.css';
 import { mockGame } from '../test/mocks';
 import StoryWrapper from './StoryWrapper';
@@ -16,10 +29,11 @@ storiesOf('Components', module)
     const grid = mockGame().get(GRID);
     return (
       <StateWrapper>
-        {({ opponentActions }) => (
+        {({ notifications }) => (
           <UnconnectedRadioOperatorPage
             grid={grid}
-            opponentActions={opponentActions}
+            notifications={notifications}
+            team={RED}
           />
         )}
       </StateWrapper>
@@ -27,45 +41,27 @@ storiesOf('Components', module)
   })
   .add('RadioOperator Static', () => {
     const grid = mockGame().get(GRID);
-    const mockedMoves = Immutable.Range(0, 10).map(() => mockMove()).toList();
+    const mockedMoves = Immutable.Range(0, 10).map(() => mockNotification()).toList();
     return (
       <UnconnectedRadioOperatorPage
         grid={grid}
-        opponentActions={mockedMoves}
+        notifications={mockedMoves}
+        team={RED}
       />
     );
   });
-
-const r = Random();
-let lastId = 1;
-
-function mockMove() {
-  if (r.bool(0.7)) {
-    return Immutable.Map({
-      [ACTION_TYPE]: 'move',
-      [DIRECTION_MOVED]: r.pick(ALL_DIRECTIONS),
-      [ACTION_ID]: lastId++,
-    });
-  } else {
-    return Immutable.Map({
-      [ACTION_TYPE]: 'useSystem',
-      [SYSTEM_USED]: r.pick(ALL_SYSTEMS),
-      [ACTION_ID]: lastId++,
-    });
-  }
-}
 
 class StateWrapper extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      opponentActions: Immutable.List(),
+      notifications: Immutable.List(),
     };
   }
   
   componentWillMount() {
     this.interval = setInterval(() => {
-      this.setState({ opponentActions: this.state.opponentActions.unshift(mockMove()).take(20) })
+      this.setState({ notifications: this.state.notifications.unshift(mockNotification()).take(20) })
     }, 1500);
   }
   
@@ -78,4 +74,30 @@ class StateWrapper extends Component {
       ...this.state,
     })
   }
+}
+
+const r = Random();
+
+function randomLocation() {
+  return Immutable.List([r.integer(0, 14), r.integer(0, 14)]);
+}
+
+const notificationCreators = [
+  () => createDetonateMineNotification(BLUE, randomLocation(), r.pick([DIRECT_HIT, INDIRECT_HIT, MISS])),
+  () => createDroneNotification(RED, r.integer(0, 8), r.bool(0.5)),
+  () => createDropMineNotification(BLUE, randomLocation()),
+  () => createMoveNotification(RED, EAST),
+  () => createMoveNotification(RED, NORTH),
+  () => createMoveNotification(RED, SOUTH),
+  () => createMoveNotification(RED, WEST),
+  () => createSilentNotification(RED, randomLocation()),
+  () => createSonarNotification(RED, generateSonarResult(randomLocation())),
+  () => createSurfaceNotification(RED, r.integer(0, 8)),
+  () => createTorpedoNotification(RED, randomLocation(), r.pick([DIRECT_HIT, INDIRECT_HIT, MISS])),
+];
+
+let lastId = 1;
+
+function mockNotification() {
+  return r.pick(notificationCreators)().set(NOTIFICATION_ID, lastId++)
 }
