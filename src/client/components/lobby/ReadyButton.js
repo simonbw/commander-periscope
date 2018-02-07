@@ -1,7 +1,8 @@
 import { Button } from 'material-ui';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { LOBBY, READIED, TEAMS, USER_ID } from '../../../common/StateFields';
+import { READIED, TEAMS } from '../../../common/fields/LobbyFields';
+import { LOBBY, USER_ID } from '../../../common/fields/StateFields';
 import { getPlayerPosition } from '../../../common/util/GameUtils';
 import { ready, unready } from '../../actions/CustomLobbyActions';
 

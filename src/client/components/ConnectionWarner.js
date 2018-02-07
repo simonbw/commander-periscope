@@ -2,7 +2,7 @@ import { Snackbar } from 'material-ui';
 import React from 'react';
 import { connect } from 'react-redux';
 import styles from '../../../styles/ConnectionWarner.css';
-import { CONNECTED } from '../../common/StateFields';
+import { CONNECTED } from '../../common/fields/StateFields';
 
 // TODO: Make this more error-looky
 export const UnconnectedConnectionWarner = ({ connected }) => (

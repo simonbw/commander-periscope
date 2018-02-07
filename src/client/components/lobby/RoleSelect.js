@@ -6,9 +6,10 @@ import {
 import { Clear, Done } from 'material-ui-icons';
 import React, { Component } from 'react';
 import styles from '../../../../styles/RoleSelect.css';
+import { READIED, TEAMS } from '../../../common/fields/LobbyFields';
 import * as Role from '../../../common/Role';
 import { ALL_ROLES } from '../../../common/Role'; // TODO: Rename this
-import { READIED, TEAMS, USERNAMES } from '../../../common/StateFields';
+import { USERNAMES } from '../../../common/fields/LobbyFields';
 import { BLUE, getDisplayName, RED } from '../../../common/Team';
 import { getAvatarForRole } from '../icons/RoleAvatars';
 

@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
 import '../../../styles/main.css';
-import { LOBBY } from '../../common/StateFields';
+import { LOBBY } from '../../common/fields/StateFields';
 import ConnectionWarner from './ConnectionWarner';
 import DebugPane from './DebugPane';
 import CustomLobbyContainer from './lobby/CustomLobbyContainer';

@@ -2,7 +2,7 @@ import { storiesOf } from '@storybook/react';
 import Immutable from 'immutable';
 import React from 'react';
 import DebugPane, { UnconnectedDebugPane } from '../src/client/components/DebugPane';
-import { GRID } from '../src/common/StateFields';
+import { GRID } from '../src/common/fields/GameFields';
 import '../styles/main.css';
 import { mockGame } from '../test/mocks';
 import StoryWrapper from './StoryWrapper';

@@ -2,7 +2,8 @@ import { Paper, TextField } from 'material-ui';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import styles from '../../../../styles/CustomLobbyPage.css';
-import { LOBBY, USER_ID, USERNAMES } from '../../../common/StateFields';
+import { USERNAMES } from '../../../common/fields/LobbyFields';
+import { LOBBY, USER_ID} from '../../../common/fields/StateFields';
 import { setUsername } from '../../actions/CustomLobbyActions';
 
 class UnconnectedUsernameInput extends Component {

@@ -1,5 +1,5 @@
 import Immutable from 'immutable';
-import { ID } from '../../../src/common/StateFields';
+import { ID } from '../../../src/common/fields/GameFields';
 import Resource from '../../../src/server/resources/Resource';
 import expect from '../../expect';
 import { sleep } from '../../../src/common/util/AsyncUtil';

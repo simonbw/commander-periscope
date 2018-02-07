@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { GAME_ID, LOBBY } from '../../../common/StateFields';
+import { GAME_ID } from '../../../common/fields/LobbyFields';
+import { LOBBY } from '../../../common/fields/StateFields';
 import GamePage from '../game/GamePage';
 import LoadingPage from '../LoadingPage';
 import CustomLobbyPage from './CustomLobbyPage';

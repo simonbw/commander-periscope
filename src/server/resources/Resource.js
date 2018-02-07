@@ -1,6 +1,6 @@
 import PubSub from 'pubsub-js';
 import shortid from 'shortid';
-import { ID } from '../../common/StateFields';
+import { ID } from '../../common/fields/GameFields';
 import { sleep, waitForSettled } from '../../common/util/AsyncUtil';
 
 // TODO: Consider renaming this to DAO (Data Access Object)

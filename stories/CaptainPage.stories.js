@@ -4,20 +4,13 @@ import Immutable from 'immutable';
 import React, { Component, Fragment } from 'react';
 import { UnconnectedDebugPane } from '../src/client/components/DebugPane';
 import { UnconnectedCaptainContainer } from '../src/client/components/game/CaptainPage';
+import { GRID, MINE_LOCATIONS, PHASE, SUB_LOCATION, SUB_PATH, SYSTEMS } from '../src/common/fields/GameFields';
+import { WAITING_FOR_ENGINEER, WAITING_FOR_FIRST_MATE } from '../src/common/fields/TurnInfoFields';
+import { MAIN_PHASE } from '../src/common/GamePhase';
 import { getLocationFromDirection } from '../src/common/Grid';
 import { CAPTAIN } from '../src/common/Role';
 import {
-  COMMON,
-  GRID,
-  MINE_LOCATIONS,
-  STARTED,
-  SUB_LOCATION,
-  SUB_PATH,
-  SYSTEMS,
-  TURN_INFO,
-  WAITING_FOR_ENGINEER,
-  WAITING_FOR_FIRST_MATE
-} from '../src/common/StateFields';
+  TURN_INFO} from '../src/common/fields/GameFields';
 import { DRONE, MINE, SILENT, SONAR, TORPEDO } from '../src/common/System';
 import '../styles/main.css';
 import { mockPlayerData } from '../test/mocks';
@@ -35,12 +28,12 @@ storiesOf('Components', module)
               detonateMine={detonateMine}
               dropMine={dropMine}
               fireTorpedo={fireTorpedo}
+              gamePhase={game.get(PHASE)}
               goSilent={goSilent}
               grid={game.get(GRID)}
               headInDirection={headInDirection}
               mines={game.get(MINE_LOCATIONS)}
               setStartLocation={setStartLocation}
-              started={game.getIn([COMMON, STARTED])}
               subLocation={game.get(SUB_LOCATION)}
               subPath={game.get(SUB_PATH)}
               surface={surface}
@@ -73,7 +66,7 @@ class StateWrapper extends Component {
       this.setState((state) => ({
         game: state.game
           .set(SUB_LOCATION, location)
-          .setIn([COMMON, STARTED], true)
+          .set(PHASE, MAIN_PHASE)
       }));
     }, ROUND_TRIP_TIME);
   }

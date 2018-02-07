@@ -5,15 +5,15 @@ import { connect } from 'react-redux';
 import styles from '../../../../styles/RadioOperatorPage.css';
 import { getDirectionArrow } from '../../../common/Direction';
 import { getHitDisplayName } from '../../../common/Explosion';
+import { GRID, NOTIFICATIONS, TEAM } from '../../../common/fields/GameFields';
 import {
   DETONATE_MINE_NOTIFICATION, DRONE_NOTIFICATION, DROP_MINE_NOTIFICATION, MOVE_NOTIFICATION, NOTIFICATION_DIRECTION,
   NOTIFICATION_DRONE_RESULT, NOTIFICATION_HIT_RESULT, NOTIFICATION_ID, NOTIFICATION_LOCATION, NOTIFICATION_SECTOR,
   NOTIFICATION_SONAR_RESULT, NOTIFICATION_TEAM, NOTIFICATION_TYPE, SILENT_NOTIFICATION, SONAR_NOTIFICATION,
   SURFACE_NOTIFICATION, TORPEDO_NOTIFICATION
 } from '../../../common/Notifications';
-import { COMMON, GAME, GRID, NOTIFICATIONS, TEAMS, USER_ID } from '../../../common/StateFields';
+import { GAME} from '../../../common/fields/StateFields';
 import { DRONE, MINE, SILENT, SONAR, TORPEDO } from '../../../common/System';
-import { getPlayerPosition } from '../../../common/util/GameUtils';
 import GridBackground from '../grid/GridBackground';
 import GridContainer from '../grid/GridContainer';
 import GridLabels, { ROW_LABELS } from '../grid/GridLabels';
@@ -212,7 +212,7 @@ export default connect(
   (state) => ({
     grid: state.getIn([GAME, GRID]),
     notifications: state.getIn([GAME, NOTIFICATIONS]),
-    team: getPlayerPosition(state.getIn([GAME, COMMON, TEAMS]), state.get(USER_ID)).team
+    team: state.getIn([GAME, TEAM])
   }),
   (dispatch) => ({})
 )(UnconnectedRadioOperatorPage);

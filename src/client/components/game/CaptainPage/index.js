@@ -5,9 +5,11 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import styles from '../../../../../styles/CaptainPage.css';
 import {
-  GAME, GRID, MINE_LOCATIONS, STARTED, SUB_LOCATION, SUB_PATH, SYSTEMS, TURN_INFO, WAITING_FOR_ENGINEER,
-  WAITING_FOR_FIRST_MATE
-} from '../../../../common/StateFields';
+  GRID, MINE_LOCATIONS, PHASE, SUB_LOCATION, SUB_PATH, SYSTEMS, TURN_INFO
+} from '../../../../common/fields/GameFields';
+import {
+  GAME} from '../../../../common/fields/StateFields';
+import { WAITING_FOR_ENGINEER, WAITING_FOR_FIRST_MATE } from '../../../../common/fields/TurnInfoFields';
 import { getMineOptions, getMoveOptions, getSilentOptions, getTorpedoOptions } from '../../../../common/util/GameUtils';
 import {
   detonateMine, dropMine, fireTorpedo, goSilent, headInDirection, setStartLocation, useDrone, useSonar
@@ -33,12 +35,12 @@ export class UnconnectedCaptainContainer extends React.Component { // export for
     detonateMine: PropTypes.func.isRequired,
     dropMine: PropTypes.func.isRequired,
     fireTorpedo: PropTypes.func.isRequired,
+    gamePhase: PropTypes.string.isRequired,
     goSilent: PropTypes.func.isRequired,
     grid: GridPropType,
     headInDirection: PropTypes.func.isRequired,
     mines: LocationListPropType.isRequired,
     setStartLocation: PropTypes.func.isRequired,
-    started: PropTypes.bool.isRequired,
     subLocation: LocationPropType,
     subPath: LocationListPropType.isRequired,
     surface: PropTypes.func.isRequired,
@@ -68,7 +70,7 @@ export class UnconnectedCaptainContainer extends React.Component { // export for
     // TODO: This is really hacky and fragile and wrong
     if (
       !Immutable.is(nextProps.mines, this.props.mines) ||
-      !Immutable.is(nextProps.started, this.props.started) ||
+      !Immutable.is(nextProps.gamePhase, this.props.gamePhase) ||
       !Immutable.is(nextProps.subLocation, this.props.subLocation) ||
       !Immutable.is(nextProps.subPath, this.props.subPath) ||
       !Immutable.is(nextProps.systems, this.props.systems)
@@ -80,7 +82,7 @@ export class UnconnectedCaptainContainer extends React.Component { // export for
   render() {
     return (
       <ModeWrapper
-        gameStarted={this.props.started}
+        gamePhase={this.props.gamePhase}
         systemStatuses={this.props.systems}
         hasMines={!this.props.mines.isEmpty()}
       >
@@ -185,11 +187,11 @@ export class UnconnectedCaptainContainer extends React.Component { // export for
 
 export default connect(
   (state) => ({
+    gamePhase: state.getIn([GAME, PHASE]),
     grid: state.getIn([GAME, GRID]),
-    started: state.getIn([GAME, STARTED]),
+    mines: state.getIn([GAME, MINE_LOCATIONS]),
     subLocation: state.getIn([GAME, SUB_LOCATION]),
     subPath: state.getIn([GAME, SUB_PATH]),
-    mines: state.getIn([GAME, MINE_LOCATIONS]),
     systems: state.getIn([GAME, SYSTEMS]),
     waitingForEngineer: state.getIn([GAME, TURN_INFO, WAITING_FOR_ENGINEER]),
     waitingForFirstMate: state.getIn([GAME, TURN_INFO, WAITING_FOR_FIRST_MATE]),

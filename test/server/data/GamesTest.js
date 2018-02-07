@@ -1,11 +1,13 @@
 import Immutable, { List } from 'immutable';
-import { EAST, NORTH, SOUTH } from '../../../src/common/Direction';
-import { WEST } from '../../../src/common/Direction';
-import { LAND_TILE} from '../../../src/common/Grid';
+import { EAST, NORTH, SOUTH, WEST } from '../../../src/common/Direction';
 import {
-  BREAKDOWNS, COMMON, GRID, HIT_POINTS, PLAYERS, STARTED, SUB_LOCATION, SUB_PATH, SUBSYSTEMS, SYSTEMS, TURN_INFO,
-  USERNAMES, WINNER
-} from '../../../src/common/StateFields';
+  BREAKDOWNS, GRID, HIT_POINTS, PHASE, SUB_LOCATION, SUB_PATH, SUBSYSTEMS, SYSTEMS, TURN_INFO
+} from '../../../src/common/fields/GameFields';
+import { ENDED_PHASE, MAIN_PHASE, PICK_PHASE } from '../../../src/common/GamePhase';
+import { LAND_TILE } from '../../../src/common/Grid';
+import {
+  WINNER
+} from '../../../src/common/fields/GameFields';
 import { CHARGE, DIRECTION, DRONE, MINE, SILENT, SONAR, TORPEDO } from '../../../src/common/System';
 import { BLUE, RED } from '../../../src/common/Team';
 import { GameStateError } from '../../../src/server/resources/GameAssertions';
@@ -58,11 +60,6 @@ describe('Games', () => {
     const lobby = mockLobby();
     const game = await Games.createFromLobby(lobby);
     
-    const common = game.get(COMMON);
-    expect(common).to.have.property(STARTED, false);
-    expect(common.get(PLAYERS)).to.have.size(8);
-    expect(common.get(USERNAMES)).to.have.size(8);
-    
     expect(game.get(GRID)).to.exist;
     expect(game.get(SUBSYSTEMS)).to.exist;
     
@@ -83,11 +80,11 @@ describe('Games', () => {
       const blueLocation = List([2, 3]);
       
       let game = await Games.setStartLocation('gameId', RED, redLocation);
-      expect(game.get(COMMON)).to.have.property(STARTED, false);
+      expect(game.get(PHASE)).to.equal(PICK_PHASE);
       
       game = await Games.setStartLocation('gameId', BLUE, blueLocation);
       
-      expect(game.get(COMMON)).to.have.property(STARTED, true);
+      expect(game.get(PHASE)).to.equal(MAIN_PHASE);
       expect(game.getIn([RED, SUB_LOCATION])).to.equal(redLocation);
       expect(game.getIn([BLUE, SUB_LOCATION])).to.equal(blueLocation);
     });
@@ -373,8 +370,8 @@ describe('Games', () => {
     
     expect((await Games.get('gameId')).getIn([RED, HIT_POINTS])).to.equal(0);
     expect((await Games.get('gameId')).getIn([BLUE, HIT_POINTS])).to.equal(1);
-    
-    expect((await Games.get('gameId')).getIn([COMMON, WINNER])).to.equal(BLUE);
+    expect((await Games.get('gameId')).get(PHASE)).to.equal(ENDED_PHASE);
+    expect((await Games.get('gameId')).get(WINNER)).to.equal(BLUE);
     
     await expect(Games.headInDirection('gameId', RED, SOUTH)).to.be.rejectedWith(GameStateError);
   });

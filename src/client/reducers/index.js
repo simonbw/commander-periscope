@@ -1,5 +1,5 @@
 import { Map } from 'immutable';
-import { CONNECTED, GAME, LOBBY } from '../../common/StateFields';
+import { CONNECTED, GAME, LOBBY } from '../../common/fields/StateFields';
 import connectionReducer from './connectionReducer';
 import customLobbyReducer from './customLobbyReducer';
 import gameReducer from './gameReducer';

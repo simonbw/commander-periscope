@@ -2,10 +2,11 @@
  * Assertions to verify the game is in a state where an action can be made.
  */
 
+import { PHASE, SYSTEMS } from '../../common/fields/GameFields';
+import { WAITING_FOR_ENGINEER, WAITING_FOR_FIRST_MATE } from '../../common/fields/TurnInfoFields';
+import { MAIN_PHASE } from '../../common/GamePhase';
 import { WATER_TILE } from '../../common/Grid';
-import {
-  COMMON, STARTED, SYSTEMS, TURN_INFO, WAITING_FOR_ENGINEER, WAITING_FOR_FIRST_MATE, WINNER
-} from '../../common/StateFields';
+import { TURN_INFO} from '../../common/fields/GameFields';
 import { CHARGE, MAX_CHARGE } from '../../common/System';
 import { canUseSystem } from '../../common/util/GameUtils';
 
@@ -26,12 +27,11 @@ export function assert(assertion, message) {
 }
 
 export function assertNotStarted(game) {
-  assert(!game.getIn([COMMON, STARTED]), 'Game already started');
+  assert(game.get(PHASE) < MAIN_PHASE, `Expected not start. Phases is ${game.get(PHASE)}`);
 }
 
-export function assertStartedAndNotEnded(game) {
-  assert(game.getIn([COMMON, STARTED]), 'Game not yet started');
-  assert(!game.getIn([COMMON, WINNER]), 'Game already ended');
+export function assertMainPhase(game) {
+  assert(game.get(PHASE) === MAIN_PHASE, `Expected MAIN_PHASE, got ${game.get(PHASE)}`);
 }
 
 export function assertValidStartLocation(location, grid) {
@@ -39,7 +39,7 @@ export function assertValidStartLocation(location, grid) {
 }
 
 export function assertCanMove(game, team) {
-  assertStartedAndNotEnded(game);
+  assertMainPhase(game);
   
   const turnInfo = game.getIn([team, TURN_INFO]);
   assert(!turnInfo.get(WAITING_FOR_FIRST_MATE), 'Cannot move. Waiting for First Mate');
@@ -55,7 +55,7 @@ export function assertCanMoveTo(location, grid, subPath, mineLocations) {
 }
 
 export function assertSystemReady(game, team, systemName) {
-  assertStartedAndNotEnded(game);
+  assertMainPhase(game);
   
   if (!canUseSystem(game, team, systemName)) {
     const system = game.getIn([team, SYSTEMS, systemName]);

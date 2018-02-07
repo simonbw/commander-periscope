@@ -4,14 +4,16 @@ import React from 'react';
 import { connect } from 'react-redux';
 import styles from '../../../../styles/EngineerPage.css';
 import { ALL_DIRECTIONS, getDirectionArrow } from '../../../common/Direction';
-import { BREAKDOWNS, GAME, ID, LAST_DIRECTION_MOVED, SUBSYSTEMS } from '../../../common/StateFields';
+import { BREAKDOWNS, ID, SUBSYSTEMS } from '../../../common/fields/GameFields';
+import { GAME} from '../../../common/fields/StateFields';
+import { LAST_DIRECTION_MOVED } from '../../../common/fields/TurnInfoFields';
 import { CIRCUIT, DIRECTION, SYSTEM_TYPE } from '../../../common/System';
 import { trackBreakdown } from '../../actions/GameActions';
 import { getIconForSystemType } from '../icons/SystemTypeIcons';
 
 const INDEX = ID;
 
-// TODO: Show
+// TODO: Show ???
 export const UnconnectedEngineerPage = ({ subsystems, breakdowns, directionMoved, trackBreakdown, readyToTrack }) => {
   // subsystems = subsystems.map((s, i) => s.set(INDEX, i));
   return (

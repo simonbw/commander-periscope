@@ -1,11 +1,17 @@
 import Immutable from 'immutable/dist/immutable';
 import { ALL_DIRECTIONS } from '../../common/Direction';
+import {
+  BREAKDOWNS, CREATED, GRID, HIT_POINTS, ID, MINE_LOCATIONS, NOTIFICATIONS, PHASE, SUB_LOCATION, SUB_PATH, SUBSYSTEMS,
+  SURFACED, SYSTEMS, TURN_INFO, WINNER
+} from '../../common/fields/GameFields';
+import { PLAYERS, TEAMS } from '../../common/fields/LobbyFields';
+import {
+  SYSTEM_IS_USED, TURN_NUMBER, WAITING_FOR_ENGINEER, WAITING_FOR_FIRST_MATE
+} from '../../common/fields/TurnInfoFields';
+import { PICK_PHASE } from '../../common/GamePhase';
 import { WATER_TILE } from '../../common/Grid';
 import {
-  BREAKDOWNS, COMMON, CREATED, GRID, HIT_POINTS, ID, MINE_LOCATIONS, NOTIFICATIONS, PLAYERS, STARTED, SUB_LOCATION,
-  SUB_PATH, SUBSYSTEMS, SURFACED, SYSTEM_IS_USED, SYSTEMS, TEAMS, TURN_INFO, TURN_NUMBER, USERNAMES,
-  WAITING_FOR_ENGINEER, WAITING_FOR_FIRST_MATE, WINNER
-} from '../../common/StateFields';
+  USERNAMES} from '../../common/fields/LobbyFields';
 import {
   CHARGE, CIRCUIT, CIRCUITS, DIRECTION, DRONE, MAX_CHARGE, MINE, SILENT, SONAR, SYSTEM_TYPE, SYSTEM_TYPES, TORPEDO
 } from '../../common/System';
@@ -14,24 +20,19 @@ import { BLUE, RED } from '../../common/Team';
 // TODO: Something so I don't have to worry about mixing immutable and vanilla types.
 export function createGame(id, { [PLAYERS]: players, [USERNAMES]: usernames, [TEAMS]: teams }) {
   return new Immutable.fromJS({
-    [NOTIFICATIONS]: [],
-    [COMMON]: createCommon(players, usernames, teams),
+    [CREATED]: Date.now(),
     [GRID]: createGrid(),
     [ID]: id,
-    [SUBSYSTEMS]: createSubsystems(),
-    [BLUE]: createTeamInfo(),
-    [RED]: createTeamInfo(),
-  });
-}
-
-export function createCommon(players, usernames, teams) {
-  return Immutable.fromJS({
-    [CREATED]: Date.now(),
+    [NOTIFICATIONS]: [],
+    [PHASE]: PICK_PHASE,
     [PLAYERS]: players,
-    [STARTED]: false,
+    [SUBSYSTEMS]: createSubsystems(),
     [TEAMS]: teams,
     [USERNAMES]: usernames,
     [WINNER]: null,
+    
+    [BLUE]: createTeamInfo(),
+    [RED]: createTeamInfo(),
   });
 }
 

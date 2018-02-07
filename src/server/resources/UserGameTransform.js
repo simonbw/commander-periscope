@@ -1,31 +1,44 @@
 import Immutable from 'immutable';
 import {
+  BREAKDOWNS, GRID, ID, MINE_LOCATIONS, NOTIFICATIONS, PHASE, ROLE, SUB_LOCATION, SUB_PATH, SUBSYSTEMS, SURFACED,
+  SYSTEMS, TEAM, TURN_INFO, WINNER
+} from '../../common/fields/GameFields';
+import { TEAMS } from '../../common/fields/LobbyFields';
+import { LAST_DIRECTION_MOVED, WAITING_FOR_ENGINEER, WAITING_FOR_FIRST_MATE } from '../../common/fields/TurnInfoFields';
+import { ENDED_PHASE } from '../../common/GamePhase';
+import {
   DETONATE_MINE_NOTIFICATION, DRONE_NOTIFICATION, DROP_MINE_NOTIFICATION, MOVE_NOTIFICATION, NOTIFICATION_LOCATION,
   NOTIFICATION_TEAM, NOTIFICATION_TYPE, SILENT_NOTIFICATION, SONAR_NOTIFICATION, SURFACE_NOTIFICATION,
   TORPEDO_NOTIFICATION
 } from '../../common/Notifications';
 import { CAPTAIN, ENGINEER, FIRST_MATE, RADIO_OPERATOR } from '../../common/Role';
 import {
-  BREAKDOWNS, COMMON, GRID, ID, LAST_DIRECTION_MOVED, MINE_LOCATIONS, NOTIFICATIONS, SUB_LOCATION, SUB_PATH, SUBSYSTEMS,
-  SURFACED, SYSTEMS, TEAMS, TURN_INFO, WAITING_FOR_ENGINEER, WAITING_FOR_FIRST_MATE
-} from '../../common/StateFields';
+  USERNAMES} from '../../common/fields/LobbyFields';
 import { otherTeam } from '../../common/Team';
 import { canUseSystem, getLastDirectionMoved, getPlayerPosition } from '../../common/util/GameUtils';
 
 export const getDataForUser = (game, userId) => {
-  let data = Immutable.Map({
-    [ID]: game.get(ID),
-    [COMMON]: game.get(COMMON)
-  });
+  let data = Immutable.Map({})
+    .set(ID, game.get(ID))
+    .set(PHASE, game.get(PHASE))
+    .set(TEAMS, game.get(TEAMS))
+    .set(USERNAMES, game.get(USERNAMES));
   
-  const position = getPlayerPosition(game.getIn([COMMON, TEAMS]), userId);
+  if (game.get(PHASE) === ENDED_PHASE) {
+    data = data.set(WINNER, game.get(WINNER));
+  }
+  
+  const position = getPlayerPosition(game.get(TEAMS), userId);
   if (!position) {
     throw new Error(`Cannot get data for user: ${userId}`);
   }
   const { team, role } = position;
   const teamInfo = game.get(team);
   
-  data = data.set(SURFACED, teamInfo.get(SURFACED));
+  data = data
+    .set(SURFACED, teamInfo.get(SURFACED))
+    .set(ROLE, role)
+    .set(TEAM, team);
   
   switch (role) {
     case CAPTAIN:

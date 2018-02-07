@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react'
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import { PICK_PHASE } from '../../../../common/GamePhase';
 import { DRONE, MINE, SILENT, TORPEDO } from '../../../../common/System';
 
 // Modes
@@ -17,7 +18,7 @@ class ModeWrapper extends Component {
   static propTypes = {
     // systemStatuses: ImmutablePropTypes.mapOf(PropTypes.bool).isRequired // TODO: Update immutable-proptypes
     children: PropTypes.func.isRequired,
-    gameStarted: PropTypes.bool.isRequired,
+    gamePhase: PropTypes.string.isRequired,
     hasMines: PropTypes.bool.isRequired,
     systemStatuses: ImmutablePropTypes.map.isRequired,
   };
@@ -59,7 +60,7 @@ class ModeWrapper extends Component {
   }
   
   getMode() {
-    if (!this.props.gameStarted) {
+    if (this.props.gamePhase === PICK_PHASE) {
       return PICK_START_LOCATION_MODE;
     }
     return this.state.targetMode

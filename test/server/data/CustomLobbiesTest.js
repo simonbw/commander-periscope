@@ -1,6 +1,7 @@
 import Immutable from 'immutable';
+import { GAME_ID, PLAYERS, READIED, TEAMS } from '../../../src/common/fields/LobbyFields';
 import { ALL_ROLES, CAPTAIN, FIRST_MATE } from '../../../src/common/Role';
-import { GAME_ID, PLAYERS, READIED, TEAMS, USERNAMES } from '../../../src/common/StateFields';
+import { USERNAMES } from '../../../src/common/fields/LobbyFields';
 import { BLUE, BOTH_TEAMS, RED } from '../../../src/common/Team';
 import { shouldStartGame } from '../../../src/server/resources/CustomLobbyUtils';
 import expect from '../../expect';

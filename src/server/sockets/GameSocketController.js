@@ -1,12 +1,13 @@
 import { List } from 'immutable';
 import PubSub from 'pubsub-js';
+import { ID } from '../../common/fields/GameFields';
 import {
   CHARGE_SYSTEM_MESSAGE, DETONATE_MINE_MESSAGE, DROP_MINE_MESSAGE, FIRE_TORPEDO_MESSAGE, GO_SILENT_MESSAGE,
   HEAD_IN_DIRECTION_MESSAGE, JOIN_GAME_MESSAGE, SET_START_LOCATION_MESSAGE, SURFACE_MESSAGE, TRACK_BREAKDOWN_MESSAGE,
   USE_DRONE_MESSAGE, USE_SONAR_MESSAGE
 } from '../../common/Messages';
 import { CAPTAIN, ENGINEER, FIRST_MATE, RADIO_OPERATOR } from '../../common/Role';
-import { COMMON, ID, TEAMS } from '../../common/StateFields';
+import { TEAMS } from '../../common/fields/LobbyFields';
 import { getPlayerPosition } from '../../common/util/GameUtils';
 import Games from '../resources/Games';
 import { getDataForUser } from '../resources/UserGameTransform';
@@ -31,7 +32,7 @@ export default () => (socket, next) => {
       socket.gameId = game.get(ID);
       
       const playerId = socket.userId;
-      const position = getPlayerPosition(game.getIn([COMMON, TEAMS]), playerId);
+      const position = getPlayerPosition(game.get(TEAMS), playerId);
       const pubsubToken = attachPubsubHandlers(socket, game.get(ID), position);
       listenToSocketMessages(socket, game.get(ID), pubsubToken, position);
       
@@ -58,6 +59,8 @@ function attachPubsubHandlers(socket, gameId, position) {
       // TODO: Real message handlers
       // Try to send less information over the wire.
       // We don't need to send everyone their full game state on every action.
+      
+      // TODO: Check old and new game state and only send if different
       
       socket.emit('action', {
         type: 'game_update',

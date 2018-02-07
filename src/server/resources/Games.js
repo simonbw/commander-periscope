@@ -1,6 +1,15 @@
 import Immutable from 'immutable';
 import { getExplosionDamage, getExplosionResult } from '../../common/Explosion';
 import {
+  BREAKDOWNS, GRID, HIT_POINTS, MINE_LOCATIONS, NOTIFICATIONS, PHASE, SUB_LOCATION, SUB_PATH, SUBSYSTEMS, SURFACED,
+  SYSTEMS, TURN_INFO, WINNER
+} from '../../common/fields/GameFields';
+import { PLAYERS, TEAMS } from '../../common/fields/LobbyFields';
+import {
+  SYSTEM_IS_USED, TURN_NUMBER, WAITING_FOR_ENGINEER, WAITING_FOR_FIRST_MATE
+} from '../../common/fields/TurnInfoFields';
+import { ENDED_PHASE, MAIN_PHASE } from '../../common/GamePhase';
+import {
   getDirection, getGridSize, getLocationFromDirection, getManhattanDistance, isAdjacent, tileToSector
 } from '../../common/Grid';
 import {
@@ -9,10 +18,7 @@ import {
   notificationAdder
 } from '../../common/Notifications';
 import {
-  BREAKDOWNS, COMMON, GRID, HIT_POINTS, MINE_LOCATIONS, NOTIFICATIONS, PLAYERS, STARTED, SUB_LOCATION, SUB_PATH,
-  SUBSYSTEMS, SURFACED, SYSTEM_IS_USED, SYSTEMS, TEAMS, TURN_INFO, TURN_NUMBER, USERNAMES, WAITING_FOR_ENGINEER,
-  WAITING_FOR_FIRST_MATE, WINNER
-} from '../../common/StateFields';
+  USERNAMES} from '../../common/fields/LobbyFields';
 import { CHARGE, DIRECTION, DRONE, MAX_CHARGE, MINE, SILENT, SONAR, TORPEDO } from '../../common/System';
 import { BLUE, otherTeam, RED } from '../../common/Team';
 import { sleep } from '../../common/util/AsyncUtil';
@@ -20,8 +26,7 @@ import {
   checkEngineOverload, fixCircuits, generateSonarResult, getLastDirectionMoved
 } from '../../common/util/GameUtils';
 import {
-  assert, assertCanMove, assertCanMoveTo, assertNotStarted, assertStartedAndNotEnded, assertSystemReady,
-  assertValidStartLocation
+  assert, assertCanMove, assertCanMoveTo, assertMainPhase, assertNotStarted, assertSystemReady, assertValidStartLocation
 } from './GameAssertions';
 import { createGame } from './GameFactory';
 import Resource from './Resource';
@@ -52,7 +57,7 @@ Games.setStartLocation = (gameId, team, location) => (
     game = game.setIn([team, SUB_LOCATION], location);
     // TODO: Don't allow starting on water
     if (game.getIn([RED, SUB_LOCATION]) && game.getIn([BLUE, SUB_LOCATION])) {
-      game = game.setIn([COMMON, STARTED], true);
+      game = game.set(PHASE, MAIN_PHASE);
       Games.publish(game, 'started');
       log('starting game');
     }
@@ -201,7 +206,7 @@ Games.surface = async (gameId, team) => {
 
 Games.chargeSystem = (gameId, team, systemName) => (
   Games.update(gameId, 'charged_system', {}, (game) => {
-    assertStartedAndNotEnded(game);
+    assertMainPhase(game);
     assert(game.getIn([team, TURN_INFO, WAITING_FOR_FIRST_MATE]), 'First Mate has already gone');
     
     // If system name is undefined, don't charge a system this turn
@@ -219,7 +224,7 @@ Games.chargeSystem = (gameId, team, systemName) => (
 
 Games.trackBreakdown = (gameId, team, breakdownIndex) => {
   return Games.update(gameId, 'tracked_breakdown', {}, (game) => {
-    assertStartedAndNotEnded(game);
+    assertMainPhase(game);
     assert(game.getIn([team, TURN_INFO, WAITING_FOR_ENGINEER]), 'Engineer has already gone');
     
     const brokenSubsystem = game.getIn([SUBSYSTEMS, breakdownIndex]);
@@ -250,7 +255,8 @@ function causeDamage(game, team, amount) {
     log('Game Over');
     return game
       .setIn([team, HIT_POINTS], 0)
-      .setIn([COMMON, WINNER], otherTeam(team));
+      .set(PHASE, ENDED_PHASE)
+      .set(WINNER, otherTeam(team));
   }
   // not dead
   return game.updateIn([team, HIT_POINTS], hp => hp - amount);

@@ -16,7 +16,7 @@ import {
   createTorpedoNotification,
   NOTIFICATION_ID
 } from '../src/common/Notifications';
-import { GRID } from '../src/common/StateFields';
+import { GRID } from '../src/common/fields/GameFields';
 import { BLUE, RED } from '../src/common/Team';
 import { generateSonarResult } from '../src/common/util/GameUtils';
 import '../styles/main.css';

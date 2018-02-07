@@ -1,11 +1,12 @@
 import Immutable from 'immutable/dist/immutable';
 import Random from 'random-js';
 import { ALL_DIRECTIONS } from '../Direction';
+import { BREAKDOWNS, SUBSYSTEMS } from '../fields/GameFields';
 import {
   getGridSize, getLocationFromDirection, getLocationList, getManhattanDistance, isInGrid, tileToSector, WATER_TILE
 } from '../Grid';
 import { MOVE_NOTIFICATION, NOTIFICATION_DIRECTION, NOTIFICATION_TEAM, NOTIFICATION_TYPE } from '../Notifications';
-import { BREAKDOWNS, SUBSYSTEMS, SYSTEMS, WINNER } from '../StateFields';
+import { SYSTEMS } from '../fields/GameFields';
 import { CHARGE, CIRCUIT, CIRCUITS, DIRECTION, getSystemType, MAX_CHARGE, NUCLEAR, SYSTEM_TYPE } from '../System';
 import { deepFind } from './ImmutableUtil';
 
@@ -71,16 +72,6 @@ export function checkEngineOverload(subsystems, breakdowns) {
       .filter((s) => s.get(SYSTEM_TYPE) === NUCLEAR)
       .keySeq()
       .isSubset(breakdowns);
-}
-
-export function getGamePhase(game) {
-  if (!game) {
-    return 'loading'; // TODO: Constants
-  } else if (game.get(WINNER)) {
-    return 'over'; // TODO: Constants
-  } else {
-    return 'middle'; // TODO: Constants
-  }
 }
 
 export function getLastDirectionMoved(notifications, team) {

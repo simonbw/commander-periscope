@@ -1,8 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { PHASE, ROLE, SURFACED, TEAM, WINNER } from '../../../common/fields/GameFields';
+import { ENDED_PHASE, LOADING_PHASE } from '../../../common/GamePhase';
 import * as Role from '../../../common/Role';
-import { COMMON, GAME, SURFACED, TEAMS, USER_ID, WINNER } from '../../../common/StateFields';
-import { getGamePhase, getPlayerPosition } from '../../../common/util/GameUtils';
+import { GAME} from '../../../common/fields/StateFields';
 import FloatingText from '../FloatingText';
 import LoadingPage from '../LoadingPage';
 import CaptainPage from './CaptainPage';
@@ -12,11 +13,11 @@ import RadioOperatorPage from './RadioOperatorPage';
 import SurfacedPage from './SurfacedPage';
 
 const UnconnectedGamePage = ({ team, role, gamePhase, winner, surfaced }) => {
-  if (gamePhase === 'loading') { // TODO: constants
+  if (gamePhase === LOADING_PHASE) { // TODO: constants
     return <LoadingPage/>
-  } else if (gamePhase === 'over') { // TODO: constants
+  } else if (gamePhase === ENDED_PHASE) { // TODO: constants
     return <GameOverPage win={team === winner}/>;
-  } // else gamePhase == 'middle'
+  }
   
   if (surfaced) {
     return <SurfacedPage/>
@@ -51,10 +52,11 @@ const GameOverPage = ({ win }) => (
 export default connect(
   (state) => {
     return {
-      gamePhase: getGamePhase(state.get(GAME)),
-      winner: state.getIn([GAME, WINNER]),
+      gamePhase: state.getIn([GAME, PHASE]),
+      role: state.getIn([GAME, ROLE]),
       surfaced: state.getIn([GAME, SURFACED]),
-      ...getPlayerPosition(state.getIn([GAME, COMMON, TEAMS]), state.get(USER_ID))
+      team: state.getIn([GAME, TEAM]),
+      winner: state.getIn([GAME, WINNER]),
     };
   },
   (dispatch) => ({})
