@@ -7,7 +7,8 @@ import GridMouseLocationProvider from './GridMouseLocationProvider';
 class GridTileSelect extends Component {
   static propTypes = {
     children: PropTypes.func.isRequired,
-    onSelect: PropTypes.func
+    disabled: PropTypes.bool,
+    onSelect: PropTypes.func,
   };
   
   constructor(props) {
@@ -15,6 +16,9 @@ class GridTileSelect extends Component {
   }
   
   getTile(mouseLocation) {
+    if (this.props.disabled) {
+      return null;
+    }
     const tile = mouseLocation && mouseLocation.map((x) => Math.floor(x));
     if (!tile || tile.some(x => x < 0 || tile[x] >= 15)) {
       return null;
@@ -23,10 +27,10 @@ class GridTileSelect extends Component {
   }
   
   render() {
-    const onSelect = this.props.onSelect;
+    const onSelect = this.props.onSelect && ((mouseLocation) => this.props.onSelect(this.getTile(mouseLocation)));
     return (
       <GridMouseLocationProvider
-        onClick={onSelect && ((mouseLocation) => onSelect(this.getTile(mouseLocation)))}
+        onClick={this.props.disabled ? undefined : onSelect}
       >
         {(mouseLocation) => this.props.children(this.getTile(mouseLocation))}
       </GridMouseLocationProvider>

@@ -15,10 +15,11 @@ export const TORPEDO_MODE = 'TORPEDO_MODE';
 // Keeps track of what mode the component is in
 class ModeWrapper extends Component {
   static propTypes = {
+    // systemStatuses: ImmutablePropTypes.mapOf(PropTypes.bool).isRequired // TODO: Update immutable-proptypes
     children: PropTypes.func.isRequired,
     gameStarted: PropTypes.bool.isRequired,
-    // systemStatuses: ImmutablePropTypes.mapOf(PropTypes.bool).isRequired // TODO: Update immutable-proptypes
-    systemStatuses: ImmutablePropTypes.map.isRequired
+    hasMines: PropTypes.bool.isRequired,
+    systemStatuses: ImmutablePropTypes.map.isRequired,
   };
   
   constructor(props) {
@@ -32,6 +33,8 @@ class ModeWrapper extends Component {
   componentWillReceiveProps(props) {
     const currentSystem = this.getRequiredSystem();
     if (currentSystem && !props.systemStatuses.get(currentSystem)) {
+      this.setState({ targetMode: MOVE_MODE });
+    } else if (this.state.targetMode === DETONATE_MINE_MODE && !props.hasMines) {
       this.setState({ targetMode: MOVE_MODE });
     }
   }

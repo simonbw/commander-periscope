@@ -56,7 +56,7 @@ storiesOf('Components', module)
     );
   });
 
-const ROUND_TRIP_TIME = 300;
+const ROUND_TRIP_TIME = 500;
 
 class StateWrapper extends Component {
   constructor(props) {

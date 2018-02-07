@@ -1,4 +1,5 @@
 import classnames from 'classnames';
+import Immutable from 'immutable';
 import { List, ListItem, ListItemAvatar, ListItemText, Paper } from 'material-ui';
 import PropTypes from 'prop-types';
 import React, { Fragment } from 'react';
@@ -94,11 +95,11 @@ export class UnconnectedCaptainContainer extends React.Component { // export for
   }
   
   startWaiting() {
-    this.setState({ waiting: true });
+    this.setState({ waitingForResponse: true });
   }
   
   stopWaiting() {
-    this.setState({ waiting: false });
+    this.setState({ waitingForResponse: false });
   }
   
   componentWillReceiveProps(nextProps) {
@@ -119,6 +120,7 @@ export class UnconnectedCaptainContainer extends React.Component { // export for
       <ModeWrapper
         gameStarted={this.props.started}
         systemStatuses={this.props.systems}
+        hasMines={!this.props.mines.isEmpty()}
       >
         {({ mode, setMode }) => (
           <div id="captain-page" className={styles.CaptainPage}>
@@ -203,6 +205,7 @@ export class UnconnectedCaptainContainer extends React.Component { // export for
             this.startWaiting();
           }
         }}
+        disabled={this.state.waitingForResponse}
       >
         {(tile) => {
           const isValid = isValidStartLocation(tile, this.props.grid);
@@ -221,6 +224,7 @@ export class UnconnectedCaptainContainer extends React.Component { // export for
   renderMoveMode() {
     const { grid, subLocation, subPath, mines } = this.props;
     const moveOptions = getMoveOptions(subLocation, grid, subPath, mines);
+    const waitingForPlayers = this.props.waitingForEngineer || this.props.waitingForFirstMate;
     return (
       <GridTileSelect
         onSelect={(tile) => {
@@ -230,8 +234,9 @@ export class UnconnectedCaptainContainer extends React.Component { // export for
             this.startWaiting();
           }
         }}
+        disabled={this.state.waitingForResponse || waitingForPlayers}
       >
-        {(tile) => (
+        {(tile) => waitingForPlayers ? null : (
           <GridMoveChooser
             mouseTile={tile}
             moveOptions={moveOptions}
@@ -251,8 +256,10 @@ export class UnconnectedCaptainContainer extends React.Component { // export for
         onSelect={(tile) => {
           if (moveOptions.includes(tile)) {
             this.props.goSilent(tile);
+            this.startWaiting();
           }
         }}
+        disabled={this.state.waitingForResponse}
       >
         {(tile) => (
           <GridMoveChooser
@@ -268,7 +275,13 @@ export class UnconnectedCaptainContainer extends React.Component { // export for
   // TODO: Turn this into a Component
   renderDroneMode() {
     return (
-      <GridSectorSelect onSelect={(sector) => this.props.useDrone(sector)}>
+      <GridSectorSelect
+        onSelect={(sector) => {
+          this.props.useDrone(sector);
+          this.startWaiting();
+        }}
+        disabled={this.state.waitingForResponse}
+      >
         {(sector) => (
           <GridSectors selected={sector}/>
         )}
@@ -285,8 +298,10 @@ export class UnconnectedCaptainContainer extends React.Component { // export for
         onSelect={(tile) => {
           if (mineOptions.includes(tile)) {
             this.props.dropMine(tile);
+            this.startWaiting();
           }
         }}
+        disabled={this.state.waitingForResponse}
       >
         {(tile) => (
           <MineChooser mouseTile={tile} mineOptions={mineOptions}/>
@@ -303,9 +318,10 @@ export class UnconnectedCaptainContainer extends React.Component { // export for
         onSelect={(tile) => {
           if (mines.includes(tile)) {
             this.props.detonateMine(tile);
-            setMode(MOVE_MODE);
+            this.startWaiting();
           }
         }}
+        disabled={this.state.waitingForResponse}
       >
         {(tile) => (
           <GridCrosshairs tile={tile} color={mines.includes(tile) ? '#FFFFFF' : '#AA5555'}/>
@@ -323,8 +339,10 @@ export class UnconnectedCaptainContainer extends React.Component { // export for
         onSelect={(tile) => {
           if (torpedoOptions.includes(tile)) {
             this.props.fireTorpedo(tile);
+            this.startWaiting();
           }
         }}
+        disabled={this.state.waitingForResponse}
       >
         {(tile) => (
           <TorpedoChooser mouseTile={tile} torpedoOptions={torpedoOptions}/>
@@ -338,7 +356,7 @@ export class UnconnectedCaptainContainer extends React.Component { // export for
     const systems = this.props.systems;
     return (
       <List>
-        <ModeButton mode={MOVE_MODE} currentMode={mode} setMode={setMode}>
+        <ModeButton mode={MOVE_MODE} currentMode={mode} setMode={setMode} disabled={mode === PICK_START_LOCATION_MODE}>
           <ListItemAvatar><DenseAvatar>M</DenseAvatar></ListItemAvatar>
           <ListItemText primary={"Move"}/>
         </ModeButton>
@@ -371,7 +389,7 @@ export class UnconnectedCaptainContainer extends React.Component { // export for
           {getIconForSystem(SILENT)}
           <ListItemText primary={"Go Silent"}/>
         </ModeButton>
-        <ListItem dense button onClick={() => this.props.surface()}>
+        <ListItem dense button onClick={() => this.props.surface()} disabled={mode === PICK_START_LOCATION_MODE}>
           <ListItemAvatar><DenseAvatar>S</DenseAvatar></ListItemAvatar>
           <ListItemText primary={"Surface"}/>
         </ListItem>

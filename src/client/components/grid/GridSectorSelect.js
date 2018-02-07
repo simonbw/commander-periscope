@@ -8,6 +8,7 @@ import GridMouseLocationProvider from './GridMouseLocationProvider';
 class GridSectorSelect extends Component {
   static propTypes = {
     children: PropTypes.func.isRequired,
+    disabled: PropTypes.bool,
     onSelect: PropTypes.func
   };
   
@@ -19,9 +20,11 @@ class GridSectorSelect extends Component {
     const onSelect = this.props.onSelect;
     return (
       <GridMouseLocationProvider
-        onClick={onSelect && ((mouseLocation) => onSelect(tileToSector(mouseLocation, getGridSize()))) /*TODO: Real grid size*/}
+        onClick={!this.props.disabled && onSelect && (
+          (mouseLocation) => onSelect(tileToSector(mouseLocation, getGridSize()))) /*TODO: Real grid size*/}
       >
-        {(mouseLocation) => this.props.children(tileToSector(mouseLocation, getGridSize())) /*TODO: Real grid size*/}
+        {(mouseLocation) => this.props.children(
+          this.props.disabled ? null : tileToSector(mouseLocation, getGridSize())) /*TODO: Real grid size*/}
       </GridMouseLocationProvider>
     );
   }
