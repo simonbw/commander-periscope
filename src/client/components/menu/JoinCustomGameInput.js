@@ -1,14 +1,6 @@
 import classnames from 'classnames';
 import {
-  Button,
-  FormControl,
-  FormHelperText,
-  IconButton,
-  Input,
-  InputAdornment,
-  InputLabel,
-  Paper,
-  Tooltip
+  Button, FormControl, FormHelperText, IconButton, Input, InputAdornment, InputLabel, Paper, Tooltip
 } from 'material-ui';
 import { Forward } from 'material-ui-icons';
 import React, { Component } from 'react';

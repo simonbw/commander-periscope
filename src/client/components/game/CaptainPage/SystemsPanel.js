@@ -9,13 +9,7 @@ import { LocationListPropType } from '../../GamePropTypes';
 import AvatarIcon from '../../icons/AvatarIcon';
 import { DroneIcon, MineIcon, SilentIcon, SonarIcon, TorpedoIcon } from '../../icons/SystemIcons';
 import {
-  DETONATE_MINE_MODE,
-  DRONE_MODE,
-  DROP_MINE_MODE,
-  MOVE_MODE,
-  PICK_START_LOCATION_MODE,
-  SILENT_MODE,
-  TORPEDO_MODE
+  DETONATE_MINE_MODE, DRONE_MODE, DROP_MINE_MODE, MOVE_MODE, PICK_START_LOCATION_MODE, SILENT_MODE, TORPEDO_MODE
 } from './ModeWrapper';
 
 const SystemsPanel = (props) => (

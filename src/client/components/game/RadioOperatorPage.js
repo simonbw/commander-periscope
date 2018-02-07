@@ -6,33 +6,20 @@ import styles from '../../../../styles/RadioOperatorPage.css';
 import { getDirectionArrow } from '../../../common/Direction';
 import { getHitDisplayName } from '../../../common/Explosion';
 import {
-  DETONATE_MINE_NOTIFICATION,
-  DRONE_NOTIFICATION,
-  DROP_MINE_NOTIFICATION,
-  MOVE_NOTIFICATION,
-  NOTIFICATION_DIRECTION,
-  NOTIFICATION_DRONE_RESULT,
-  NOTIFICATION_HIT_RESULT,
-  NOTIFICATION_ID,
-  NOTIFICATION_LOCATION,
-  NOTIFICATION_SECTOR,
-  NOTIFICATION_SONAR_RESULT,
-  NOTIFICATION_TEAM,
-  NOTIFICATION_TYPE,
-  SILENT_NOTIFICATION,
-  SONAR_NOTIFICATION,
-  SURFACE_NOTIFICATION,
-  TORPEDO_NOTIFICATION
+  DETONATE_MINE_NOTIFICATION, DRONE_NOTIFICATION, DROP_MINE_NOTIFICATION, MOVE_NOTIFICATION, NOTIFICATION_DIRECTION,
+  NOTIFICATION_DRONE_RESULT, NOTIFICATION_HIT_RESULT, NOTIFICATION_ID, NOTIFICATION_LOCATION, NOTIFICATION_SECTOR,
+  NOTIFICATION_SONAR_RESULT, NOTIFICATION_TEAM, NOTIFICATION_TYPE, SILENT_NOTIFICATION, SONAR_NOTIFICATION,
+  SURFACE_NOTIFICATION, TORPEDO_NOTIFICATION
 } from '../../../common/Notifications';
 import { COMMON, GAME, GRID, NOTIFICATIONS, TEAMS, USER_ID } from '../../../common/StateFields';
 import { DRONE, MINE, SILENT, SONAR, TORPEDO } from '../../../common/System';
 import { getPlayerPosition } from '../../../common/util/GameUtils';
-import AvatarIcon from '../icons/AvatarIcon';
 import GridBackground from '../grid/GridBackground';
 import GridContainer from '../grid/GridContainer';
 import GridLabels, { ROW_LABELS } from '../grid/GridLabels';
 import GridSectors from '../grid/GridSectors';
 import GridTiles from '../grid/GridTiles';
+import AvatarIcon from '../icons/AvatarIcon';
 import { getIconForSystem } from '../icons/SystemIcons';
 
 const MAX_VISIBLE_NOTIFICATIONS = 10;

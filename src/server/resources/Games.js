@@ -1,63 +1,26 @@
 import Immutable from 'immutable';
 import { getExplosionDamage, getExplosionResult } from '../../common/Explosion';
 import {
-  getDirection,
-  getGridSize,
-  getLocationFromDirection,
-  getManhattanDistance,
-  isAdjacent,
-  tileToSector
+  getDirection, getGridSize, getLocationFromDirection, getManhattanDistance, isAdjacent, tileToSector
 } from '../../common/Grid';
 import {
-  createDetonateMineNotification,
-  createDroneNotification,
-  createDropMineNotification,
-  createMoveNotification,
-  createSilentNotification,
-  createSonarNotification,
-  createSurfaceNotification,
-  createTorpedoNotification,
+  createDetonateMineNotification, createDroneNotification, createDropMineNotification, createMoveNotification,
+  createSilentNotification, createSonarNotification, createSurfaceNotification, createTorpedoNotification,
   notificationAdder
 } from '../../common/Notifications';
 import {
-  BREAKDOWNS,
-  COMMON,
-  GRID,
-  HIT_POINTS,
-  MINE_LOCATIONS,
-  NOTIFICATIONS,
-  PLAYERS,
-  STARTED,
-  SUB_LOCATION,
-  SUB_PATH,
-  SUBSYSTEMS,
-  SURFACED,
-  SYSTEM_IS_USED,
-  SYSTEMS,
-  TEAMS,
-  TURN_INFO,
-  TURN_NUMBER,
-  USERNAMES,
-  WAITING_FOR_ENGINEER,
-  WAITING_FOR_FIRST_MATE,
-  WINNER
+  BREAKDOWNS, COMMON, GRID, HIT_POINTS, MINE_LOCATIONS, NOTIFICATIONS, PLAYERS, STARTED, SUB_LOCATION, SUB_PATH,
+  SUBSYSTEMS, SURFACED, SYSTEM_IS_USED, SYSTEMS, TEAMS, TURN_INFO, TURN_NUMBER, USERNAMES, WAITING_FOR_ENGINEER,
+  WAITING_FOR_FIRST_MATE, WINNER
 } from '../../common/StateFields';
 import { CHARGE, DIRECTION, DRONE, MAX_CHARGE, MINE, SILENT, SONAR, TORPEDO } from '../../common/System';
 import { BLUE, otherTeam, RED } from '../../common/Team';
 import { sleep } from '../../common/util/AsyncUtil';
 import {
-  checkEngineOverload,
-  fixCircuits,
-  generateSonarResult,
-  getLastDirectionMoved
+  checkEngineOverload, fixCircuits, generateSonarResult, getLastDirectionMoved
 } from '../../common/util/GameUtils';
 import {
-  assert,
-  assertCanMove,
-  assertCanMoveTo,
-  assertNotStarted,
-  assertStartedAndNotEnded,
-  assertSystemReady,
+  assert, assertCanMove, assertCanMoveTo, assertNotStarted, assertStartedAndNotEnded, assertSystemReady,
   assertValidStartLocation
 } from './GameAssertions';
 import { createGame } from './GameFactory';

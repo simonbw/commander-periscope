@@ -2,13 +2,7 @@ import Immutable from 'immutable/dist/immutable';
 import Random from 'random-js';
 import { ALL_DIRECTIONS } from '../Direction';
 import {
-  getGridSize,
-  getLocationFromDirection,
-  getLocationList,
-  getManhattanDistance,
-  isInGrid,
-  tileToSector,
-  WATER_TILE
+  getGridSize, getLocationFromDirection, getLocationList, getManhattanDistance, isInGrid, tileToSector, WATER_TILE
 } from '../Grid';
 import { MOVE_NOTIFICATION, NOTIFICATION_DIRECTION, NOTIFICATION_TEAM, NOTIFICATION_TYPE } from '../Notifications';
 import { BREAKDOWNS, SUBSYSTEMS, SYSTEMS, WINNER } from '../StateFields';

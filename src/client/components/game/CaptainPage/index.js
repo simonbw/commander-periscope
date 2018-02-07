@@ -5,27 +5,12 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import styles from '../../../../../styles/CaptainPage.css';
 import {
-  GAME,
-  GRID,
-  MINE_LOCATIONS,
-  STARTED,
-  SUB_LOCATION,
-  SUB_PATH,
-  SYSTEMS,
-  TURN_INFO,
-  WAITING_FOR_ENGINEER,
+  GAME, GRID, MINE_LOCATIONS, STARTED, SUB_LOCATION, SUB_PATH, SYSTEMS, TURN_INFO, WAITING_FOR_ENGINEER,
   WAITING_FOR_FIRST_MATE
 } from '../../../../common/StateFields';
 import { getMineOptions, getMoveOptions, getSilentOptions, getTorpedoOptions } from '../../../../common/util/GameUtils';
 import {
-  detonateMine,
-  dropMine,
-  fireTorpedo,
-  goSilent,
-  headInDirection,
-  setStartLocation,
-  useDrone,
-  useSonar
+  detonateMine, dropMine, fireTorpedo, goSilent, headInDirection, setStartLocation, useDrone, useSonar
 } from '../../../actions/GameActions';
 import { GridPropType, LocationListPropType, LocationPropType } from '../../GamePropTypes';
 import CaptainGridContainer from './CaptainGridContainer';
@@ -34,13 +19,7 @@ import DroneMode from './DroneMode';
 import DropMineMode from './DropMineMode';
 import Messages from './Messages';
 import ModeWrapper, {
-  DETONATE_MINE_MODE,
-  DRONE_MODE,
-  DROP_MINE_MODE,
-  MOVE_MODE,
-  PICK_START_LOCATION_MODE,
-  SILENT_MODE,
-  TORPEDO_MODE
+  DETONATE_MINE_MODE, DRONE_MODE, DROP_MINE_MODE, MOVE_MODE, PICK_START_LOCATION_MODE, SILENT_MODE, TORPEDO_MODE
 } from './ModeWrapper';
 import MoveMode from './MoveMode';
 import SilentMode from './SilentMode';
