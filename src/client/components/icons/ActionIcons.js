@@ -1,22 +1,15 @@
-import Immutable from "immutable";
-import { SvgIcon } from 'material-ui';
 import React from 'react';
-import MineMarker from '../grid/MineMarker';
+import AvatarIcon from './AvatarIcon';
+import { MineIcon } from './SystemIcons';
 
 export const DetonateMineIcon = () => (
-  <SvgIcon viewBox="0.20 0.20 0.6 0.6">
-    <MineMarker location={Immutable.List([0, 0])}/>
-  </SvgIcon>
+  <MineIcon/>
 );
 
 export const MoveIcon = () => (
-  <SvgIcon viewBox="0.20 0.20 0.6 0.6">
-    <MineMarker location={Immutable.List([0, 0])}/>
-  </SvgIcon>
+  <AvatarIcon style={{ background: '#1188BB' }}>M</AvatarIcon>
 );
 
 export const SurfaceIcon = () => (
-  <SvgIcon viewBox="0.20 0.20 0.6 0.6">
-    <MineMarker location={Immutable.List([0, 0])}/>
-  </SvgIcon>
+  <AvatarIcon style={{ background: '#114477' }}>S</AvatarIcon>
 );

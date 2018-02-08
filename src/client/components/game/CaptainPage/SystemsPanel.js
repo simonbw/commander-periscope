@@ -1,12 +1,12 @@
 import classnames from 'classnames';
-import { List, ListItem, ListItemAvatar, ListItemText, Paper } from 'material-ui';
+import { List, ListItem, ListItemText, Paper } from 'material-ui';
 import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styles from '../../../../../styles/CaptainPage.css';
 import { DRONE, MINE, SILENT, SONAR, TORPEDO } from '../../../../common/System';
 import { LocationListPropType } from '../../GamePropTypes';
-import AvatarIcon from '../../icons/AvatarIcon';
+import { MoveIcon, SurfaceIcon } from '../../icons/ActionIcons';
 import { DroneIcon, MineIcon, SilentIcon, SonarIcon, TorpedoIcon } from '../../icons/SystemIcons';
 import {
   DETONATE_MINE_MODE, DRONE_MODE, DROP_MINE_MODE, MOVE_MODE, PICK_START_LOCATION_MODE, SILENT_MODE, TORPEDO_MODE
@@ -21,9 +21,10 @@ const SystemsPanel = (props) => (
         setMode={props.setMode}
         disabled={props.mode === PICK_START_LOCATION_MODE}
       >
-        <ListItemAvatar><AvatarIcon>M</AvatarIcon></ListItemAvatar>
+        <MoveIcon/>
         <ListItemText primary={"Move"}/>
       </ModeButton>
+      
       <ModeButton
         mode={TORPEDO_MODE}
         currentMode={props.mode}
@@ -33,6 +34,7 @@ const SystemsPanel = (props) => (
         <TorpedoIcon/>
         <ListItemText primary={"Fire Torpedo"}/>
       </ModeButton>
+      
       <ModeButton
         mode={DROP_MINE_MODE}
         currentMode={props.mode}
@@ -42,6 +44,7 @@ const SystemsPanel = (props) => (
         <MineIcon/>
         <ListItemText primary={"Drop Mine"}/>
       </ModeButton>
+      
       <ModeButton
         mode={DETONATE_MINE_MODE}
         currentMode={props.mode}
@@ -51,6 +54,7 @@ const SystemsPanel = (props) => (
         <MineIcon/>
         <ListItemText primary={"Detonate Mine"}/>
       </ModeButton>
+      
       <ModeButton
         mode={DRONE_MODE}
         currentMode={props.mode}
@@ -60,10 +64,16 @@ const SystemsPanel = (props) => (
         <DroneIcon/>
         <ListItemText primary={"Launch Drone"}/>
       </ModeButton>
-      <ListItem dense button disabled={!props.systems.get(SONAR)} onClick={() => props.useSonar()}>
+      
+      <ListItem
+        dense button
+        disabled={!props.systems.get(SONAR)}
+        onClick={() => props.useSonar()}
+      >
         <SonarIcon/>
         <ListItemText primary={"Use Sonar"}/>
       </ListItem>
+      
       <ModeButton
         mode={SILENT_MODE}
         currentMode={props.mode}
@@ -73,8 +83,13 @@ const SystemsPanel = (props) => (
         <SilentIcon/>
         <ListItemText primary={"Go Silent"}/>
       </ModeButton>
-      <ListItem dense button onClick={() => props.surface()} disabled={props.mode === PICK_START_LOCATION_MODE}>
-        <ListItemAvatar><AvatarIcon>S</AvatarIcon></ListItemAvatar>
+      
+      <ListItem
+        dense button
+        onClick={() => props.surface()}
+        disabled={props.mode === PICK_START_LOCATION_MODE}
+      >
+        <SurfaceIcon/>
         <ListItemText primary={"Surface"}/>
       </ListItem>
     </List>
