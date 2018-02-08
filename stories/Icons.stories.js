@@ -15,7 +15,7 @@ storiesOf('Components', module)
         display: 'inline-block',
         margin: 40,
         padding: 20,
-        transform: 'scale(2.0) translate(100px, 100px)' // makes it easier to see the icons
+        transform: 'scale(1.5) translate(100px, 100px)' // makes it easier to see the icons
       }}
     >
       <IconRow>

@@ -1,14 +1,12 @@
 import Immutable from 'immutable';
 import { SvgIcon } from 'material-ui';
-import { GpsFixed, RssFeed, VolumeOff } from 'material-ui-icons';
+import { AirplanemodeActive, GpsFixed, SignalWifi4Bar, VolumeOff } from 'material-ui-icons';
 import React from 'react';
-import { DRONE, getSystemType, MINE, SILENT, SONAR, TORPEDO } from '../../../common/System';
+import { DRONE, MINE, SILENT, SONAR, TORPEDO } from '../../../common/System';
 import MineMarker from '../grid/MineMarker';
-import { getIconForSystemType } from './SystemTypeIcons';
 
-// TODO: Drone Icon
 export const DroneIcon = () => (
-  <RssFeed nativeColor="#00CC00"/>
+  <AirplanemodeActive nativeColor="#00CC00"/>
 );
 
 export const MineIcon = () => (
@@ -21,9 +19,8 @@ export const SilentIcon = () => (
   <VolumeOff nativeColor="#00DDFF"/>
 );
 
-// TODO: Sonar Icon
 export const SonarIcon = () => (
-  <RssFeed nativeColor="#00CC00"/>
+  <SignalWifi4Bar nativeColor="#00CC00"/>
 );
 
 // TODO: Torpedo Icon
@@ -47,7 +44,6 @@ export function getIconForSystem(system) {
     default:
       throw new Error(`Invalid system: ${system}`);
   }
-  return getIconForSystemType(getSystemType(system));
 }
 
 

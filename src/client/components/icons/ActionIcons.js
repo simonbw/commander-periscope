@@ -1,5 +1,5 @@
+import { Forward, Settings } from 'material-ui-icons';
 import React from 'react';
-import AvatarIcon from './AvatarIcon';
 import { MineIcon } from './SystemIcons';
 
 export const DetonateMineIcon = () => (
@@ -7,9 +7,9 @@ export const DetonateMineIcon = () => (
 );
 
 export const MoveIcon = () => (
-  <AvatarIcon style={{ background: '#1188BB' }}>M</AvatarIcon>
+  <Forward nativeColor="#1188BB"/>
 );
 
 export const SurfaceIcon = () => (
-  <AvatarIcon style={{ background: '#114477' }}>S</AvatarIcon>
+  <Settings nativeColor="#1188BB"/>
 );
