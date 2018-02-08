@@ -5,8 +5,8 @@ import { connect } from 'react-redux';
 import styles from '../../../../styles/EngineerPage.css';
 import { ALL_DIRECTIONS, getDirectionArrow } from '../../../common/Direction';
 import { BREAKDOWNS, ID, SUBSYSTEMS } from '../../../common/fields/GameFields';
-import { GAME} from '../../../common/fields/StateFields';
-import { LAST_DIRECTION_MOVED } from '../../../common/fields/TurnInfoFields';
+import { GAME } from '../../../common/fields/StateFields';
+import { LAST_DIRECTION_MOVED, WAITING_FOR_ENGINEER } from '../../../common/fields/TurnInfoFields';
 import { CIRCUIT, DIRECTION, SYSTEM_TYPE } from '../../../common/System';
 import { trackBreakdown } from '../../actions/GameActions';
 import { getIconForSystemType } from '../icons/SystemTypeIcons';
@@ -111,9 +111,10 @@ const CircuitBadge = ({ circuit, active, ...props }) => {
 
 export default connect(
   (state) => ({
-    subsystems: state.getIn([GAME, SUBSYSTEMS]),
     breakdowns: state.getIn([GAME, BREAKDOWNS]),
     directionMoved: state.getIn([GAME, LAST_DIRECTION_MOVED]),
+    subsystems: state.getIn([GAME, SUBSYSTEMS]),
+    readyToTrack: state.getIn([GAME, WAITING_FOR_ENGINEER])
   }),
   (dispatch) => ({
     trackBreakdown: (breakdownIndex) => dispatch(trackBreakdown(breakdownIndex))
