@@ -49,7 +49,7 @@ if (process.env.NODE_ENV === 'dev' || process.env.NODE_ENV === 'test') {
     parallel: true
   }));
   config.plugins.push(new DefinePlugin({
-    'process.env.NODE_ENV': 'production'
+    'process.env.NODE_ENV': JSON.stringify('production')
   }));
 }
 
