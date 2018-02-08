@@ -1,15 +1,13 @@
 import Immutable, { List } from 'immutable';
 import { EAST, NORTH, SOUTH, WEST } from '../../../src/common/Direction';
 import {
-  BREAKDOWNS, GRID, HIT_POINTS, PHASE, SUB_LOCATION, SUB_PATH, SUBSYSTEMS, SYSTEMS, TURN_INFO
+  BREAKDOWNS, GRID, HIT_POINTS, PHASE, SUB_LOCATION, SUB_PATH, SUBSYSTEMS, SURFACED, SYSTEMS, TURN_INFO, WINNER
 } from '../../../src/common/fields/GameFields';
 import { ENDED_PHASE, MAIN_PHASE, PICK_PHASE } from '../../../src/common/GamePhase';
 import { LAND_TILE } from '../../../src/common/Grid';
-import {
-  WINNER
-} from '../../../src/common/fields/GameFields';
 import { CHARGE, DIRECTION, DRONE, MINE, SILENT, SONAR, TORPEDO } from '../../../src/common/System';
 import { BLUE, RED } from '../../../src/common/Team';
+import { sleep } from '../../../src/common/util/AsyncUtil';
 import { GameStateError } from '../../../src/server/resources/GameAssertions';
 import expect from '../../expect';
 import { mockLobby } from '../../mocks';
@@ -101,6 +99,17 @@ describe('Games', () => {
         Games.headInDirection('gameId', RED, NORTH),
         `Shouldn't be able to move again without engineer and first mate going`
       ).to.be.rejected;
+    });
+    
+    it('.surface()', async () => {
+      await createStartedGame('gameId');
+      
+      await Games.headInDirection('gameId', RED, SOUTH);
+      const surfacePromise = Games.surface('gameId', RED, 100);
+      await sleep(20);
+      expect((await Games.get('gameId')).getIn([RED, SURFACED])).to.equal(true);
+      await surfacePromise;
+      expect((await Games.get('gameId')).getIn([RED, SURFACED])).to.equal(false);
     });
     
     it('.fireTorpedo()', async () => {

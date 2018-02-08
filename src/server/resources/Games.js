@@ -4,7 +4,7 @@ import {
   BREAKDOWNS, GRID, HIT_POINTS, MINE_LOCATIONS, NOTIFICATIONS, PHASE, SUB_LOCATION, SUB_PATH, SUBSYSTEMS, SURFACED,
   SYSTEMS, TURN_INFO, WINNER
 } from '../../common/fields/GameFields';
-import { PLAYERS, TEAMS } from '../../common/fields/LobbyFields';
+import { PLAYERS, TEAMS, USERNAMES } from '../../common/fields/LobbyFields';
 import {
   SYSTEM_IS_USED, TURN_NUMBER, WAITING_FOR_ENGINEER, WAITING_FOR_FIRST_MATE
 } from '../../common/fields/TurnInfoFields';
@@ -17,8 +17,6 @@ import {
   createSilentNotification, createSonarNotification, createSurfaceNotification, createTorpedoNotification,
   notificationAdder
 } from '../../common/Notifications';
-import {
-  USERNAMES} from '../../common/fields/LobbyFields';
 import { CHARGE, DIRECTION, DRONE, MAX_CHARGE, MINE, SILENT, SONAR, TORPEDO } from '../../common/System';
 import { BLUE, otherTeam, RED } from '../../common/Team';
 import { sleep } from '../../common/util/AsyncUtil';
@@ -184,15 +182,15 @@ Games.detonateMine = (gameId, team, mineLocation) => {
   });
 };
 
-Games.surface = async (gameId, team) => {
+Games.surface = async (gameId, team, duration = SURFACE_DURATION) => {
   await Games.update(gameId, 'surface_start', {}, (game) => {
-    const sector = tileToSector(game.getIn(team, SUB_LOCATION), getGridSize(game.get(GRID)));
+    const sector = tileToSector(game.getIn([team, SUB_LOCATION]), getGridSize(game.get(GRID)));
     return game
       .setIn([team, SURFACED], true)
       .update(NOTIFICATIONS, notificationAdder(createSurfaceNotification(team, sector)))
   });
   
-  await sleep(SURFACE_DURATION);
+  await sleep(duration);
   
   await Games.update(gameId, 'surface_end', {}, (game) => {
     return game
