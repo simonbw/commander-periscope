@@ -2,17 +2,17 @@ import { ListItemText } from 'material-ui';
 import React, { Fragment } from 'react';
 import { getDirectionArrow } from '../../../../common/Direction';
 import { getHitDisplayName } from '../../../../common/Explosion';
+import { COLUMN_LABELS, ROW_LABELS, SECTOR_LABELS } from '../../../../common/Grid';
 import {
   NOTIFICATION_DIRECTION, NOTIFICATION_DRONE_RESULT, NOTIFICATION_HIT_RESULT, NOTIFICATION_LOCATION,
   NOTIFICATION_SECTOR, NOTIFICATION_SONAR_RESULT, NOTIFICATION_TEAM
 } from '../../../../common/Notifications';
-import { ROW_LABELS } from '../../grid/GridLabels';
 import { DetonateMineIcon, SurfaceIcon } from '../../icons/ActionIcons';
 import AvatarIcon from '../../icons/AvatarIcon';
 import { DroneIcon, MineIcon, SilentIcon, SonarIcon, TorpedoIcon } from '../../icons/SystemIcons';
 
 function formatLocation(location) {
-  return <b>{ROW_LABELS[location.get(0)]}-{location.get(1) + 1}</b>
+  return <b>{COLUMN_LABELS[location.get(0)]}-{ROW_LABELS[location.get(1)]}</b>
 }
 
 export const MoveNotification = ({ notification }) => {
@@ -33,7 +33,7 @@ export const DroneNotification = ({ notification }) => {
   return (
     <Fragment>
       <DroneIcon/>
-      <ListItemText primary={`Enemy ${droneResult ? 'in' : 'not in'} sector ${sector + 1}`}/>
+      <ListItemText primary={`Enemy ${droneResult ? 'in' : 'not in'} sector ${SECTOR_LABELS[sector]}`}/>
     </Fragment>
   );
 };
@@ -42,9 +42,9 @@ export const SonarNotification = ({ notification }) => {
   const sonarResult = notification.get(NOTIFICATION_SONAR_RESULT)
     .map((v, k) => {
       if (k === 'sector')
-        return v + 1;
+        return SECTOR_LABELS[v];
       if (k === 'column')
-        return v + 1;
+        return COLUMN_LABELS[v];
       if (k === 'row')
         return ROW_LABELS[v];
     })
@@ -75,8 +75,7 @@ export const DetonateMineNotification = ({ notification, team }) => {
       <Fragment>
         <DetonateMineIcon/>
         <ListItemText
-          primary={
-            <span>{hitResult} at {mineLocation}</span>}
+          primary={<span>{hitResult} at {mineLocation}</span>}
         />
       </Fragment>
     );
@@ -85,9 +84,7 @@ export const DetonateMineNotification = ({ notification, team }) => {
       <Fragment>
         <DetonateMineIcon/>
         <ListItemText
-          primary={
-            <span>Mine detonated at {mineLocation}</span>
-          }
+          primary={<span>Mine detonated at {mineLocation}</span>}
         />
       </Fragment>
     );
@@ -112,7 +109,7 @@ export const TorpedoNotification = ({ notification, team }) => {
         <TorpedoIcon/>
         <ListItemText
           primary={
-            <span>{hitResult} at {torpedoLocation})</span>
+            <span>{hitResult} at {torpedoLocation}</span>
           }
         />
       </Fragment>
@@ -123,7 +120,7 @@ export const TorpedoNotification = ({ notification, team }) => {
         <TorpedoIcon/>
         <ListItemText
           primary={
-            <span>Torpedo at {torpedoLocation})</span>}
+            <span>Enemy Torpedo at {torpedoLocation}</span>}
         />
       </Fragment>
     );
@@ -137,7 +134,7 @@ export const SurfaceNotification = ({ notification }) => {
       <SurfaceIcon/>
       <ListItemText
         primary={
-          <span>Surfaced in sector <b>{surfaceSector + 1}</b></span>}
+          <span>Surfaced in sector <b>{SECTOR_LABELS[surfaceSector]}</b></span>}
       />
     </Fragment>
   );

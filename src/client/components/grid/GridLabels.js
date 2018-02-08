@@ -3,8 +3,7 @@ import Immutable from 'immutable';
 import PropTypes from 'prop-types';
 import React from 'react';
 import styles from '../../../../styles/Grid/GridLabels.css';
-
-export const ROW_LABELS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+import { ROW_LABELS, COLUMN_LABELS } from '../../../common/Grid';
 
 // TODO: This should probably be a PureComponent
 const GridLabels = ({ height, width, selectedX, selectedY }) => (
@@ -18,7 +17,7 @@ const GridLabels = ({ height, width, selectedX, selectedY }) => (
         x={x + 0.5}
         y={-0.333} /* TODO: Why? */
       >
-        {ROW_LABELS[x]}
+        {COLUMN_LABELS[x]}
       </text>
     ))}
     {Immutable.Range(0, height).map((y) => (
@@ -30,7 +29,7 @@ const GridLabels = ({ height, width, selectedX, selectedY }) => (
         x={-0.5}
         y={y + 0.6666} /* TODO: Why is this 0.6666? */
       >
-        {y}
+        {ROW_LABELS[y]}
       </text>
     ))}
   </g>

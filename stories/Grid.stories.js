@@ -1,8 +1,9 @@
 import { storiesOf } from '@storybook/react';
 import Immutable from 'immutable';
-import { Fade, FormControlLabel, Paper, Switch } from 'material-ui';
+import { Fade, FormControlLabel, Paper, Radio, RadioGroup, Switch } from 'material-ui';
 import PropTypes from 'prop-types';
 import React, { Component, Fragment } from 'react';
+import { GridPropType } from '../src/client/components/GamePropTypes';
 import GridBackground from '../src/client/components/grid/GridBackground';
 import GridContainer from '../src/client/components/grid/GridContainer';
 import GridCrosshairs from '../src/client/components/grid/GridCrosshairs';
@@ -16,8 +17,9 @@ import GridTiles from '../src/client/components/grid/GridTiles';
 import GridTileSelect from '../src/client/components/grid/GridTileSelect';
 import SubMarker from '../src/client/components/grid/SubMarker';
 import { getMoveOptions } from '../src/common/util/GameUtils';
+import { createAlphaGrid, createBravoGrid, createCharlieGrid } from '../src/server/resources/GridFactory';
 import '../styles/main.css';
-import { mockGrid, mockMines, mockPath } from '../test/mocks';
+import { mockMines, mockPath } from '../test/mocks';
 import StoryWrapper from './StoryWrapper';
 
 storiesOf('Components', module)
@@ -25,7 +27,7 @@ storiesOf('Components', module)
   .add('Grid', () => {
     return (
       <StateWrapper>
-        {({ grid, path, subLocation, mines, toggleLayer, layers }) => (
+        {({ grid, path, subLocation, mines, toggleLayer, layers, setGrid }) => (
           <div
             style={{
               display: 'flex',
@@ -36,6 +38,7 @@ storiesOf('Components', module)
             }}
           >
             <LayerToggles toggleLayer={toggleLayer} layers={layers}/>
+            
             <GridContainer style={{ margin: '10px' }}>
               <Fragment>
                 <Fade in={layers.get('background')}>
@@ -89,6 +92,8 @@ storiesOf('Components', module)
                 </GridTileSelect>
               </Fragment>
             </GridContainer>
+            
+            <GridToggle grid={grid} setGrid={setGrid}/>
           </div>
         )}
       </StateWrapper>
@@ -125,12 +130,52 @@ LayerToggles.propTypes = {
   toggleLayer: PropTypes.func.isRequired
 };
 
+const GRIDS = [
+  createAlphaGrid(),
+  createBravoGrid(),
+  createCharlieGrid(),
+];
+
+const GRID_NAMES = ['Alpha', 'Bravo', 'Charlie'];
+
+const GridToggle = ({ grid, setGrid }) => {
+  
+  return (
+    <Paper
+      style={{
+        display: 'flex',
+        flexFlow: 'column nowrap',
+        margin: '10px',
+        padding: '10px',
+      }}
+    >
+      <RadioGroup
+        value={GRIDS.indexOf(grid)}
+        onChange={(e, value) => setGrid(GRIDS[value])}
+      >
+        {GRIDS.map((_, i) => (
+          <FormControlLabel
+            control={<Radio/>}
+            label={GRID_NAMES[i]}
+            value={i}
+          />
+        ))}
+      </RadioGroup>
+    </Paper>
+  );
+};
+
+GridToggle.propTypes = {
+  grid: GridPropType.isRequired,
+  setGrid: PropTypes.func.isRequired,
+};
+
 class StateWrapper extends Component {
   constructor(props) {
     super(props);
     const path = mockPath();
     this.state = {
-      grid: mockGrid(),
+      grid: GRIDS[0],
       path: path.butLast(),
       mines: mockMines(),
       subLocation: path.last(),
@@ -166,12 +211,17 @@ class StateWrapper extends Component {
     this.setState({ layers: this.state.layers.update(layer, a => !a) })
   }
   
+  setGrid(grid) {
+    this.setState({ grid });
+  }
+  
   render() {
     return (
       <Fragment>
         {this.props.children({
           ...this.state,
-          toggleLayer: (layer) => this.toggleLayer(layer)
+          toggleLayer: (layer) => this.toggleLayer(layer),
+          setGrid: (grid) => this.setGrid(grid),
         })}
       </Fragment>
     );

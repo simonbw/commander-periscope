@@ -1,25 +1,14 @@
 import Immutable from 'immutable/dist/immutable';
 import { GRID, SYSTEMS } from '../src/common/fields/GameFields';
-import { PLAYERS, READIED, TEAMS } from '../src/common/fields/LobbyFields';
-import { LAND_TILE } from '../src/common/Grid';
+import { PLAYERS, READIED, TEAMS, USERNAMES } from '../src/common/fields/LobbyFields';
 import { CAPTAIN, ENGINEER, FIRST_MATE, RADIO_OPERATOR } from '../src/common/Role';
-import { USERNAMES } from '../src/common/fields/LobbyFields';
 import { BLUE, RED } from '../src/common/Team';
-import { createGame, createGrid } from '../src/server/resources/GameFactory';
+import { createGame } from '../src/server/resources/GameFactory';
+import { createBravoGrid } from '../src/server/resources/GridFactory';
 import { getDataForUser } from '../src/server/resources/UserGameTransform';
 
 export function mockGrid() {
-  return createGrid()
-    .setIn([5, 2], LAND_TILE)
-    .setIn([5, 3], LAND_TILE)
-    .setIn([6, 3], LAND_TILE)
-    .setIn([7, 3], LAND_TILE)
-    .setIn([8, 3], LAND_TILE)
-    .setIn([3, 9], LAND_TILE)
-    .setIn([3, 10], LAND_TILE)
-    .setIn([4, 10], LAND_TILE)
-    .setIn([4, 11], LAND_TILE)
-    .setIn([4, 12], LAND_TILE);
+  return createBravoGrid();
 }
 
 export function mockPath() {

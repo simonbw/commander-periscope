@@ -4,24 +4,22 @@ import {
   BREAKDOWNS, CREATED, GRID, HIT_POINTS, ID, MINE_LOCATIONS, NOTIFICATIONS, PHASE, SUB_LOCATION, SUB_PATH, SUBSYSTEMS,
   SURFACED, SYSTEMS, TURN_INFO, WINNER
 } from '../../common/fields/GameFields';
-import { PLAYERS, TEAMS } from '../../common/fields/LobbyFields';
+import { PLAYERS, TEAMS, USERNAMES } from '../../common/fields/LobbyFields';
 import {
   SYSTEM_IS_USED, TURN_NUMBER, WAITING_FOR_ENGINEER, WAITING_FOR_FIRST_MATE
 } from '../../common/fields/TurnInfoFields';
 import { PICK_PHASE } from '../../common/GamePhase';
-import { WATER_TILE } from '../../common/Grid';
-import {
-  USERNAMES} from '../../common/fields/LobbyFields';
 import {
   CHARGE, CIRCUIT, CIRCUITS, DIRECTION, DRONE, MAX_CHARGE, MINE, SILENT, SONAR, SYSTEM_TYPE, SYSTEM_TYPES, TORPEDO
 } from '../../common/System';
 import { BLUE, RED } from '../../common/Team';
+import { createBravoGrid } from './GridFactory';
 
 // TODO: Something so I don't have to worry about mixing immutable and vanilla types.
 export function createGame(id, { [PLAYERS]: players, [USERNAMES]: usernames, [TEAMS]: teams }) {
   return new Immutable.fromJS({
     [CREATED]: Date.now(),
-    [GRID]: createGrid(),
+    [GRID]: createBravoGrid(),
     [ID]: id,
     [NOTIFICATIONS]: [],
     [PHASE]: PICK_PHASE,
@@ -97,7 +95,3 @@ export function createSubsystems() {
     }));
 }
 
-export function createGrid() {
-  // TODO: real map creation
-  return Immutable.Repeat(Immutable.Repeat(WATER_TILE, 15).toList(), 15).toList();
-}

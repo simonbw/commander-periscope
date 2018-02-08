@@ -3,13 +3,17 @@
 // [0, 0] is the top left, or NorthWest corner of the map
 // [1, 0] is one tile East of [0, 0], while [0, 1] is one tile South of [0, 0].
 
-import Immutable from 'immutable';
+import Immutable from 'immutable/dist/immutable';
 import { EAST, NORTH, SOUTH, WEST } from './Direction';
 
-// TODO: Separate out this file into other stuff
+export const COLUMN_LABELS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+export const ROW_LABELS = Immutable.Range(1, 16).toArray();
+export const SECTOR_LABELS = Immutable.Range(1, 10).toArray();
 
 export const WATER_TILE = 0;
 export const LAND_TILE = 1;
+export const ICE_TILE = 1; // TODO: SAME FOR NOW, BUT WE'LL CHANGE LATER
+export const SPECIAL_TILE = 1; // TODO: SAME FOR NOW, BUT WE'LL CHANGE LATER
 
 export function getLocationFromDirection(location, direction) {
   const [x, y] = location.toArray();

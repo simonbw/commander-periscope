@@ -7,7 +7,7 @@ import {
   getLocationFromDirection,
   isAdjacent
 } from '../../../src/common/Grid';
-import { createGrid } from '../../../src/server/resources/GameFactory';
+import { createEmptyGrid } from '../../../src/server/resources/GridFactory';
 import expect from '../../expect';
 
 describe('Grid', () => {
@@ -50,7 +50,7 @@ describe('Grid', () => {
   });
   
   it('.getLocationList', () => {
-    const grid = createGrid();
+    const grid = createEmptyGrid();
     const locations = getLocationList(grid);
     expect(locations).to.have.sizeOf(15 * 15);
   });

@@ -3,6 +3,7 @@ import Immutable from 'immutable';
 import PropTypes from 'prop-types';
 import React from 'react';
 import styles from '../../../../styles/Grid/GridSectors.css'
+import { SECTOR_LABELS } from '../../../common/Grid';
 
 const GridSectors = ({ selected }) => {
   return (
@@ -25,7 +26,7 @@ const GridSectors = ({ selected }) => {
               x={column * 5 + 2.5}
               y={row * 5 + 2.5}
             >
-              {i + 1}
+              {SECTOR_LABELS[i]}
             </text>
           </g>
         );
