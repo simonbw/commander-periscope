@@ -1,7 +1,8 @@
 const path = require('path');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
-module.exports = {
+const config = {
   entry: "./src/client/index.js",
   output: {
     filename: "index.js",
@@ -33,8 +34,19 @@ module.exports = {
       }],
     }],
   },
-  plugins: [
-    new HardSourceWebpackPlugin() // TODO: Don't use this on heroku
-  ],
-  devtool: "cheap-module-source-map"
+  plugins: [],
+  devtool: "source-map"
 };
+
+if (process.env.NODE_ENV === 'dev' || process.env.NODE_ENV === 'test') {
+  console.log('THIS IS A DEV BUILD!');
+  config.plugins.push(new HardSourceWebpackPlugin());
+} else {
+  console.log('THIS IS A PROD BUILD!');
+  config.plugins.push(new UglifyJsPlugin({
+    cache: true,
+    parallel: true
+  }));
+}
+
+module.exports = config;
