@@ -8,9 +8,11 @@ run-temp-chrome(){
         --no-first-run \
         --window-position=$1,0 \
         --window-size=0,900 \
-        "http://localhost:8080/testinchrome"
+        ${URL}
     rm -R ${USER_DATA_DIR}
 }
+
+URL="http://commanderperiscope.com/$RANDOM"
 
 run-temp-chrome 0 &
 run-temp-chrome 150 &
