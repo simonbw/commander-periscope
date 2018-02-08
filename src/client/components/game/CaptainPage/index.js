@@ -35,7 +35,7 @@ export class UnconnectedCaptainContainer extends React.Component { // export for
     detonateMine: PropTypes.func.isRequired,
     dropMine: PropTypes.func.isRequired,
     fireTorpedo: PropTypes.func.isRequired,
-    gamePhase: PropTypes.string.isRequired,
+    gamePhase: PropTypes.number.isRequired,
     goSilent: PropTypes.func.isRequired,
     grid: GridPropType,
     headInDirection: PropTypes.func.isRequired,
@@ -203,8 +203,8 @@ export default connect(
     goSilent: (direction) => dispatch(goSilent(direction)),
     headInDirection: (direction) => dispatch(headInDirection(direction)),
     setStartLocation: (location) => dispatch(setStartLocation(location)),
+    surface: () => dispatch(surface()),
     useDrone: (location) => dispatch(useDrone(location)),
     useSonar: (location) => dispatch(useSonar(location)),
-    surface: () => dispatch(surface)
   })
 )(UnconnectedCaptainContainer);
