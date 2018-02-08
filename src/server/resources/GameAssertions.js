@@ -2,11 +2,10 @@
  * Assertions to verify the game is in a state where an action can be made.
  */
 
-import { PHASE, SYSTEMS } from '../../common/fields/GameFields';
+import { PHASE, SYSTEMS, TURN_INFO } from '../../common/fields/GameFields';
 import { WAITING_FOR_ENGINEER, WAITING_FOR_FIRST_MATE } from '../../common/fields/TurnInfoFields';
 import { MAIN_PHASE } from '../../common/GamePhase';
 import { WATER_TILE } from '../../common/Grid';
-import { TURN_INFO} from '../../common/fields/GameFields';
 import { CHARGE, MAX_CHARGE } from '../../common/System';
 import { canUseSystem } from '../../common/util/GameUtils';
 

@@ -11,9 +11,6 @@ import { CIRCUIT, DIRECTION, SYSTEM_TYPE } from '../../../common/System';
 import { trackBreakdown } from '../../actions/GameActions';
 import { getIconForSystemType } from '../icons/SystemTypeIcons';
 
-const INDEX = ID;
-
-// TODO: Show ???
 export const UnconnectedEngineerPage = ({ subsystems, breakdowns, directionMoved, trackBreakdown, readyToTrack }) => {
   // subsystems = subsystems.map((s, i) => s.set(INDEX, i));
   return (
@@ -40,9 +37,9 @@ const DirectionPane = ({ active, breakdowns, direction, subsystems, trackBreakdo
     .map(subsystem => (
       <SubsystemButton
         active={active}
-        broken={breakdowns.includes(subsystem.get(INDEX))}
-        key={subsystem.get(INDEX)}
-        onClick={() => trackBreakdown(subsystem.get(INDEX))}
+        broken={breakdowns.includes(subsystem.get(ID))}
+        key={subsystem.get(ID)}
+        onClick={() => trackBreakdown(subsystem.get(ID))}
         subsystem={subsystem}
       />
     ));

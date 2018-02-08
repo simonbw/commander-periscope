@@ -20,7 +20,7 @@ describe('Games', () => {
     Games = require('../../../src/server/resources/Games').default;
   });
   
-  async function createStartedGame(gameId = 'gameId', redStart = List([1, 1]), blueStart = List([1, 1])) {
+  async function createStartedGame(gameId = 'testGameId', redStart = List([1, 1]), blueStart = List([1, 1])) {
     const lobby = mockLobby();
     await Games.createFromLobby(lobby, gameId);
     await Games.setStartLocation(gameId, RED, redStart);
@@ -49,7 +49,7 @@ describe('Games', () => {
   }
   
   // Hack for getting rid of breakdowns
-  async function clearBreakdowns(gameId = 'gameId', team = RED) {
+  async function clearBreakdowns(gameId = 'testGameId', team = RED) {
     await Games.update(gameId, null, null,
       (game) => game.setIn([team, BREAKDOWNS], Immutable.Set()));
   }
@@ -72,15 +72,15 @@ describe('Games', () => {
   
   describe('Captain', () => {
     it('.setStartLocation()', async () => {
-      await Games.createFromLobby(mockLobby(), 'gameId');
+      await Games.createFromLobby(mockLobby(), 'testGameId');
       
       const redLocation = List([1, 2]);
       const blueLocation = List([2, 3]);
       
-      let game = await Games.setStartLocation('gameId', RED, redLocation);
+      let game = await Games.setStartLocation('testGameId', RED, redLocation);
       expect(game.get(PHASE)).to.equal(PICK_PHASE);
       
-      game = await Games.setStartLocation('gameId', BLUE, blueLocation);
+      game = await Games.setStartLocation('testGameId', BLUE, blueLocation);
       
       expect(game.get(PHASE)).to.equal(MAIN_PHASE);
       expect(game.getIn([RED, SUB_LOCATION])).to.equal(redLocation);
@@ -88,197 +88,197 @@ describe('Games', () => {
     });
     
     it('.headInDirection()', async () => {
-      await createStartedGame('gameId', List([1, 1]), List([2, 2]));
+      await createStartedGame('testGameId', List([1, 1]), List([3, 2]));
       
-      await Games.headInDirection('gameId', RED, SOUTH);
-      await Games.headInDirection('gameId', BLUE, EAST);
-      expect((await Games.get('gameId')).getIn([RED, SUB_LOCATION])).to.equal(List([1, 2]));
-      expect((await Games.get('gameId')).getIn([BLUE, SUB_LOCATION])).to.equal(List([3, 2]));
+      await Games.headInDirection('testGameId', RED, SOUTH);
+      await Games.headInDirection('testGameId', BLUE, EAST);
+      expect((await Games.get('testGameId')).getIn([RED, SUB_LOCATION])).to.equal(List([1, 2]));
+      expect((await Games.get('testGameId')).getIn([BLUE, SUB_LOCATION])).to.equal(List([4, 2]));
       
       await expect(
-        Games.headInDirection('gameId', RED, NORTH),
+        Games.headInDirection('testGameId', RED, NORTH),
         `Shouldn't be able to move again without engineer and first mate going`
       ).to.be.rejected;
     });
     
     it('.surface()', async () => {
-      await createStartedGame('gameId');
+      await createStartedGame('testGameId');
       
-      await Games.headInDirection('gameId', RED, SOUTH);
-      const surfacePromise = Games.surface('gameId', RED, 100);
+      await Games.headInDirection('testGameId', RED, SOUTH);
+      const surfacePromise = Games.surface('testGameId', RED, 100);
       await sleep(20);
-      expect((await Games.get('gameId')).getIn([RED, SURFACED])).to.equal(true);
+      expect((await Games.get('testGameId')).getIn([RED, SURFACED])).to.equal(true);
       await surfacePromise;
-      expect((await Games.get('gameId')).getIn([RED, SURFACED])).to.equal(false);
+      expect((await Games.get('testGameId')).getIn([RED, SURFACED])).to.equal(false);
     });
     
     it('.fireTorpedo()', async () => {
-      await createStartedGame('gameId', List([1, 1]), List([1, 6]));
+      await createStartedGame('testGameId', List([1, 1]), List([1, 6]));
       
       await expect(
-        Games.fireTorpedo('gameId', RED, List([1, 1])),
+        Games.fireTorpedo('testGameId', RED, List([1, 1])),
         'Should not be able to fire torpedo without system charged'
       ).to.be.rejectedWith(GameStateError);
       
-      await doMove('gameId', RED, SOUTH, TORPEDO);
-      await doMove('gameId', RED, SOUTH, TORPEDO);
-      await doMove('gameId', RED, SOUTH, TORPEDO);
-      await clearBreakdowns('gameId', RED);
+      await doMove('testGameId', RED, SOUTH, TORPEDO);
+      await doMove('testGameId', RED, SOUTH, TORPEDO);
+      await doMove('testGameId', RED, SOUTH, TORPEDO);
+      await clearBreakdowns('testGameId', RED);
       
       await expect(
-        Games.fireTorpedo('gameId', RED, List([10, 10])),
+        Games.fireTorpedo('testGameId', RED, List([10, 10])),
         'Should not be able to fire torpedo beyond range'
       ).to.be.rejectedWith(GameStateError);
       
       // Finally success
-      await Games.fireTorpedo('gameId', RED, List([1, 6]));
-      expect((await Games.get('gameId')).getIn([RED, SYSTEMS, TORPEDO, CHARGE])).to.equal(0);
+      await Games.fireTorpedo('testGameId', RED, List([1, 6]));
+      expect((await Games.get('testGameId')).getIn([RED, SYSTEMS, TORPEDO, CHARGE])).to.equal(0);
       
       // TODO: Test damage
       // expect((await Games.get()))
     });
     
     it('.dropMine()', async () => {
-      await createStartedGame('gameId', List([1, 1]), List([1, 6]));
+      await createStartedGame('testGameId', List([1, 1]), List([1, 6]));
       
       await expect(
-        Games.dropMine('gameId', RED, List([1, 1])),
+        Games.dropMine('testGameId', RED, List([1, 1])),
         'Should not be able to drop mine without system charged'
       ).to.be.rejectedWith(GameStateError);
       
-      await doMove('gameId', RED, SOUTH, MINE);
-      await doMove('gameId', RED, SOUTH, MINE);
-      await doMove('gameId', RED, SOUTH, MINE);
-      await clearBreakdowns('gameId', RED); // we're now at [1, 4]
+      await doMove('testGameId', RED, SOUTH, MINE);
+      await doMove('testGameId', RED, SOUTH, MINE);
+      await doMove('testGameId', RED, SOUTH, MINE);
+      await clearBreakdowns('testGameId', RED); // we're now at [1, 4]
       
       await expect(
-        Games.dropMine('gameId', RED, List([1, 6])),
+        Games.dropMine('testGameId', RED, List([1, 6])),
         'Should not be able to drop mine at non-adjacent location'
       ).to.be.rejectedWith(GameStateError);
       
       await expect(
-        Games.dropMine('gameId', RED, List([1, 4])),
+        Games.dropMine('testGameId', RED, List([1, 4])),
         'Should not be able to drop mine on self'
       ).to.be.rejectedWith(GameStateError);
       
       await expect(
-        Games.dropMine('gameId', RED, List([1, 3])),
+        Games.dropMine('testGameId', RED, List([1, 3])),
         'Should not be able to drop mine on path'
       ).to.be.rejectedWith(GameStateError);
       
       // Finally success
-      await Games.dropMine('gameId', RED, List([2, 5]));
-      expect((await Games.get('gameId')).getIn([RED, SYSTEMS, MINE, CHARGE])).to.equal(0);
+      await Games.dropMine('testGameId', RED, List([2, 5]));
+      expect((await Games.get('testGameId')).getIn([RED, SYSTEMS, MINE, CHARGE])).to.equal(0);
     });
     
     it('.useSonar()', async () => {
-      await createStartedGame('gameId', List([1, 1]), List([1, 6]));
+      await createStartedGame('testGameId', List([1, 1]), List([1, 6]));
       
       await expect(
-        Games.useSonar('gameId', RED),
+        Games.useSonar('testGameId', RED),
         'Should not be able to use sonar without system charged'
       ).to.be.rejectedWith(GameStateError);
       
-      await doMove('gameId', RED, SOUTH, SONAR);
-      await doMove('gameId', RED, SOUTH, SONAR);
-      await doMove('gameId', RED, SOUTH, SONAR);
-      await clearBreakdowns('gameId', RED); // we're now at [1, 4]
+      await doMove('testGameId', RED, SOUTH, SONAR);
+      await doMove('testGameId', RED, SOUTH, SONAR);
+      await doMove('testGameId', RED, SOUTH, SONAR);
+      await clearBreakdowns('testGameId', RED); // we're now at [1, 4]
       
-      await Games.useSonar('gameId', RED);
-      expect((await Games.get('gameId')).getIn([RED, SYSTEMS, SONAR, CHARGE])).to.equal(0);
+      await Games.useSonar('testGameId', RED);
+      expect((await Games.get('testGameId')).getIn([RED, SYSTEMS, SONAR, CHARGE])).to.equal(0);
     });
     
     it('.useDrone()', async () => {
-      await createStartedGame('gameId', List([1, 1]), List([1, 6]));
+      await createStartedGame('testGameId', List([1, 1]), List([1, 6]));
       
       await expect(
-        Games.useDrone('gameId', RED, 1),
+        Games.useDrone('testGameId', RED, 1),
         'Should not be able to use drone without system charged'
       ).to.be.rejectedWith(GameStateError);
       
-      await doMove('gameId', RED, SOUTH, DRONE);
-      await doMove('gameId', RED, SOUTH, DRONE);
-      await doMove('gameId', RED, SOUTH, DRONE);
-      await doMove('gameId', RED, SOUTH, DRONE);
-      await clearBreakdowns('gameId', RED); // we're now at [1, 5]
+      await doMove('testGameId', RED, SOUTH, DRONE);
+      await doMove('testGameId', RED, SOUTH, DRONE);
+      await doMove('testGameId', RED, SOUTH, DRONE);
+      await doMove('testGameId', RED, SOUTH, DRONE);
+      await clearBreakdowns('testGameId', RED); // we're now at [1, 5]
       
       await expect(
-        Games.useDrone('gameId', RED, 10),
+        Games.useDrone('testGameId', RED, 10),
         'Should not allow sectors > 9'
       ).to.be.rejectedWith(GameStateError);
       
       await expect(
-        Games.useDrone('gameId', RED, 0),
+        Games.useDrone('testGameId', RED, 0),
         'Should not allow sectors < 1'
       ).to.be.rejectedWith(GameStateError);
       
-      await Games.useDrone('gameId', RED, 5);
-      expect((await Games.get('gameId')).getIn([RED, SYSTEMS, DRONE, CHARGE])).to.equal(0);
+      await Games.useDrone('testGameId', RED, 5);
+      expect((await Games.get('testGameId')).getIn([RED, SYSTEMS, DRONE, CHARGE])).to.equal(0);
     });
     
     it('.goSilent()', async () => {
-      await createStartedGame('gameId', List([1, 1]), List([1, 6]));
-      await Games.update('gameId', '', '', (game) => game.setIn([GRID, 3, 7], LAND_TILE));
+      await createStartedGame('testGameId', List([1, 1]), List([1, 6]));
+      await Games.update('testGameId', '', '', (game) => game.setIn([GRID, 3, 7], LAND_TILE));
       
       await expect(
-        Games.goSilent('gameId', RED, List([3, 1])),
+        Games.goSilent('testGameId', RED, List([3, 1])),
         'Should not be able to go silent without system charged'
       ).to.be.rejectedWith(GameStateError);
       
-      await doMove('gameId', RED, SOUTH, SILENT);
-      await doMove('gameId', RED, SOUTH, SILENT);
-      await doMove('gameId', RED, SOUTH, SILENT);
-      await clearBreakdowns('gameId', RED);
-      await doMove('gameId', RED, SOUTH, SILENT);
-      await doMove('gameId', RED, SOUTH, SILENT);
-      await doMove('gameId', RED, SOUTH, SILENT);
-      await doMove('gameId', RED, EAST, SILENT);
-      await clearBreakdowns('gameId', RED);
-      expect((await Games.get('gameId')).getIn([RED, SUB_LOCATION])).to.equal(List([2, 7]));
+      await doMove('testGameId', RED, SOUTH, SILENT);
+      await doMove('testGameId', RED, SOUTH, SILENT);
+      await doMove('testGameId', RED, SOUTH, SILENT);
+      await clearBreakdowns('testGameId', RED);
+      await doMove('testGameId', RED, SOUTH, SILENT);
+      await doMove('testGameId', RED, SOUTH, SILENT);
+      await doMove('testGameId', RED, SOUTH, SILENT);
+      await doMove('testGameId', RED, EAST, SILENT);
+      await clearBreakdowns('testGameId', RED);
+      expect((await Games.get('testGameId')).getIn([RED, SUB_LOCATION])).to.equal(List([2, 7]));
       
       await expect(
-        Games.goSilent('gameId', RED, List([3, 8])),
+        Games.goSilent('testGameId', RED, List([3, 8])),
         'Must move in straight line'
       ).to.be.rejectedWith(GameStateError);
       
       await expect(
-        Games.goSilent('gameId', RED, List([2, 11])),
+        Games.goSilent('testGameId', RED, List([2, 11])),
         'Cannot move more than 3 squares'
       ).to.be.rejectedWith(GameStateError);
       
       await expect(
-        Games.goSilent('gameId', RED, List([4, 7])),
+        Games.goSilent('testGameId', RED, List([4, 7])),
         'Cannot move through land'
       ).to.be.rejectedWith(GameStateError);
       
       await expect(
-        Games.goSilent('gameId', RED, List([1, 7])),
+        Games.goSilent('testGameId', RED, List([1, 7])),
         'Cannot move through path'
       ).to.be.rejectedWith(GameStateError);
       
-      await Games.goSilent('gameId', RED, List([2, 10]));
-      expect((await Games.get('gameId')).getIn([RED, SYSTEMS, SILENT, CHARGE])).to.equal(0);
-      expect((await Games.get('gameId')).getIn([RED, SUB_LOCATION])).to.equal(List([2, 10]));
-      expect((await Games.get('gameId')).getIn([RED, SUB_PATH])).to.have.size(10);
+      await Games.goSilent('testGameId', RED, List([2, 10]));
+      expect((await Games.get('testGameId')).getIn([RED, SYSTEMS, SILENT, CHARGE])).to.equal(0);
+      expect((await Games.get('testGameId')).getIn([RED, SUB_LOCATION])).to.equal(List([2, 10]));
+      expect((await Games.get('testGameId')).getIn([RED, SUB_PATH])).to.have.size(10);
     });
     
     it('.detonateMine()', async () => {
-      await createStartedGame('gameId', List([1, 1]), List([1, 6]));
-      await doMove('gameId', RED, SOUTH, MINE);
-      await doMove('gameId', RED, SOUTH, MINE);
-      await doMove('gameId', RED, SOUTH, MINE);
-      await clearBreakdowns('gameId', RED); // we're now at [1, 4]
-      await Games.dropMine('gameId', RED, List([2, 5]));
+      await createStartedGame('testGameId', List([1, 1]), List([1, 6]));
+      await doMove('testGameId', RED, SOUTH, MINE);
+      await doMove('testGameId', RED, SOUTH, MINE);
+      await doMove('testGameId', RED, SOUTH, MINE);
+      await clearBreakdowns('testGameId', RED); // we're now at [1, 4]
+      await Games.dropMine('testGameId', RED, List([2, 5]));
       
       await expect(
-        Games.detonateMine('gameId', RED, List([10, 10])),
+        Games.detonateMine('testGameId', RED, List([10, 10])),
         'Should not detonate mine on location without mine'
       ).to.be.rejectedWith(GameStateError);
       
-      await Games.detonateMine('gameId', RED, List([2, 5]));
+      await Games.detonateMine('testGameId', RED, List([2, 5]));
       
       await expect(
-        Games.detonateMine('gameId', RED, List([10, 10])),
+        Games.detonateMine('testGameId', RED, List([10, 10])),
         'Should not detonate same mine twice'
       ).to.be.rejectedWith(GameStateError);
     });
@@ -287,101 +287,101 @@ describe('Games', () => {
   describe('First Mate', () => {
     it('.chargeSystem()', async () => {
       // Nothing at start
-      await Games.createFromLobby(mockLobby(), 'gameId');
-      await expect(Games.chargeSystem('gameId', RED, TORPEDO), `Game isn't started yet`).to.be.rejected;
+      await Games.createFromLobby(mockLobby(), 'testGameId');
+      await expect(Games.chargeSystem('testGameId', RED, TORPEDO), `Game isn't started yet`).to.be.rejected;
       
-      await Games.setStartLocation('gameId', RED, List([1, 1]));
-      await Games.setStartLocation('gameId', BLUE, List([1, 1]));
+      await Games.setStartLocation('testGameId', RED, List([1, 1]));
+      await Games.setStartLocation('testGameId', BLUE, List([1, 1]));
       await expect(
-        Games.chargeSystem('gameId', RED, TORPEDO),
+        Games.chargeSystem('testGameId', RED, TORPEDO),
         `Captain hasn't gone yet`
       ).to.be.rejected;
       
       // First turn
-      await doMove('gameId', RED, SOUTH, TORPEDO);
-      expect((await Games.get('gameId')).getIn([RED, SYSTEMS, TORPEDO, CHARGE])).to.equal(1);
+      await doMove('testGameId', RED, SOUTH, TORPEDO);
+      expect((await Games.get('testGameId')).getIn([RED, SYSTEMS, TORPEDO, CHARGE])).to.equal(1);
       await expect(
-        Games.chargeSystem('gameId', RED, TORPEDO),
+        Games.chargeSystem('testGameId', RED, TORPEDO),
         `Captain hasn't gone yet`
       ).to.be.rejected;
       
       // Next turn
-      await doMove('gameId', RED, SOUTH, TORPEDO);
-      expect((await Games.get('gameId')).getIn([RED, SYSTEMS, TORPEDO, CHARGE])).to.equal(2);
+      await doMove('testGameId', RED, SOUTH, TORPEDO);
+      expect((await Games.get('testGameId')).getIn([RED, SYSTEMS, TORPEDO, CHARGE])).to.equal(2);
       
       // Fully charge
-      await doMove('gameId', RED, SOUTH, TORPEDO);
-      expect((await Games.get('gameId')).getIn([RED, SYSTEMS, TORPEDO, CHARGE])).to.equal(3);
+      await doMove('testGameId', RED, SOUTH, TORPEDO);
+      expect((await Games.get('testGameId')).getIn([RED, SYSTEMS, TORPEDO, CHARGE])).to.equal(3);
       
       // Extra charge is ignored
-      await doMove('gameId', RED, SOUTH, TORPEDO);
-      expect((await Games.get('gameId')).getIn([RED, SYSTEMS, TORPEDO, CHARGE])).to.equal(3);
+      await doMove('testGameId', RED, SOUTH, TORPEDO);
+      expect((await Games.get('testGameId')).getIn([RED, SYSTEMS, TORPEDO, CHARGE])).to.equal(3);
     });
   });
   
   describe('Engineer', () => {
     it('.trackBreakdown()', async () => {
-      await createStartedGame('gameId');
+      await createStartedGame('testGameId');
       
       await expect(
-        Games.trackBreakdown('gameId', RED, 0),
+        Games.trackBreakdown('testGameId', RED, 0),
         'Should have to wait for captain'
       ).to.be.rejectedWith(GameStateError);
       
-      await Games.headInDirection('gameId', RED, SOUTH);
-      await Games.chargeSystem('gameId', RED, TORPEDO);
+      await Games.headInDirection('testGameId', RED, SOUTH);
+      await Games.chargeSystem('testGameId', RED, TORPEDO);
       
       await expect(
-        trackAnyBreakdown('gameId', RED, NORTH),
+        trackAnyBreakdown('testGameId', RED, NORTH),
         'Must track a breakdown with same direction as move'
       ).to.be.rejectedWith(GameStateError);
       
-      const firstBreakdown = await trackAnyBreakdown('gameId', RED, SOUTH);
+      const firstBreakdown = await trackAnyBreakdown('testGameId', RED, SOUTH);
       
-      await Games.headInDirection('gameId', RED, SOUTH);
-      await Games.chargeSystem('gameId', RED, TORPEDO);
+      await Games.headInDirection('testGameId', RED, SOUTH);
+      await Games.chargeSystem('testGameId', RED, TORPEDO);
       
       await expect(
-        Games.trackBreakdown('gameId', RED, firstBreakdown),
+        Games.trackBreakdown('testGameId', RED, firstBreakdown),
         'Cannot track same breakdown twice'
       ).to.be.rejectedWith(GameStateError);
     });
   });
   
   it('Damage should end the game', async () => {
-    await createStartedGame('gameId', List([1, 1]), List([5, 5]));
+    await createStartedGame('testGameId', List([1, 1]), List([5, 5]));
     
-    await doMove('gameId', RED, SOUTH, TORPEDO, true); // [1, 2]
-    await doMove('gameId', BLUE, NORTH, MINE, true); // [5, 4]
+    await doMove('testGameId', RED, SOUTH, TORPEDO, true); // [1, 2]
+    await doMove('testGameId', BLUE, NORTH, MINE, true); // [5, 4]
     
-    await doMove('gameId', RED, SOUTH, TORPEDO, true); // [1, 3]
-    await doMove('gameId', BLUE, NORTH, MINE, true); // [5, 3]
+    await doMove('testGameId', RED, SOUTH, TORPEDO, true); // [1, 3]
+    await doMove('testGameId', BLUE, NORTH, MINE, true); // [5, 3]
     
-    await doMove('gameId', RED, EAST, TORPEDO, true); // [2, 3]
-    await doMove('gameId', BLUE, WEST, MINE, true); // [4, 3]
+    await doMove('testGameId', RED, EAST, TORPEDO, true); // [2, 3]
+    await doMove('testGameId', BLUE, WEST, MINE, true); // [4, 3]
     
-    await Games.dropMine('gameId', BLUE, List([3, 3]));
-    await Games.detonateMine('gameId', BLUE, List([3, 3]));
+    await Games.dropMine('testGameId', BLUE, List([3, 3]));
+    await Games.detonateMine('testGameId', BLUE, List([3, 3]));
     
-    expect((await Games.get('gameId')).getIn([RED, HIT_POINTS])).to.equal(3);
-    expect((await Games.get('gameId')).getIn([BLUE, HIT_POINTS])).to.equal(3);
+    expect((await Games.get('testGameId')).getIn([RED, HIT_POINTS])).to.equal(3);
+    expect((await Games.get('testGameId')).getIn([BLUE, HIT_POINTS])).to.equal(3);
     
-    await Games.fireTorpedo('gameId', RED, List([3, 3]));
+    await Games.fireTorpedo('testGameId', RED, List([3, 3]));
     
-    expect((await Games.get('gameId')).getIn([RED, HIT_POINTS])).to.equal(2);
-    expect((await Games.get('gameId')).getIn([BLUE, HIT_POINTS])).to.equal(2);
+    expect((await Games.get('testGameId')).getIn([RED, HIT_POINTS])).to.equal(2);
+    expect((await Games.get('testGameId')).getIn([BLUE, HIT_POINTS])).to.equal(2);
     
-    await doMove('gameId', RED, NORTH, TORPEDO, true); // [2, 2]
-    await doMove('gameId', RED, EAST, TORPEDO, true); // [3, 2]
-    await doMove('gameId', RED, SOUTH, TORPEDO, true); // [3, 3]
+    await doMove('testGameId', RED, NORTH, TORPEDO, true); // [2, 2]
+    await doMove('testGameId', RED, EAST, TORPEDO, true); // [3, 2]
+    await doMove('testGameId', RED, SOUTH, TORPEDO, true); // [3, 3]
     
-    await Games.fireTorpedo('gameId', RED, List([3, 3]));
+    await Games.fireTorpedo('testGameId', RED, List([3, 3]));
     
-    expect((await Games.get('gameId')).getIn([RED, HIT_POINTS])).to.equal(0);
-    expect((await Games.get('gameId')).getIn([BLUE, HIT_POINTS])).to.equal(1);
-    expect((await Games.get('gameId')).get(PHASE)).to.equal(ENDED_PHASE);
-    expect((await Games.get('gameId')).get(WINNER)).to.equal(BLUE);
+    expect((await Games.get('testGameId')).getIn([RED, HIT_POINTS])).to.equal(0);
+    expect((await Games.get('testGameId')).getIn([BLUE, HIT_POINTS])).to.equal(1);
+    expect((await Games.get('testGameId')).get(PHASE)).to.equal(ENDED_PHASE);
+    expect((await Games.get('testGameId')).get(WINNER)).to.equal(BLUE);
     
-    await expect(Games.headInDirection('gameId', RED, SOUTH)).to.be.rejectedWith(GameStateError);
+    await expect(Games.headInDirection('testGameId', RED, SOUTH)).to.be.rejectedWith(GameStateError);
   });
 });

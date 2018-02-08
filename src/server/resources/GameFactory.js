@@ -1,5 +1,4 @@
 import Immutable from 'immutable/dist/immutable';
-import { ALL_DIRECTIONS } from '../../common/Direction';
 import {
   BREAKDOWNS, CREATED, GRID, HIT_POINTS, ID, MINE_LOCATIONS, NOTIFICATIONS, PHASE, SUB_LOCATION, SUB_PATH, SUBSYSTEMS,
   SURFACED, SYSTEMS, TURN_INFO, WINNER
@@ -9,22 +8,21 @@ import {
   SYSTEM_IS_USED, TURN_NUMBER, WAITING_FOR_ENGINEER, WAITING_FOR_FIRST_MATE
 } from '../../common/fields/TurnInfoFields';
 import { PICK_PHASE } from '../../common/GamePhase';
-import {
-  CHARGE, CIRCUIT, CIRCUITS, DIRECTION, DRONE, MAX_CHARGE, MINE, SILENT, SONAR, SYSTEM_TYPE, SYSTEM_TYPES, TORPEDO
-} from '../../common/System';
+import { CHARGE, DRONE, MAX_CHARGE, MINE, SILENT, SONAR, TORPEDO } from '../../common/System';
 import { BLUE, RED } from '../../common/Team';
-import { createBravoGrid } from './GridFactory';
+import { createBravoGrid, createCharlieGrid, createEmptyGrid } from './GridFactory';
+import { createStandardSubsystems } from './SubsystemFactory';
 
 // TODO: Something so I don't have to worry about mixing immutable and vanilla types.
 export function createGame(id, { [PLAYERS]: players, [USERNAMES]: usernames, [TEAMS]: teams }) {
   return new Immutable.fromJS({
     [CREATED]: Date.now(),
-    [GRID]: createBravoGrid(),
+    [GRID]: getGridForId(id),
     [ID]: id,
     [NOTIFICATIONS]: [],
     [PHASE]: PICK_PHASE,
     [PLAYERS]: players,
-    [SUBSYSTEMS]: createSubsystems(),
+    [SUBSYSTEMS]: createStandardSubsystems(),
     [TEAMS]: teams,
     [USERNAMES]: usernames,
     [WINNER]: null,
@@ -32,6 +30,18 @@ export function createGame(id, { [PLAYERS]: players, [USERNAMES]: usernames, [TE
     [BLUE]: createTeamInfo(),
     [RED]: createTeamInfo(),
   });
+}
+
+function getGridForId(id) {
+  if (id === 'testGameId') {
+    return createEmptyGrid();
+  } else if (id.substr(-('alpha'.length)) === 'alpha') {
+    return createBravoGrid();
+  } else if (id.substr(-('charlie'.length)) === 'charlie') {
+    return createCharlieGrid();
+  } else {
+    return createBravoGrid();
+  }
 }
 
 export function createTeamInfo() {
@@ -75,23 +85,5 @@ export function createSystems() {
       [MAX_CHARGE]: 6
     },
   });
-}
-
-export function createSubsystems() {
-  // TODO: Deterministic random
-  // TODO: Probably some more constraints/balancing
-  const circuits = Immutable
-    .List(CIRCUITS)
-    .flatMap(circuit => Immutable.Repeat(circuit, 4)) // TODO: Maybe don't hardcode these numbers?
-    .sortBy(Math.random);
-  return Immutable.List(SYSTEM_TYPES)
-    .flatMap(systemType => Immutable.Repeat(systemType, 6))
-    .sortBy(Math.random)
-    .map((systemType, i) => Immutable.Map({
-      [ID]: i,
-      [SYSTEM_TYPE]: systemType,
-      [DIRECTION]: ALL_DIRECTIONS[i % ALL_DIRECTIONS.length],
-      [CIRCUIT]: i < 12 ? circuits.get(i) : null
-    }));
 }
 

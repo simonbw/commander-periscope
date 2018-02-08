@@ -1,11 +1,11 @@
 import Immutable from 'immutable';
 import { BREAKDOWNS, SUBSYSTEMS, SYSTEMS } from '../../../src/common/fields/GameFields';
-import { CAPTAIN, ENGINEER } from '../../../src/common/Role';
 import { TEAMS } from '../../../src/common/fields/LobbyFields';
+import { CAPTAIN, ENGINEER } from '../../../src/common/Role';
 import { CHARGE, CIRCUIT, COMMS, DRONE, MAX_CHARGE, MINE, SYSTEM_TYPE, TORPEDO } from '../../../src/common/System';
 import { BLUE, RED } from '../../../src/common/Team';
 import { canUseSystem, checkEngineOverload, fixCircuits, getPlayerPosition } from '../../../src/common/util/GameUtils';
-import { createSubsystems } from '../../../src/server/resources/GameFactory';
+import { createStandardSubsystems } from '../../../src/server/resources/SubsystemFactory';
 import expect from '../../expect';
 import { mockGame } from '../../mocks';
 
@@ -69,7 +69,7 @@ describe('GameUtils', () => {
   });
   
   it('.checkEngineOverload', async () => {
-    const subsystems = createSubsystems();
+    const subsystems = createStandardSubsystems();
     expect(checkEngineOverload(subsystems, Immutable.List()), 'No breakdowns').to.equal(false);
     
     // TODO: More tests

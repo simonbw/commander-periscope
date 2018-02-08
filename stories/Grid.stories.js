@@ -17,7 +17,9 @@ import GridTiles from '../src/client/components/grid/GridTiles';
 import GridTileSelect from '../src/client/components/grid/GridTileSelect';
 import SubMarker from '../src/client/components/grid/SubMarker';
 import { getMoveOptions } from '../src/common/util/GameUtils';
-import { createAlphaGrid, createBravoGrid, createCharlieGrid } from '../src/server/resources/GridFactory';
+import {
+  createAlphaGrid, createBravoGrid, createCharlieGrid, createEmptyGrid
+} from '../src/server/resources/GridFactory';
 import '../styles/main.css';
 import { mockMines, mockPath } from '../test/mocks';
 import StoryWrapper from './StoryWrapper';
@@ -131,12 +133,13 @@ LayerToggles.propTypes = {
 };
 
 const GRIDS = [
+  createEmptyGrid(),
   createAlphaGrid(),
   createBravoGrid(),
   createCharlieGrid(),
 ];
 
-const GRID_NAMES = ['Alpha', 'Bravo', 'Charlie'];
+const GRID_NAMES = ['Empty', 'Alpha', 'Bravo', 'Charlie'];
 
 const GridToggle = ({ grid, setGrid }) => {
   
@@ -175,7 +178,7 @@ class StateWrapper extends Component {
     super(props);
     const path = mockPath();
     this.state = {
-      grid: GRIDS[0],
+      grid: GRIDS[2],
       path: path.butLast(),
       mines: mockMines(),
       subLocation: path.last(),
