@@ -9,7 +9,7 @@ import LoadingPage from '../LoadingPage';
 import CaptainPage from './CaptainPage';
 import EngineerPage from './EngineerPage';
 import FirstMatePage from './FirstMatePage';
-import RadioOperatorPage from './RadioOperatorPage';
+import RadioOperatorPage from './RadioOperatorPage/index';
 import SurfacedPage from './SurfacedPage';
 
 const UnconnectedGamePage = ({ team, role, gamePhase, winner, surfaced }) => {

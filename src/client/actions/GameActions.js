@@ -29,7 +29,7 @@ export const detonateMine = (location) => (
 );
 
 export const useSonar = () => (
-  sendMessage(Messages.USE_SONAR_MESSAGE, {})
+  sendMessage(Messages.USE_SONAR_MESSAGE)
 );
 
 export const useDrone = (sector) => (
@@ -38,6 +38,10 @@ export const useDrone = (sector) => (
 
 export const goSilent = (location) => (
   sendMessage(Messages.GO_SILENT_MESSAGE, { location })
+);
+
+const surface = () => (
+  sendMessage(Messages.SURFACE_MESSAGE)
 );
 
 /// ------------------ ///

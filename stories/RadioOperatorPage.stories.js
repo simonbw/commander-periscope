@@ -2,7 +2,7 @@ import { storiesOf } from '@storybook/react';
 import Immutable from 'immutable';
 import Random from 'random-js';
 import React, { Component } from 'react';
-import { UnconnectedRadioOperatorPage } from '../src/client/components/game/RadioOperatorPage';
+import { UnconnectedRadioOperatorPage } from '../src/client/components/game/RadioOperatorPage/index';
 import { EAST, NORTH, SOUTH, WEST } from '../src/common/Direction';
 import { DIRECT_HIT, INDIRECT_HIT, MISS } from '../src/common/Explosion';
 import {

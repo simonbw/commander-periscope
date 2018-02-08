@@ -200,10 +200,11 @@ export default connect(
     detonateMine: (location) => dispatch(detonateMine(location)),
     dropMine: (location) => dispatch(dropMine(location)),
     fireTorpedo: (location) => dispatch(fireTorpedo(location)),
-    headInDirection: (direction) => dispatch(headInDirection(direction)),
     goSilent: (direction) => dispatch(goSilent(direction)),
+    headInDirection: (direction) => dispatch(headInDirection(direction)),
     setStartLocation: (location) => dispatch(setStartLocation(location)),
     useDrone: (location) => dispatch(useDrone(location)),
     useSonar: (location) => dispatch(useSonar(location)),
+    surface: () => dispatch(surface)
   })
 )(UnconnectedCaptainContainer);
