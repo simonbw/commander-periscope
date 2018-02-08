@@ -31,7 +31,7 @@ import Resource from './Resource';
 
 const log = require('debug')('commander-periscope:server');
 
-const SURFACE_DURATION = 30 * 1000;
+const SURFACE_DURATION = 22 * 1000;
 
 // TODO: Consider renaming this to GameDAO
 const Games = new Resource('game', 'game', createGame, false);
