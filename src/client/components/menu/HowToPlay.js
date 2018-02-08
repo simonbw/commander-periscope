@@ -31,12 +31,12 @@ class HowToPlay extends Component {
     const step = this.state.step;
     return (
       <Paper className={styles.HowToPlay}>
-        <Collapse in={step < 0}>
-          <Button fullWidth onClick={() => this.setState({ step: 0 })}>
+        <Collapse in={step < 0} timeout={'auto'}>
+          <Button disabled={step >= 0} fullWidth onClick={() => this.setState({ step: 0 })}>
             How To Play
           </Button>
         </Collapse>
-        <Collapse in={step >= 0}>
+        <Collapse in={step >= 0} timeout={'auto'}>
           {this.renderStep()}
           <MobileStepper
             className={styles.Stepper}

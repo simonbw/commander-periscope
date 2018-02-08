@@ -64,27 +64,32 @@ export class JoinCustomGameInput extends Component {
             event.preventDefault();
           }
         }}
+        onBlur={() => {
+          if (!this.state.lobbyId) {
+            setTimeout(() => {
+              if (!this.state.error) {
+                this.setState({ open: false })
+              }
+            }, 10);
+          }
+        }}
       >
         <FormControl fullWidth>
           <InputLabel htmlFor={"custom-game-input"}>Lobby Id</InputLabel>
           <Input
             autoComplete="off"
+            disabled={!this.state.open}
             error={Boolean(error)}
             fullWidth
             id="custom-game-input"
             onChange={(event) => this.onChange(event.target.value)}
-            onBlur={() => {
-              if (!this.state.lobbyId) {
-                this.setState({ open: false })
-              }
-            }}
             inputRef={(inputRef) => this._inputRef = inputRef}
             spellCheck={false}
             value={lobbyId}
             endAdornment={
               <InputAdornment position="end">
-                <IconButton type="submit" disabled={Boolean(error)} color="primary">
-                  <Tooltip title="Join Lobby" enterDelay={300} placement="bottom">
+                <IconButton type="submit" disabled={Boolean(error) || !this.state.open} color="primary">
+                  <Tooltip title="Join Lobby" enterDelay={300} placement="left">
                     <Forward/>
                   </Tooltip>
                 </IconButton>
