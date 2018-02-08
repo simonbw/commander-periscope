@@ -1,7 +1,7 @@
 import classnames from 'classnames';
 import Immutable from "immutable";
 import React from 'react';
-import styles from '../../../../styles/ChargeMeter.css';
+import styles from '../../../../../styles/ChargeMeter.css';
 
 const ChargeMeter = ({ charge, maxCharge }) => (
   <div className={styles.ChargeMeter}>

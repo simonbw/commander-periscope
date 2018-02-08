@@ -1,7 +1,8 @@
 import { storiesOf } from '@storybook/react';
 import React, { Component } from 'react';
-import { UnconnectedFirstMatePage } from '../src/client/components/game/FirstMatePage';
+import { UnconnectedFirstMatePage } from '../src/client/components/game/FirstMatePage/index';
 import { CHARGE, MAX_CHARGE } from '../src/common/System';
+import { MAX_HIT_POINTS } from '../src/server/resources/GameFactory';
 import '../styles/main.css';
 import { mockSystems } from '../test/mocks';
 import StoryWrapper from './StoryWrapper';
@@ -11,12 +12,13 @@ storiesOf('Components', module)
   .add('FirstMatePage', () => {
     return (
       <StateWrapper>
-        {({ systems, chargeSystem, skipCharging, readyToCharge }) => (
+        {({ systems, chargeSystem, hitPoints, skipCharging, readyToCharge }) => (
           <UnconnectedFirstMatePage
-            readyToCharge={readyToCharge}
-            systems={systems}
             chargeSystem={chargeSystem}
+            hitPoints={hitPoints}
+            readyToCharge={readyToCharge}
             skipCharging={skipCharging}
+            systems={systems}
           />
         )}
       </StateWrapper>
@@ -28,6 +30,7 @@ class StateWrapper extends Component {
     super(props);
     this.state = {
       systems: mockSystems(),
+      hitPoints: MAX_HIT_POINTS - 1,
       readyToCharge: true
     }
   }

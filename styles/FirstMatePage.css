@@ -1,7 +1,14 @@
 .FirstMatePage {
     display: flex;
     justify-content: center;
-    padding: 0 20px;
+    align-items: center;
+    flex-flow: column;
+    padding: 20px;
+}
+
+.HitPointMeterBox {
+    max-width: 490px;
+    width: 100%;
 }
 
 .SystemPanels {

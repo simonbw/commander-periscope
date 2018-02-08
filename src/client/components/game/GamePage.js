@@ -8,7 +8,7 @@ import FloatingText from '../FloatingText';
 import LoadingPage from '../LoadingPage';
 import CaptainPage from './CaptainPage';
 import EngineerPage from './EngineerPage';
-import FirstMatePage from './FirstMatePage';
+import FirstMatePage from './FirstMatePage/index';
 import RadioOperatorPage from './RadioOperatorPage/index';
 import SurfacedPage from './SurfacedPage';
 

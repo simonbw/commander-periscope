@@ -2,18 +2,22 @@ import Immutable from 'immutable';
 import { Button, Paper, Tooltip } from 'material-ui';
 import React from 'react';
 import { connect } from 'react-redux';
-import styles from '../../../../styles/FirstMatePage.css';
-import { SYSTEMS } from '../../../common/fields/GameFields';
-import { GAME} from '../../../common/fields/StateFields';
-import { WAITING_FOR_FIRST_MATE } from '../../../common/fields/TurnInfoFields';
-import { CHARGE, getSystemType, MAX_CHARGE } from '../../../common/System';
-import { chargeSystem } from '../../actions/GameActions';
-import { getIconForSystemType } from '../icons/SystemTypeIcons';
+import styles from '../../../../../styles/FirstMatePage.css';
+import { HIT_POINTS, SYSTEMS } from '../../../../common/fields/GameFields';
+import { GAME } from '../../../../common/fields/StateFields';
+import { WAITING_FOR_FIRST_MATE } from '../../../../common/fields/TurnInfoFields';
+import { CHARGE, getSystemType, MAX_CHARGE } from '../../../../common/System';
+import { chargeSystem } from '../../../actions/GameActions';
+import { getIconForSystemType } from '../../icons/SystemTypeIcons';
 import ChargeMeter from './ChargeMeter';
+import HitPointMeter from './HitPointMeter';
 
-export const UnconnectedFirstMatePage = ({ systems, readyToCharge, chargeSystem, skipCharging }) => {
+export const UnconnectedFirstMatePage = ({ systems, readyToCharge, hitPoints, chargeSystem, skipCharging }) => {
   return (
     <div id="first-mate-page" className={styles.FirstMatePage}>
+      <div className={styles.HitPointMeterBox}>
+        <HitPointMeter hitPoints={hitPoints}/>
+      </div>
       <div className={styles.SystemPanels}>
         {(systems || Immutable.Map())
           .map((system, name) => system.set('name', name))
@@ -68,6 +72,7 @@ const System = ({ name, charge, maxCharge, chargeSystem, readyToCharge }) => {
 export default connect(
   (state) => ({
     systems: state.getIn([GAME, SYSTEMS]),
+    hitPoints: state.getIn([GAME, HIT_POINTS]),
     readyToCharge: state.getIn([GAME, WAITING_FOR_FIRST_MATE])
   }),
   (dispatch) => ({

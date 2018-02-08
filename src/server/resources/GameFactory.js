@@ -44,6 +44,8 @@ function getGridForId(id) {
   }
 }
 
+export const MAX_HIT_POINTS = 4;
+
 export function createTeamInfo() {
   return Immutable.fromJS({
     [TURN_INFO]: {
@@ -53,7 +55,7 @@ export function createTeamInfo() {
       [WAITING_FOR_FIRST_MATE]: false,
     },
     [BREAKDOWNS]: Immutable.Set(), // indexes into ENGINE_LAYOUT
-    [HIT_POINTS]: 4,
+    [HIT_POINTS]: MAX_HIT_POINTS,
     [MINE_LOCATIONS]: [],
     [SUB_LOCATION]: null,
     [SUB_PATH]: [],

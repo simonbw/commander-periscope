@@ -1,9 +1,9 @@
 import Immutable from 'immutable';
 import {
-  BREAKDOWNS, GRID, ID, MINE_LOCATIONS, NOTIFICATIONS, PHASE, ROLE, SUB_LOCATION, SUB_PATH, SUBSYSTEMS, SURFACED,
-  SYSTEMS, TEAM, TURN_INFO, WINNER
+  BREAKDOWNS, GRID, HIT_POINTS, ID, MINE_LOCATIONS, NOTIFICATIONS, PHASE, ROLE, SUB_LOCATION, SUB_PATH, SUBSYSTEMS,
+  SURFACED, SYSTEMS, TEAM, TURN_INFO, WINNER
 } from '../../common/fields/GameFields';
-import { TEAMS } from '../../common/fields/LobbyFields';
+import { TEAMS, USERNAMES } from '../../common/fields/LobbyFields';
 import { LAST_DIRECTION_MOVED, WAITING_FOR_ENGINEER, WAITING_FOR_FIRST_MATE } from '../../common/fields/TurnInfoFields';
 import { ENDED_PHASE } from '../../common/GamePhase';
 import {
@@ -12,8 +12,6 @@ import {
   TORPEDO_NOTIFICATION
 } from '../../common/Notifications';
 import { CAPTAIN, ENGINEER, FIRST_MATE, RADIO_OPERATOR } from '../../common/Role';
-import {
-  USERNAMES} from '../../common/fields/LobbyFields';
 import { otherTeam } from '../../common/Team';
 import { canUseSystem, getLastDirectionMoved, getPlayerPosition } from '../../common/util/GameUtils';
 
@@ -54,7 +52,8 @@ export const getDataForUser = (game, userId) => {
     case FIRST_MATE:
       data = data
         .set(SYSTEMS, teamInfo.get(SYSTEMS))
-        .set(WAITING_FOR_FIRST_MATE, teamInfo.getIn([TURN_INFO, WAITING_FOR_FIRST_MATE]));
+        .set(WAITING_FOR_FIRST_MATE, teamInfo.getIn([TURN_INFO, WAITING_FOR_FIRST_MATE]))
+        .set(HIT_POINTS, teamInfo.get(HIT_POINTS));
       break;
     case ENGINEER:
       data = data
