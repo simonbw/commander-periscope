@@ -7,12 +7,11 @@ import styles from '../../../../../styles/CaptainPage.css';
 import {
   GRID, MINE_LOCATIONS, PHASE, SUB_LOCATION, SUB_PATH, SYSTEMS, TURN_INFO
 } from '../../../../common/fields/GameFields';
-import {
-  GAME} from '../../../../common/fields/StateFields';
+import { GAME } from '../../../../common/fields/StateFields';
 import { WAITING_FOR_ENGINEER, WAITING_FOR_FIRST_MATE } from '../../../../common/fields/TurnInfoFields';
 import { getMineOptions, getMoveOptions, getSilentOptions, getTorpedoOptions } from '../../../../common/util/GameUtils';
 import {
-  detonateMine, dropMine, fireTorpedo, goSilent, headInDirection, setStartLocation, useDrone, useSonar
+  detonateMine, dropMine, fireTorpedo, goSilent, headInDirection, setStartLocation, surface, useDrone, useSonar
 } from '../../../actions/GameActions';
 import { GridPropType, LocationListPropType, LocationPropType } from '../../GamePropTypes';
 import CaptainGridContainer from './CaptainGridContainer';

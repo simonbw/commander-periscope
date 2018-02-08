@@ -40,7 +40,7 @@ export const goSilent = (location) => (
   sendMessage(Messages.GO_SILENT_MESSAGE, { location })
 );
 
-const surface = () => (
+export const surface = () => (
   sendMessage(Messages.SURFACE_MESSAGE)
 );
 
