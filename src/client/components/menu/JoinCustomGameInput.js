@@ -1,11 +1,12 @@
-import classnames from 'classnames';
 import {
-  Button, FormControl, FormHelperText, IconButton, Input, InputAdornment, InputLabel, Paper, Tooltip
+  Button, Collapse, FormControl, FormHelperText, IconButton, Input, InputAdornment, InputLabel, Paper, Tooltip
 } from 'material-ui';
 import { Forward } from 'material-ui-icons';
 import React, { Component } from 'react';
 import styles from '../../../../styles/MainMenu.css'
 import { getLobbyIdErrors } from '../../../common/Validation';
+
+const TIMEOUT = 140;
 
 export class JoinCustomGameInput extends Component {
   constructor(props) {
@@ -40,11 +41,10 @@ export class JoinCustomGameInput extends Component {
   render() {
     return (
       <Paper
-        className={classnames(
-          styles.JoinCustomGameInput,
-          { [styles.open]: this.state.open })}
+        className={styles.JoinCustomGameInput}
       >
-        {this.state.open ? this.renderOpen() : this.renderClosed()}
+        <Collapse in={!this.state.open} timeout={TIMEOUT}>{this.renderClosed()}</Collapse>
+        <Collapse in={this.state.open} timeout={TIMEOUT}>{this.renderOpen()}</Collapse>
       </Paper>
     );
   }
@@ -68,14 +68,19 @@ export class JoinCustomGameInput extends Component {
         <FormControl fullWidth>
           <InputLabel htmlFor={"custom-game-input"}>Lobby Id</InputLabel>
           <Input
-            autoFocus
-            spellCheck={false}
+            autoComplete="off"
+            error={Boolean(error)}
             fullWidth
             id="custom-game-input"
             onChange={(event) => this.onChange(event.target.value)}
+            onBlur={() => {
+              if (!this.state.lobbyId) {
+                this.setState({ open: false })
+              }
+            }}
+            inputRef={(inputRef) => this._inputRef = inputRef}
+            spellCheck={false}
             value={lobbyId}
-            error={Boolean(error)}
-            autoComplete="off"
             endAdornment={
               <InputAdornment position="end">
                 <IconButton type="submit" disabled={Boolean(error)} color="primary">
@@ -96,8 +101,14 @@ export class JoinCustomGameInput extends Component {
     return (
       <Button
         id="join-custom-game-button"
-        onClick={() => this.setState({ open: true, error: null })}
+        onClick={() => {
+          this.setState({ open: true, error: null });
+          setTimeout(() => {
+            this._inputRef.focus();
+          }, TIMEOUT)
+        }}
         fullWidth
+        disabled={this.state.open}
       >
         Join Lobby
       </Button>

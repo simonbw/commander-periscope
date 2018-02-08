@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import styles from '../../../../styles/MainMenu.css'
 import { joinCustomLobby } from '../../actions/CustomLobbyActions';
 import FloatingText from '../FloatingText';
+import HowToPlay from './HowToPlay';
 import { JoinCustomGameInput } from './JoinCustomGameInput';
 
 export const UnconnectedMainMenu = ({ createCustomLobby, joinCustomLobby }) => (
@@ -22,6 +23,7 @@ export const UnconnectedMainMenu = ({ createCustomLobby, joinCustomLobby }) => (
     </Button>
     <br/>
     <JoinCustomGameInput joinCustomLobby={joinCustomLobby}/>
+    <HowToPlay/>
   </div>
 );
 

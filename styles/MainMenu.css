@@ -6,11 +6,29 @@
     width: 100%;
 }
 
-.JoinCustomGameInput {
+.HowToPlay,
+.JoinCustomGameInput,
+.HowToPlay {
     margin: 10px 0;
 }
 
-.JoinCustomGameInput.open {
+.HowToPlay h3 {
+    font-size: 1.0rem;
+    margin: 10px;
+    text-align: center;
+}
+
+.HowToPlay p {
+    font-size: 0.9rem;
+    margin: 8px;
+}
+
+.HowToPlay .Stepper {
+    border-radius: 2px; /* TODO: We probably want this from the theme */
+    padding: 0;
+}
+
+.JoinCustomGameInput form {
     padding: 10px;
 }
 
