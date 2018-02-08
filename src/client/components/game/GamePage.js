@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { PHASE, ROLE, SURFACED, TEAM, WINNER } from '../../../common/fields/GameFields';
+import { GAME } from '../../../common/fields/StateFields';
 import { ENDED_PHASE, LOADING_PHASE } from '../../../common/GamePhase';
 import * as Role from '../../../common/Role';
-import { GAME} from '../../../common/fields/StateFields';
 import FloatingText from '../FloatingText';
 import LoadingPage from '../LoadingPage';
 import CaptainPage from './CaptainPage';

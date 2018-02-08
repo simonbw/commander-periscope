@@ -21,9 +21,14 @@ export const UnconnectedMainMenu = ({ createCustomLobby, joinCustomLobby }) => (
     >
       Create Lobby
     </Button>
-    <br/>
+    
     <JoinCustomGameInput joinCustomLobby={joinCustomLobby}/>
+    
     <HowToPlay/>
+    
+    <FloatingText className={styles.FeedbackLink}>
+      <a href="https://goo.gl/forms/WfwLe3GRFqXG8NUo1">Leave Feedback</a>
+    </FloatingText>
   </div>
 );
 

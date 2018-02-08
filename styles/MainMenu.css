@@ -32,6 +32,23 @@
     padding: 10px;
 }
 
+.FeedbackLink {
+    bottom: 0;
+    font-family: 'Audiowide', sans-serif;
+    padding: 2px 5px;
+    position: absolute;
+    right: 0;
+}
+
+.FeedbackLink a {
+    color: #FFFFFF99;
+    text-decoration: none;
+}
+
+.FeedbackLink a:hover {
+    color: #FFFFFFFF;
+}
+
 @media (min-width: 420px) {
     .MainMenu {
         padding: 50px;
