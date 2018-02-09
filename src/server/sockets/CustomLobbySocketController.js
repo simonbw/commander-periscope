@@ -1,9 +1,9 @@
 import PubSub from 'pubsub-js';
+import { ID } from '../../common/fields/GameFields';
 import {
   CUSTOM_LOBBY_JOINED_MESSAGE, CUSTOM_LOBBY_READY_MESSAGE, CUSTOM_LOBBY_SELECT_ROLE_MESSAGE,
   CUSTOM_LOBBY_SET_USERNAME_MESSAGE, CUSTOM_LOBBY_UNREADY_MESSAGE, JOIN_CUSTOM_LOBBY_MESSAGE, LEAVE_CUSTOM_LOBBY_MESSAGE
 } from '../../common/Messages';
-import { ID } from '../../common/fields/GameFields';
 import { sleep } from '../../common/util/AsyncUtil';
 import CustomLobby from '../resources/CustomLobbies';
 
@@ -84,6 +84,7 @@ const listenToSocketMessages = (socket, lobbyId, pubsubToken) => {
   };
   
   handlers[LEAVE_CUSTOM_LOBBY_MESSAGE] = () => {
+    log(`${socket.userId} left lobby`);
     socket.lobbyId = null;
     PubSub.unsubscribe(pubsubToken);
     Object.entries(handlers).forEach(([message, handler]) => {
@@ -92,7 +93,7 @@ const listenToSocketMessages = (socket, lobbyId, pubsubToken) => {
     CustomLobby.removePlayer(lobbyId, socket.userId);
   };
   
-  handlers['disconnect'] = () => handlers[LEAVE_CUSTOM_LOBBY_MESSAGE];
+  handlers['disconnect'] = () => handlers[LEAVE_CUSTOM_LOBBY_MESSAGE]();
   
   Object.entries(handlers).forEach(([message, handler]) => {
     socket.on(message, handler);
