@@ -33,7 +33,7 @@ export class NotificationListItem extends Component {
     const { hasBeenAdded } = this.state;
     return (
       <Fragment>
-        <Collapse in={hasBeenAdded}>
+        <Collapse in={hasBeenAdded} timeout="auto">
           <Fade in={!last}>
             <ListItem
               dense
@@ -79,20 +79,3 @@ export class NotificationListItem extends Component {
     }
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

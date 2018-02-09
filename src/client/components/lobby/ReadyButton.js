@@ -16,7 +16,7 @@ class UnconnectedReadyButton extends Component {
     const { ready, unready, userIsReady, userHasRole } = this.props;
     return (
       <Button
-        raised
+        variant="raised"
         onClick={userIsReady ? unready : ready}
         id="ready-button"
         color={userIsReady ? 'secondary' : 'primary'}

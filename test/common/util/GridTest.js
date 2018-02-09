@@ -7,7 +7,7 @@ import {
   getLocationFromDirection,
   isAdjacent
 } from '../../../src/common/Grid';
-import { createEmptyGrid } from '../../../src/server/resources/GridFactory';
+import { createEmptyGrid } from '../../../src/server/factories/GridFactory';
 import expect from '../../expect';
 
 describe('Grid', () => {

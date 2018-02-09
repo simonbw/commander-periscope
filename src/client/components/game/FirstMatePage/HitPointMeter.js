@@ -4,7 +4,7 @@ import { Paper } from 'material-ui';
 import PropTypes from 'prop-types';
 import React from 'react';
 import styles from '../../../../../styles/HitPointMeter.css';
-import { MAX_HIT_POINTS } from '../../../../server/resources/GameFactory';
+import { MAX_HIT_POINTS } from '../../../../server/factories/GameFactory';
 
 const HitPointMeter = ({ hitPoints }) => (
   <Paper className={styles.HitPointMeterPaper}>

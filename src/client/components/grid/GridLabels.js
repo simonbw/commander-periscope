@@ -3,7 +3,7 @@ import Immutable from 'immutable';
 import PropTypes from 'prop-types';
 import React from 'react';
 import styles from '../../../../styles/Grid/GridLabels.css';
-import { ROW_LABELS, COLUMN_LABELS } from '../../../common/Grid';
+import { COLUMN_LABELS, ROW_LABELS } from '../../../common/Grid';
 
 // TODO: This should probably be a PureComponent
 const GridLabels = ({ height, width, selectedX, selectedY }) => (

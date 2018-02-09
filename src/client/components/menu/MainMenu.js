@@ -14,7 +14,7 @@ export const UnconnectedMainMenu = ({ createCustomLobby, joinCustomLobby }) => (
     </FloatingText>
     
     <Button
-      raised
+      variant="raised"
       id="create-custom-game-button"
       onClick={createCustomLobby}
       fullWidth

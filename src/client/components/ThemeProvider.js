@@ -19,13 +19,8 @@ export const theme = createMuiTheme({
     grey: {
       300: '#FFFFFF' // TODO: hack
     },
-    types: {
-      light: {
-        background: {
-          chip: '#FFFFFF',
-          default: '#FFFFFF',
-        }
-      }
+    action: {
+      disabledBackground: '#E0E0E0'
     },
     text: {
       primary: '#114477'

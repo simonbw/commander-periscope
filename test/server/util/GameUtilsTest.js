@@ -5,7 +5,7 @@ import { CAPTAIN, ENGINEER } from '../../../src/common/Role';
 import { CHARGE, CIRCUIT, COMMS, DRONE, MAX_CHARGE, MINE, SYSTEM_TYPE, TORPEDO } from '../../../src/common/System';
 import { BLUE, RED } from '../../../src/common/Team';
 import { canUseSystem, checkEngineOverload, fixCircuits, getPlayerPosition } from '../../../src/common/util/GameUtils';
-import { createStandardSubsystems } from '../../../src/server/resources/SubsystemFactory';
+import { createStandardSubsystems } from '../../../src/server/factories/SubsystemFactory';
 import expect from '../../expect';
 import { mockGame } from '../../mocks';
 

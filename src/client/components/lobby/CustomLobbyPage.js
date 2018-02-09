@@ -25,10 +25,7 @@ export const UnconnectedCustomLobbyPage = ({ lobby, userId, goToMainMenu, select
 );
 
 const MainMenuButton = ({ goToMainMenu }) => (
-  <Button
-    raised
-    onClick={goToMainMenu}
-  >
+  <Button variant="raised" onClick={goToMainMenu}>
     Main Menu
   </Button>
 );

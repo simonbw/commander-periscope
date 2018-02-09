@@ -19,7 +19,7 @@ import SubMarker from '../src/client/components/grid/SubMarker';
 import { getMoveOptions } from '../src/common/util/GameUtils';
 import {
   createAlphaGrid, createBravoGrid, createCharlieGrid, createEmptyGrid
-} from '../src/server/resources/GridFactory';
+} from '../src/server/factories/GridFactory';
 import '../styles/main.css';
 import { mockMines, mockPath } from '../test/mocks';
 import StoryWrapper from './StoryWrapper';

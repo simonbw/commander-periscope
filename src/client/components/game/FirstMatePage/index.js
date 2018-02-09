@@ -1,5 +1,6 @@
+import classnames from 'classnames';
 import Immutable from 'immutable';
-import { Button, Paper, Tooltip } from 'material-ui';
+import { Button, Tooltip } from 'material-ui';
 import React from 'react';
 import { connect } from 'react-redux';
 import styles from '../../../../../styles/FirstMatePage.css';
@@ -29,7 +30,7 @@ export const UnconnectedFirstMatePage = ({ systems, readyToCharge, hitPoints, ch
               key={i}
               maxCharge={system.get(MAX_CHARGE)}
               name={system.get('name')}
-              readyToCharge={readyToCharge && system.get(CHARGE) < system.get(MAX_CHARGE)}
+              readyToCharge={readyToCharge}
             />
           ))
         }
@@ -38,7 +39,7 @@ export const UnconnectedFirstMatePage = ({ systems, readyToCharge, hitPoints, ch
           color="secondary"
           disabled={!readyToCharge}
           onClick={skipCharging}
-          raised
+          variant="raised"
         >
           Skip Charging
         </Button>
@@ -50,22 +51,22 @@ export const UnconnectedFirstMatePage = ({ systems, readyToCharge, hitPoints, ch
 const System = ({ name, charge, maxCharge, chargeSystem, readyToCharge }) => {
   const systemType = getSystemType(name);
   return (
-    <Paper className={styles.SystemPanel}>
-      <ChargeMeter charge={charge} maxCharge={maxCharge}/>
-      <div className={styles.SystemPanelRight}>
-        <div className={styles.SystemName}>{name}</div>
-        <Tooltip title={systemType} placement="right" enterDelay={300}>
-          {getIconForSystemType(systemType)}
-        </Tooltip>
-        <Button
-          color="primary"
-          disabled={!readyToCharge}
-          onClick={() => chargeSystem(name)}
-        >
-          Charge
-        </Button>
+    <Button
+      className={classnames(styles.SystemPanel, { [styles.charged]: charge === maxCharge })}
+      disabled={!readyToCharge || charge === maxCharge}
+      onClick={() => chargeSystem(name)}
+      variant="raised"
+    >
+      <div className={styles.SystemPanelPaper}>
+        <ChargeMeter charge={charge} maxCharge={maxCharge}/>
+        <div className={styles.SystemPanelRight}>
+          <div className={styles.SystemName}>{name}</div>
+          <Tooltip title={systemType} placement="right" enterDelay={300}>
+            {getIconForSystemType(systemType)}
+          </Tooltip>
+        </div>
       </div>
-    </Paper>
+    </Button>
   );
 };
 

@@ -1,8 +1,7 @@
 import Immutable from 'immutable';
 import { ID } from '../../common/fields/GameFields';
-import { GAME_ID, PLAYERS, READIED, TEAMS } from '../../common/fields/LobbyFields';
+import { GAME_ID, PLAYERS, READIED, TEAMS, USERNAMES } from '../../common/fields/LobbyFields';
 import { CAPTAIN, ENGINEER, FIRST_MATE, RADIO_OPERATOR } from '../../common/Role';
-import { USERNAMES } from '../../common/fields/LobbyFields';
 import { BLUE, RED } from '../../common/Team';
 import { getPlayerPosition } from '../../common/util/GameUtils';
 import { shouldStartGame } from './CustomLobbyUtils';

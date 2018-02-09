@@ -39,10 +39,11 @@ class HowToPlay extends Component {
         <Collapse in={step >= 0} timeout={'auto'}>
           {this.renderStep()}
           <MobileStepper
-            className={styles.Stepper}
-            variant="dots" steps={steps.length}
-            position="static"
             activeStep={step}
+            className={styles.Stepper}
+            position="static"
+            steps={steps.length}
+            variant="dots"
             nextButton={
               <Button
                 size="small"

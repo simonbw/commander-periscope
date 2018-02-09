@@ -1,16 +1,16 @@
 import { List } from 'immutable';
 import PubSub from 'pubsub-js';
 import { ID } from '../../common/fields/GameFields';
+import { TEAMS } from '../../common/fields/LobbyFields';
 import {
   CHARGE_SYSTEM_MESSAGE, DETONATE_MINE_MESSAGE, DROP_MINE_MESSAGE, FIRE_TORPEDO_MESSAGE, GO_SILENT_MESSAGE,
   HEAD_IN_DIRECTION_MESSAGE, JOIN_GAME_MESSAGE, SET_START_LOCATION_MESSAGE, SURFACE_MESSAGE, TRACK_BREAKDOWN_MESSAGE,
   USE_DRONE_MESSAGE, USE_SONAR_MESSAGE
 } from '../../common/Messages';
 import { CAPTAIN, ENGINEER, FIRST_MATE, RADIO_OPERATOR } from '../../common/Role';
-import { TEAMS } from '../../common/fields/LobbyFields';
 import { getPlayerPosition } from '../../common/util/GameUtils';
 import Games from '../resources/Games';
-import { getDataForUser } from '../resources/UserGameTransform';
+import { getDataForUser } from '../transforms/UserGameTransform';
 
 const log = require('debug')('commander-periscope:server');
 

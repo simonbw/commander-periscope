@@ -1,12 +1,11 @@
 import Immutable from 'immutable/dist/immutable';
 import Random from 'random-js';
 import { ALL_DIRECTIONS } from '../Direction';
-import { BREAKDOWNS, SUBSYSTEMS } from '../fields/GameFields';
+import { BREAKDOWNS, SUBSYSTEMS, SYSTEMS } from '../fields/GameFields';
 import {
   getGridSize, getLocationFromDirection, getLocationList, getManhattanDistance, isInGrid, tileToSector, WATER_TILE
 } from '../Grid';
 import { MOVE_NOTIFICATION, NOTIFICATION_DIRECTION, NOTIFICATION_TEAM, NOTIFICATION_TYPE } from '../Notifications';
-import { SYSTEMS } from '../fields/GameFields';
 import { CHARGE, CIRCUIT, CIRCUITS, DIRECTION, getSystemType, MAX_CHARGE, NUCLEAR, SYSTEM_TYPE } from '../System';
 import { deepFind } from './ImmutableUtil';
 

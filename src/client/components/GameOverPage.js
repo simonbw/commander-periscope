@@ -10,7 +10,7 @@ const GameOverPage = ({ isWinner, goToMainMenu }) => (
       <h1>
         {isWinner ? 'WINNER WINNER CHICKEN DINNER' : 'BETTER LUCK NEXT TIME'}
       </h1>
-      <Button raised size="large" onClick={goToMainMenu}>Main Menu</Button>
+      <Button variant="raised" size="large" onClick={goToMainMenu}>Main Menu</Button>
     </FloatingText>
   </div>
 );

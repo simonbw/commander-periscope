@@ -1,13 +1,14 @@
 .FirstMatePage {
-    display: flex;
-    justify-content: center;
     align-items: center;
+    display: flex;
     flex-flow: column;
+    justify-content: center;
+    margin: auto;
+    max-width: 550px;
     padding: 20px;
 }
 
 .HitPointMeterBox {
-    max-width: 490px;
     width: 100%;
 }
 
@@ -16,15 +17,32 @@
     flex-flow: row wrap;
     justify-content: center;
     margin: 10px -10px;
-    max-width: 520px;
 }
 
-.SystemPanel {
+.FirstMatePage .SystemPanel,
+.FirstMatePage .SkipChargingButton {
+    flex-basis: 150px;
+    flex-grow: 1;
+    margin: 10px;
+    padding: 0;
+}
+
+.FirstMatePage .SystemPanel {
+    align-items: stretch;
+    display: flex;
+}
+
+.FirstMatePage .SystemPanel.charged {
+    background: #FFFFFF;
+}
+
+.FirstMatePage .SystemPanelPaper {
+    align-items: stretch;
     display: flex;
     flex-flow: row wrap;
-    /*flex-grow: 1;*/
-    margin: 10px;
+    flex-grow: 1;
     padding: 10px;
+    height: 100px;
 }
 
 .SystemPanelRight {
@@ -37,12 +55,17 @@
 }
 
 .SystemName {
+    color: #114477;
     font-family: 'Audiowide', sans-serif;
+    font-size: 1rem;
     margin-bottom: 8px;
     text-transform: capitalize;
 }
 
-.SkipChargingButton {
-    margin: 10px;
-    width: 150px;
+.SystemPanel.charged .SystemName {
+    color: #1188BB;
+}
+
+:disabled .SystemName {
+    color: #6897BB;
 }

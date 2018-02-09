@@ -23,10 +23,10 @@ import { sleep } from '../../common/util/AsyncUtil';
 import {
   checkEngineOverload, fixCircuits, generateSonarResult, getLastDirectionMoved
 } from '../../common/util/GameUtils';
+import { createGame } from '../factories/GameFactory';
 import {
   assert, assertCanMove, assertCanMoveTo, assertMainPhase, assertNotStarted, assertSystemReady, assertValidStartLocation
 } from './GameAssertions';
-import { createGame } from './GameFactory';
 import Resource from './Resource';
 
 const log = require('debug')('commander-periscope:server');

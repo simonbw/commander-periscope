@@ -3,9 +3,9 @@ import { GRID, SYSTEMS } from '../src/common/fields/GameFields';
 import { PLAYERS, READIED, TEAMS, USERNAMES } from '../src/common/fields/LobbyFields';
 import { CAPTAIN, ENGINEER, FIRST_MATE, RADIO_OPERATOR } from '../src/common/Role';
 import { BLUE, RED } from '../src/common/Team';
-import { createGame } from '../src/server/resources/GameFactory';
-import { createBravoGrid } from '../src/server/resources/GridFactory';
-import { getDataForUser } from '../src/server/resources/UserGameTransform';
+import { createGame } from '../src/server/factories/GameFactory';
+import { createBravoGrid } from '../src/server/factories/GridFactory';
+import { getDataForUser } from '../src/server/transforms/UserGameTransform';
 
 export function mockGrid() {
   return createBravoGrid();
