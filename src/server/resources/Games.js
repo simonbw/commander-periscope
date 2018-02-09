@@ -129,7 +129,7 @@ Games.useSonar = (gameId, team) => {
 
 Games.useDrone = (gameId, team, sector) => {
   return Games.useSystem(gameId, team, DRONE, (game) => {
-    assert(sector > 0 && sector <= 9, 'Must choose a sector 1 <= sector <= 9');
+    assert(sector >= 0 && sector < 9, 'Must choose a sector 0 <= sector <= 8');
     const opponentLocation = game.getIn([otherTeam(team), SUB_LOCATION]);
     const gridSize = getGridSize(game.get(GRID));
     const result = tileToSector(opponentLocation, gridSize) === sector;
