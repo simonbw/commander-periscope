@@ -23,7 +23,7 @@
     margin: 8px;
 }
 
-.HowToPlay .Stepper {
+.Stepper {
     border-radius: 2px; /* TODO: We probably want this from the theme */
     padding: 0;
 }
@@ -32,7 +32,7 @@
     padding: 10px;
 }
 
-.FeedbackLink {
+.Footer {
     bottom: 0;
     font-family: 'Audiowide', sans-serif;
     padding: 2px 5px;
@@ -40,12 +40,12 @@
     right: 0;
 }
 
-.FeedbackLink a {
+.Footer a {
     color: #FFFFFF99;
     text-decoration: none;
 }
 
-.FeedbackLink a:hover {
+.Footer a:hover {
     color: #FFFFFFFF;
 }
 

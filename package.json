@@ -48,7 +48,9 @@
     "trace": "^3.1.0",
     "uglifyjs-webpack-plugin": "^1.1.8",
     "webpack": "^3.10.0",
-    "webpack-dev-middleware": "^2.0.3"
+    "webpack-dev-middleware": "^2.0.3",
+    "react-jss": "latest",
+    "jss": "latest"
   },
   "devDependencies": {
     "@storybook/addon-actions": "^3.3.3",

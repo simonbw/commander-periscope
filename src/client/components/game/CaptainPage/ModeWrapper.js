@@ -18,7 +18,7 @@ class ModeWrapper extends Component {
   static propTypes = {
     // systemStatuses: ImmutablePropTypes.mapOf(PropTypes.bool).isRequired // TODO: Update immutable-proptypes
     children: PropTypes.func.isRequired,
-    gamePhase: PropTypes.string.isRequired,
+    gamePhase: PropTypes.number.isRequired,
     hasMines: PropTypes.bool.isRequired,
     systemStatuses: ImmutablePropTypes.map.isRequired,
   };

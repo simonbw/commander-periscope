@@ -19,24 +19,24 @@
     margin: 10px -10px;
 }
 
-.FirstMatePage .SystemPanel,
-.FirstMatePage .SkipChargingButton {
+.SystemPanel,
+.SkipChargingButton {
     flex-basis: 150px;
     flex-grow: 1;
     margin: 10px;
     padding: 0;
 }
 
-.FirstMatePage .SystemPanel {
+.SystemPanel {
     align-items: stretch;
     display: flex;
 }
 
-.FirstMatePage .SystemPanel.charged {
+.SystemPanel.charged {
     background: #FFFFFF;
 }
 
-.FirstMatePage .SystemPanelPaper {
+.SystemPanelPaper {
     align-items: stretch;
     display: flex;
     flex-flow: row wrap;

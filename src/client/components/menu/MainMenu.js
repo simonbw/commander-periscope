@@ -26,7 +26,7 @@ export const UnconnectedMainMenu = ({ createCustomLobby, joinCustomLobby }) => (
     
     <HowToPlay/>
     
-    <FloatingText className={styles.FeedbackLink}>
+    <FloatingText className={styles.Footer}>
       <a href="https://goo.gl/forms/WfwLe3GRFqXG8NUo1">Leave Feedback</a>
     </FloatingText>
   </div>
