@@ -1,0 +1,9 @@
+.GameOverPage {
+    align-items: center;
+    display: flex;
+    flex-flow: column nowrap;
+    height: 100vh;
+    justify-content: center;
+    max-width: 500px;
+    margin: 0 auto;
+}

@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import styles from '../../../../styles/CustomLobbyPage.css';
 import { USERNAMES } from '../../../common/fields/LobbyFields';
-import { LOBBY, USER_ID} from '../../../common/fields/StateFields';
+import { LOBBY, USER_ID } from '../../../common/fields/StateFields';
 import { setUsername } from '../../actions/CustomLobbyActions';
 
 class UnconnectedUsernameInput extends Component {
@@ -24,9 +24,10 @@ class UnconnectedUsernameInput extends Component {
     return (
       <Paper className={styles.UsernamePaper}>
         <TextField
+          fullWidth
           label={'Your Name'}
-          placeholder='Anonymous'
           onChange={(event) => this.onChange(event.target.value)}
+          placeholder='Anonymous'
           value={this.state.value}
         />
       </Paper>

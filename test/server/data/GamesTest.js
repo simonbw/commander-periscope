@@ -203,13 +203,13 @@ describe('Games', () => {
       await clearBreakdowns('testGameId', RED); // we're now at [1, 5]
       
       await expect(
-        Games.useDrone('testGameId', RED, 10),
-        'Should not allow sectors > 9'
+        Games.useDrone('testGameId', RED, 9),
+        'Should not allow sectors >= 9'
       ).to.be.rejectedWith(GameStateError);
       
       await expect(
-        Games.useDrone('testGameId', RED, 0),
-        'Should not allow sectors < 1'
+        Games.useDrone('testGameId', RED, -1),
+        'Should not allow sectors < 0'
       ).to.be.rejectedWith(GameStateError);
       
       await Games.useDrone('testGameId', RED, 5);
