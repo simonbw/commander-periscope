@@ -11,7 +11,7 @@ import { PICK_PHASE } from '../../common/GamePhase';
 import { CHARGE, DRONE, MAX_CHARGE, MINE, SILENT, SONAR, TORPEDO } from '../../common/System';
 import { BLUE, RED } from '../../common/Team';
 import { createBravoGrid, createCharlieGrid, createEmptyGrid } from './GridFactory';
-import { createStandardSubsystems } from './SubsystemFactory';
+import { createRandomSubsystems, createStandardSubsystems } from './SubsystemFactory';
 
 // TODO: Something so I don't have to worry about mixing immutable and vanilla types.
 export function createGame(id, { [PLAYERS]: players, [USERNAMES]: usernames, [TEAMS]: teams }) {
@@ -22,7 +22,7 @@ export function createGame(id, { [PLAYERS]: players, [USERNAMES]: usernames, [TE
     [NOTIFICATIONS]: [],
     [PHASE]: PICK_PHASE,
     [PLAYERS]: players,
-    [SUBSYSTEMS]: createStandardSubsystems(),
+    [SUBSYSTEMS]: getSubsystemsForId(id),
     [TEAMS]: teams,
     [USERNAMES]: usernames,
     [WINNER]: null,
@@ -41,6 +41,14 @@ function getGridForId(id) {
     return createCharlieGrid();
   } else {
     return createBravoGrid();
+  }
+}
+
+function getSubsystemsForId(id) {
+  if (id.substr(0, 'rand'.length) === 'rand') {
+    return createRandomSubsystems();
+  } else {
+    return createStandardSubsystems();
   }
 }
 
