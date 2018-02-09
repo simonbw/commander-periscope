@@ -28,6 +28,7 @@
     overflow-y: auto;
     padding: 5px;
 }
+
 .DebugPane.open pre {
     white-space: pre-wrap;
 }

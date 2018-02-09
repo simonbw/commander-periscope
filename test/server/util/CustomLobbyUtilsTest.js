@@ -1,5 +1,4 @@
-import { READIED } from '../../../src/common/fields/LobbyFields';
-import { PLAYERS} from '../../../src/common/fields/LobbyFields';
+import { PLAYERS, READIED } from '../../../src/common/fields/LobbyFields';
 import { shouldStartGame } from '../../../src/server/resources/CustomLobbyUtils';
 import expect from '../../expect';
 import { mockLobby } from '../../mocks';

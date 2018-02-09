@@ -1,11 +1,7 @@
 import { List } from 'immutable';
 import { EAST, NORTH, SOUTH, WEST } from '../../../src/common/Direction';
 import {
-  getDirection,
-  getLocationList,
-  getManhattanDistance,
-  getLocationFromDirection,
-  isAdjacent
+  getDirection, getLocationFromDirection, getLocationList, getManhattanDistance, isAdjacent
 } from '../../../src/common/Grid';
 import { createEmptyGrid } from '../../../src/server/factories/GridFactory';
 import expect from '../../expect';

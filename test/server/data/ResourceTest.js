@@ -1,8 +1,8 @@
 import Immutable from 'immutable';
 import { ID } from '../../../src/common/fields/GameFields';
+import { sleep } from '../../../src/common/util/AsyncUtil';
 import Resource from '../../../src/server/resources/Resource';
 import expect from '../../expect';
-import { sleep } from '../../../src/common/util/AsyncUtil';
 
 describe('Resource', () => {
   describe('.create', () => {
