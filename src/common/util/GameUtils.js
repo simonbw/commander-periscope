@@ -102,7 +102,7 @@ export function getSilentOptions(subLocation, grid, path, mines) {
     .flatMap(direction => {
       let tiles = Immutable.List();
       let current = subLocation;
-      for (const i of Immutable.Range(0, 4)) {
+      for (const i of Immutable.Range(0, 3)) {
         current = getLocationFromDirection(current, direction);
         if (!isValidMoveTile(current, grid, path, mines)) {
           break;
