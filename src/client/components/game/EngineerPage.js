@@ -3,11 +3,12 @@ import { Badge, Divider, IconButton, Paper, withStyles } from 'material-ui';
 import React from 'react';
 import { connect } from 'react-redux';
 import styles from '../../../../styles/EngineerPage.css';
-import { ALL_DIRECTIONS, getDirectionArrow } from '../../../common/Direction';
-import { BREAKDOWNS, ID, SUBSYSTEMS } from '../../../common/fields/GameFields';
+import { ID } from '../../../common/fields/CommonFields';
+import { BREAKDOWNS, SUBSYSTEMS } from '../../../common/fields/GameFields';
 import { GAME } from '../../../common/fields/StateFields';
 import { LAST_DIRECTION_MOVED, WAITING_FOR_ENGINEER } from '../../../common/fields/TurnInfoFields';
-import { CIRCUIT, DIRECTION, SYSTEM_TYPE } from '../../../common/System';
+import { ALL_DIRECTIONS, getDirectionArrow } from '../../../common/models/Direction';
+import { CIRCUIT, DIRECTION, SYSTEM_TYPE } from '../../../common/models/System';
 import { trackBreakdown } from '../../actions/GameActions';
 import { getIconForSystemType } from '../icons/SystemTypeIcons';
 

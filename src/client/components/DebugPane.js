@@ -5,7 +5,6 @@ import ReactJsonSyntaxHighlighter from 'react-json-pretty';
 import { connect } from 'react-redux';
 import styles from '../../../styles/DebugPane.css';
 
-// TODO: Use Drawer?
 export class UnconnectedDebugPane extends Component {
   static propTypes = {
     data: PropTypes.object.isRequired

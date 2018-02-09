@@ -1,19 +1,18 @@
 import Immutable from 'immutable/dist/immutable';
+import { CREATED, ID, PLAYERS, TEAMS, USERNAMES } from '../../common/fields/CommonFields';
 import {
-  BREAKDOWNS, CREATED, GRID, HIT_POINTS, ID, MINE_LOCATIONS, NOTIFICATIONS, PHASE, SUB_LOCATION, SUB_PATH, SUBSYSTEMS,
-  SURFACED, SYSTEMS, TURN_INFO, WINNER
+  BREAKDOWNS, GRID, HIT_POINTS, MINE_LOCATIONS, NOTIFICATIONS, PHASE, SUB_LOCATION, SUB_PATH, SUBSYSTEMS, SURFACED,
+  SYSTEMS, TURN_INFO, WINNER
 } from '../../common/fields/GameFields';
-import { PLAYERS, TEAMS, USERNAMES } from '../../common/fields/LobbyFields';
 import {
   SYSTEM_IS_USED, TURN_NUMBER, WAITING_FOR_ENGINEER, WAITING_FOR_FIRST_MATE
 } from '../../common/fields/TurnInfoFields';
-import { PICK_PHASE } from '../../common/GamePhase';
-import { CHARGE, DRONE, MAX_CHARGE, MINE, SILENT, SONAR, TORPEDO } from '../../common/System';
-import { BLUE, RED } from '../../common/Team';
+import { PICK_PHASE } from '../../common/models/GamePhase';
+import { CHARGE, DRONE, MAX_CHARGE, MINE, SILENT, SONAR, TORPEDO } from '../../common/models/System';
+import { BLUE, RED } from '../../common/models/Team';
 import { createBravoGrid, createCharlieGrid, createEmptyGrid } from './GridFactory';
 import { createRandomSubsystems, createStandardSubsystems } from './SubsystemFactory';
 
-// TODO: Something so I don't have to worry about mixing immutable and vanilla types.
 export function createGame(id, { [PLAYERS]: players, [USERNAMES]: usernames, [TEAMS]: teams }) {
   return new Immutable.fromJS({
     [CREATED]: Date.now(),

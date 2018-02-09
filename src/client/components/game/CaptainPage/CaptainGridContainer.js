@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { getGridSize } from '../../../../common/Grid';
+import { getGridSize } from '../../../../common/models/Grid';
 import { GridPropType, LocationListPropType, LocationPropType } from '../../GamePropTypes';
 import GridBackground from '../../grid/GridBackground';
 import GridContainer from '../../grid/GridContainer';

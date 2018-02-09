@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styles from '../../../../../styles/CaptainPage.css';
-import { DRONE, MINE, SILENT, SONAR, TORPEDO } from '../../../../common/System';
+import { DRONE, MINE, SILENT, SONAR, TORPEDO } from '../../../../common/models/System';
 import { LocationListPropType } from '../../GamePropTypes';
 import { MoveIcon, SurfaceIcon } from '../../icons/ActionIcons';
 import { DroneIcon, MineIcon, SilentIcon, SonarIcon, TorpedoIcon } from '../../icons/SystemIcons';

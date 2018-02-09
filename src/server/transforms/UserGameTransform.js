@@ -1,18 +1,18 @@
 import Immutable from 'immutable';
+import { ID, TEAMS, USERNAMES } from '../../common/fields/CommonFields';
 import {
-  BREAKDOWNS, GRID, HIT_POINTS, ID, MINE_LOCATIONS, NOTIFICATIONS, PHASE, ROLE, SUB_LOCATION, SUB_PATH, SUBSYSTEMS,
+  BREAKDOWNS, GRID, HIT_POINTS, MINE_LOCATIONS, NOTIFICATIONS, PHASE, ROLE, SUB_LOCATION, SUB_PATH, SUBSYSTEMS,
   SURFACED, SYSTEMS, TEAM, TURN_INFO, WINNER
 } from '../../common/fields/GameFields';
-import { TEAMS, USERNAMES } from '../../common/fields/LobbyFields';
 import { LAST_DIRECTION_MOVED, WAITING_FOR_ENGINEER, WAITING_FOR_FIRST_MATE } from '../../common/fields/TurnInfoFields';
-import { ENDED_PHASE } from '../../common/GamePhase';
+import { ENDED_PHASE } from '../../common/models/GamePhase';
 import {
   DETONATE_MINE_NOTIFICATION, DRONE_NOTIFICATION, DROP_MINE_NOTIFICATION, MOVE_NOTIFICATION, NOTIFICATION_LOCATION,
   NOTIFICATION_TEAM, NOTIFICATION_TYPE, SILENT_NOTIFICATION, SONAR_NOTIFICATION, SURFACE_NOTIFICATION,
   TORPEDO_NOTIFICATION
-} from '../../common/Notifications';
-import { CAPTAIN, ENGINEER, FIRST_MATE, RADIO_OPERATOR } from '../../common/Role';
-import { otherTeam } from '../../common/Team';
+} from '../../common/models/Notifications';
+import { CAPTAIN, ENGINEER, FIRST_MATE, RADIO_OPERATOR } from '../../common/models/Role';
+import { otherTeam } from '../../common/models/Team';
 import { canUseSystem, getLastDirectionMoved, getPlayerPosition } from '../../common/util/GameUtils';
 
 export const getDataForUser = (game, userId) => {

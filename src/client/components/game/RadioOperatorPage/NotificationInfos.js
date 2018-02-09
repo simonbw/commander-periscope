@@ -1,12 +1,12 @@
 import { ListItemText } from 'material-ui';
 import React, { Fragment } from 'react';
-import { getDirectionArrow } from '../../../../common/Direction';
-import { getHitDisplayName } from '../../../../common/Explosion';
-import { COLUMN_LABELS, ROW_LABELS, SECTOR_LABELS } from '../../../../common/Grid';
+import { getDirectionArrow } from '../../../../common/models/Direction';
+import { getHitDisplayName } from '../../../../common/models/Explosion';
+import { COLUMN_LABELS, ROW_LABELS, SECTOR_LABELS } from '../../../../common/models/Grid';
 import {
   NOTIFICATION_DIRECTION, NOTIFICATION_DRONE_RESULT, NOTIFICATION_HIT_RESULT, NOTIFICATION_LOCATION,
   NOTIFICATION_SECTOR, NOTIFICATION_SONAR_RESULT, NOTIFICATION_TEAM
-} from '../../../../common/Notifications';
+} from '../../../../common/models/Notifications';
 import { DetonateMineIcon, SurfaceIcon } from '../../icons/ActionIcons';
 import AvatarIcon from '../../icons/AvatarIcon';
 import { DroneIcon, MineIcon, SilentIcon, SonarIcon, TorpedoIcon } from '../../icons/SystemIcons';

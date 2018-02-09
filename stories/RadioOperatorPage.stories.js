@@ -3,15 +3,15 @@ import Immutable from 'immutable';
 import Random from 'random-js';
 import React, { Component } from 'react';
 import { UnconnectedRadioOperatorPage } from '../src/client/components/game/RadioOperatorPage/index';
-import { EAST, NORTH, SOUTH, WEST } from '../src/common/Direction';
-import { DIRECT_HIT, INDIRECT_HIT, MISS } from '../src/common/Explosion';
 import { GRID } from '../src/common/fields/GameFields';
+import { EAST, NORTH, SOUTH, WEST } from '../src/common/models/Direction';
+import { DIRECT_HIT, INDIRECT_HIT, MISS } from '../src/common/models/Explosion';
 import {
   createDetonateMineNotification, createDroneNotification, createDropMineNotification, createMoveNotification,
   createSilentNotification, createSonarNotification, createSurfaceNotification, createTorpedoNotification,
   NOTIFICATION_ID
-} from '../src/common/Notifications';
-import { BLUE, RED } from '../src/common/Team';
+} from '../src/common/models/Notifications';
+import { BLUE, RED } from '../src/common/models/Team';
 import { generateSonarResult } from '../src/common/util/GameUtils';
 import '../styles/main.css';
 import { mockGame } from '../test/mocks';

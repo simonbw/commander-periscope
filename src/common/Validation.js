@@ -27,7 +27,7 @@ export function getLobbyIdErrors(lobbyId) {
     validateLobbyId(lobbyId);
     return null
   } catch (e) {
-    if (e.name === 'ValidationError') { // TODO: Figure out instanceof
+    if (e.name === 'ValidationError') {
       return e.message;
     } else {
       throw e;

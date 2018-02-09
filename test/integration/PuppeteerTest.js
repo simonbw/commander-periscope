@@ -1,5 +1,6 @@
 import puppeteer from 'puppeteer';
-import { PLAYERS, READIED, TEAMS } from '../../src/common/fields/LobbyFields';
+import { PLAYERS, TEAMS } from '../../src/common/fields/CommonFields';
+import { READIED } from '../../src/common/fields/LobbyFields';
 import { LOBBY, USER_ID } from '../../src/common/fields/StateFields';
 import CustomLobbies from '../../src/server/resources/CustomLobbies';
 import expect from '../expect';

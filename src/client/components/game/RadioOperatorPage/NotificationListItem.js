@@ -7,8 +7,8 @@ import styles from '../../../../../styles/RadioOperatorPage.css';
 import {
   DETONATE_MINE_NOTIFICATION, DRONE_NOTIFICATION, DROP_MINE_NOTIFICATION, MOVE_NOTIFICATION, NOTIFICATION_TYPE,
   SILENT_NOTIFICATION, SONAR_NOTIFICATION, SURFACE_NOTIFICATION, TORPEDO_NOTIFICATION
-} from '../../../../common/Notifications';
-import { BOTH_TEAMS } from '../../../../common/Team';
+} from '../../../../common/models/Notifications';
+import { BOTH_TEAMS } from '../../../../common/models/Team';
 import {
   DetonateMineNotification, DroneNotification, DropMineNotification, MoveNotification, SilentNotification,
   SonarNotification, SurfaceNotification, TorpedoNotification

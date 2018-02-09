@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Fragment } from 'react';
-import { getGridSize } from '../../../../common/Grid';
+import { getGridSize } from '../../../../common/models/Grid';
 import { isValidStartLocation } from '../../../../common/util/GameUtils';
 import { GridPropType } from '../../GamePropTypes';
 import GridCrosshairs from '../../grid/GridCrosshairs';

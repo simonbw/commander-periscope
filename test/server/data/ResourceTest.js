@@ -1,5 +1,5 @@
 import Immutable from 'immutable';
-import { ID } from '../../../src/common/fields/GameFields';
+import { ID } from '../../../src/common/fields/CommonFields';
 import { sleep } from '../../../src/common/util/AsyncUtil';
 import Resource from '../../../src/server/resources/Resource';
 import expect from '../../expect';
@@ -129,5 +129,5 @@ describe('Resource', () => {
     await expect(resource.get(instance.get(ID))).to.be.rejected;
   });
   
-  // TODO: Test publish and pubsub stuff.
+  // TODO: Test .publish() and pubsub stuff.
 });

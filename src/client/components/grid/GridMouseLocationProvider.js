@@ -4,7 +4,6 @@ import React, { Component } from 'react';
 
 // TODO: Find a way to have multiple of these without the performance penalty
 // TODO: Consider moving this stuff into the context of the top component
-// TODO: Figure out how to get mouse clicks out of this
 class GridMouseLocationProvider extends Component {
   static propTypes = {
     children: PropTypes.func.isRequired,

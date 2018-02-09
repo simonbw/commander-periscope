@@ -1,4 +1,8 @@
-import * as Messages from '../../common/Messages';
+import {
+  CHARGE_SYSTEM_MESSAGE, DETONATE_MINE_MESSAGE, DROP_MINE_MESSAGE, FIRE_TORPEDO_MESSAGE, GO_SILENT_MESSAGE,
+  HEAD_IN_DIRECTION_MESSAGE, SET_START_LOCATION_MESSAGE, SURFACE_MESSAGE, TRACK_BREAKDOWN_MESSAGE, USE_DRONE_MESSAGE,
+  USE_SONAR_MESSAGE
+} from '../../common/messages/GameMessages';
 // Sent by server
 import { sendMessage } from './GeneralActions';
 
@@ -9,39 +13,39 @@ import { sendMessage } from './GeneralActions';
 /// --------------- ///
 
 export const setStartLocation = (location) => (
-  sendMessage(Messages.SET_START_LOCATION_MESSAGE, { location })
+  sendMessage(SET_START_LOCATION_MESSAGE, { location })
 );
 
 export const headInDirection = (direction) => (
-  sendMessage(Messages.HEAD_IN_DIRECTION_MESSAGE, { direction })
+  sendMessage(HEAD_IN_DIRECTION_MESSAGE, { direction })
 );
 
 export const fireTorpedo = (location) => (
-  sendMessage(Messages.FIRE_TORPEDO_MESSAGE, { location })
+  sendMessage(FIRE_TORPEDO_MESSAGE, { location })
 );
 
 export const dropMine = (location) => (
-  sendMessage(Messages.DROP_MINE_MESSAGE, { location })
+  sendMessage(DROP_MINE_MESSAGE, { location })
 );
 
 export const detonateMine = (location) => (
-  sendMessage(Messages.DETONATE_MINE_MESSAGE, { location })
+  sendMessage(DETONATE_MINE_MESSAGE, { location })
 );
 
 export const useSonar = () => (
-  sendMessage(Messages.USE_SONAR_MESSAGE)
+  sendMessage(USE_SONAR_MESSAGE)
 );
 
 export const useDrone = (sector) => (
-  sendMessage(Messages.USE_DRONE_MESSAGE, { sector })
+  sendMessage(USE_DRONE_MESSAGE, { sector })
 );
 
 export const goSilent = (location) => (
-  sendMessage(Messages.GO_SILENT_MESSAGE, { location })
+  sendMessage(GO_SILENT_MESSAGE, { location })
 );
 
 export const surface = () => (
-  sendMessage(Messages.SURFACE_MESSAGE)
+  sendMessage(SURFACE_MESSAGE)
 );
 
 /// ------------------ ///
@@ -49,7 +53,7 @@ export const surface = () => (
 /// ------------------ ///
 
 export const chargeSystem = (systemName) => (
-  sendMessage(Messages.CHARGE_SYSTEM_MESSAGE, { systemName })
+  sendMessage(CHARGE_SYSTEM_MESSAGE, { systemName })
 );
 
 /// --------------- ///
@@ -57,5 +61,5 @@ export const chargeSystem = (systemName) => (
 /// --------------- ///
 
 export const trackBreakdown = (breakdownIndex) => (
-  sendMessage(Messages.TRACK_BREAKDOWN_MESSAGE, { breakdownIndex })
+  sendMessage(TRACK_BREAKDOWN_MESSAGE, { breakdownIndex })
 );

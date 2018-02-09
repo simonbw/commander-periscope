@@ -1,12 +1,16 @@
 import Immutable from 'immutable/dist/immutable';
 import Random from 'random-js';
-import { ALL_DIRECTIONS } from '../Direction';
 import { BREAKDOWNS, SUBSYSTEMS, SYSTEMS } from '../fields/GameFields';
+import { ALL_DIRECTIONS } from '../models/Direction';
 import {
   getGridSize, getLocationFromDirection, getLocationList, getManhattanDistance, isInGrid, tileToSector, WATER_TILE
-} from '../Grid';
-import { MOVE_NOTIFICATION, NOTIFICATION_DIRECTION, NOTIFICATION_TEAM, NOTIFICATION_TYPE } from '../Notifications';
-import { CHARGE, CIRCUIT, CIRCUITS, DIRECTION, getSystemType, MAX_CHARGE, NUCLEAR, SYSTEM_TYPE } from '../System';
+} from '../models/Grid';
+import {
+  MOVE_NOTIFICATION, NOTIFICATION_DIRECTION, NOTIFICATION_TEAM, NOTIFICATION_TYPE
+} from '../models/Notifications';
+import {
+  CHARGE, CIRCUIT, CIRCUITS, DIRECTION, getSystemType, MAX_CHARGE, NUCLEAR, SYSTEM_TYPE
+} from '../models/System';
 import { deepFind } from './ImmutableUtil';
 
 export function getPlayerPosition(teams, playerId) {
@@ -28,7 +32,6 @@ export function isValidStartLocation(location, grid) {
 }
 
 export function canUseSystem(game, team, systemName) {
-  // TODO: Check system already used
   // Must be charged
   const system = game.getIn([team, SYSTEMS, systemName]);
   if (system.get(CHARGE) < system.get(MAX_CHARGE)) {
@@ -46,18 +49,18 @@ export function canUseSystem(game, team, systemName) {
   return true;
 }
 
-export function fixCircuits(game, team) {
+export function fixCircuits(subsystems, breakdowns) {
   for (const circuit of CIRCUITS) {
-    const circuitIndexes = game.get(SUBSYSTEMS)
+    const circuitIndexes = subsystems
       .toKeyedSeq()
       .filter((s) => s.get(CIRCUIT) === circuit)
       .keySeq()
       .toSet();
-    if (circuitIndexes.every((i) => game.getIn([team, BREAKDOWNS]).includes(i))) {
-      game = game.updateIn([team, BREAKDOWNS], breakdowns => breakdowns.subtract(circuitIndexes));
+    if (circuitIndexes.every((i) => breakdowns.includes(i))) {
+      breakdowns = breakdowns.subtract(circuitIndexes);
     }
   }
-  return game;
+  return breakdowns;
 }
 
 // Returns true if the engine should cause damage, otherwise false

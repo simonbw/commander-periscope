@@ -1,8 +1,9 @@
 import Immutable from 'immutable/dist/immutable';
+import { PLAYERS, TEAMS, USERNAMES } from '../src/common/fields/CommonFields';
 import { GRID, SYSTEMS } from '../src/common/fields/GameFields';
-import { PLAYERS, READIED, TEAMS, USERNAMES } from '../src/common/fields/LobbyFields';
-import { CAPTAIN, ENGINEER, FIRST_MATE, RADIO_OPERATOR } from '../src/common/Role';
-import { BLUE, RED } from '../src/common/Team';
+import { READIED } from '../src/common/fields/LobbyFields';
+import { CAPTAIN, ENGINEER, FIRST_MATE, RADIO_OPERATOR } from '../src/common/models/Role';
+import { BLUE, RED } from '../src/common/models/Team';
 import { createGame } from '../src/server/factories/GameFactory';
 import { createBravoGrid } from '../src/server/factories/GridFactory';
 import { getDataForUser } from '../src/server/transforms/UserGameTransform';

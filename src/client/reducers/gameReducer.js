@@ -1,7 +1,7 @@
 import Immutable from 'immutable';
 import { PHASE } from '../../common/fields/GameFields';
-import { LOADING_PHASE } from '../../common/GamePhase';
-import { GAME_JOINED_MESSAGE, GAME_UPDATED_MESSAGE } from '../../common/Messages';
+import { GAME_JOINED_MESSAGE, GAME_UPDATED_MESSAGE } from '../../common/messages/GameMessages';
+import { LOADING_PHASE } from '../../common/models/GamePhase';
 import { jsonToImmutable } from '../../common/util/ImmutableUtil';
 
 export default (state, action) => {

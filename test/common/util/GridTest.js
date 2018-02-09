@@ -1,8 +1,8 @@
 import { List } from 'immutable';
-import { EAST, NORTH, SOUTH, WEST } from '../../../src/common/Direction';
+import { EAST, NORTH, SOUTH, WEST } from '../../../src/common/models/Direction';
 import {
   getDirection, getLocationFromDirection, getLocationList, getManhattanDistance, isAdjacent
-} from '../../../src/common/Grid';
+} from '../../../src/common/models/Grid';
 import { createEmptyGrid } from '../../../src/server/factories/GridFactory';
 import expect from '../../expect';
 

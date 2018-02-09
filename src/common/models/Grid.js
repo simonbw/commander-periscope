@@ -12,8 +12,6 @@ export const SECTOR_LABELS = Immutable.Range(1, 10).toArray();
 
 export const WATER_TILE = 0;
 export const LAND_TILE = 1;
-export const ICE_TILE = 1; // TODO: SAME FOR NOW, BUT WE'LL CHANGE LATER
-export const SPECIAL_TILE = 1; // TODO: SAME FOR NOW, BUT WE'LL CHANGE LATER
 
 export function getLocationFromDirection(location, direction) {
   const [x, y] = location.toArray();

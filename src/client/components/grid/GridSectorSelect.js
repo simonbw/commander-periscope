@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { getGridSize, tileToSector } from '../../../common/Grid';
+import { getGridSize, tileToSector } from '../../../common/models/Grid';
 import GridMouseLocationProvider from './GridMouseLocationProvider';
 
 // TODO: Implement shouldComponentUpdate or something. Don't rerender children when sector doesn't change

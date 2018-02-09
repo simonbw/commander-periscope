@@ -1,8 +1,6 @@
 export const BREAKDOWNS = 'breakdowns';
-export const CREATED = 'created';
 export const GRID = 'grid';
 export const HIT_POINTS = 'hitPoints';
-export const ID = 'id';
 export const MINE_LOCATIONS = 'mineLocations';
 export const NOTIFICATIONS = 'notifications';
 export const PHASE = 'phase';

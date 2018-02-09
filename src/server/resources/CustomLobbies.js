@@ -1,37 +1,13 @@
-import Immutable from 'immutable';
-import { ID } from '../../common/fields/GameFields';
-import { GAME_ID, PLAYERS, READIED, TEAMS, USERNAMES } from '../../common/fields/LobbyFields';
-import { CAPTAIN, ENGINEER, FIRST_MATE, RADIO_OPERATOR } from '../../common/Role';
-import { BLUE, RED } from '../../common/Team';
+import { MAX_USERNAME_LENGTH } from '../../common/constants';
+import { ID, PLAYERS, TEAMS, USERNAMES } from '../../common/fields/CommonFields';
+import { GAME_ID, READIED } from '../../common/fields/LobbyFields';
 import { getPlayerPosition } from '../../common/util/GameUtils';
-import { shouldStartGame } from './CustomLobbyUtils';
+import { shouldStartGame } from '../CustomLobbyUtils';
+import { createCustomLobby } from '../factories/LobbyFactory';
 import Games from './Games';
 import Resource from './Resource';
 
 const log = require('debug')('commander-periscope:server');
-
-// TODO: Custom Lobby Fields In Constants
-function createCustomLobby(id) {
-  return Immutable.Map({
-    id,
-    created: Date.now(),
-    players: Immutable.Set(),
-    usernames: Immutable.Map(),
-    readied: Immutable.Set(),
-    teams: Immutable.Map({
-      [RED]: createEmptyTeam(), [BLUE]: createEmptyTeam()
-    })
-  });
-}
-
-function createEmptyTeam() {
-  return Immutable.Map({
-    [CAPTAIN]: null,
-    [FIRST_MATE]: null,
-    [RADIO_OPERATOR]: null,
-    [ENGINEER]: null,
-  });
-}
 
 const CustomLobbies = new Resource('lobby', 'custom_lobby', createCustomLobby, true);
 
@@ -59,11 +35,16 @@ CustomLobbies.removePlayer = async (lobbyId, playerId) => {
   return updatedLobby;
 };
 
-CustomLobbies.setUsername = (lobbyId, playerId, username) => (
-  CustomLobbies.update(lobbyId, 'player_set_username', { playerId, username }, (lobby) =>
-    lobby.update(USERNAMES, (usernames) => usernames.set(playerId, username))
-  )
-);
+CustomLobbies.setUsername = (lobbyId, playerId, username) => {
+  if (username.length > MAX_USERNAME_LENGTH) {
+    throw new Error(`Usernames cannot be more than ${MAX_USERNAME_LENGTH} characters`);
+  }
+  return (
+    CustomLobbies.update(lobbyId, 'player_set_username', { playerId, username }, (lobby) =>
+      lobby.update(USERNAMES, (usernames) => usernames.set(playerId, username))
+    )
+  );
+};
 
 // Pass null for team and role to deselect
 CustomLobbies.selectRole = (lobbyId, playerId, team, role) => (

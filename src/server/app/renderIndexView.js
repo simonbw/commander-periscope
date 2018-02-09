@@ -1,4 +1,3 @@
-// TODO: Minify this
 export default (scriptUrl, lobbyId) => (
   `<!DOCTYPE html>
 <html lang="en">

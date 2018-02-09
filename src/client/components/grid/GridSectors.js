@@ -3,7 +3,7 @@ import Immutable from 'immutable';
 import PropTypes from 'prop-types';
 import React from 'react';
 import styles from '../../../../styles/Grid/GridSectors.css'
-import { SECTOR_LABELS } from '../../../common/Grid';
+import { SECTOR_LABELS } from '../../../common/models/Grid';
 
 const GridSectors = ({ selected }) => {
   return (

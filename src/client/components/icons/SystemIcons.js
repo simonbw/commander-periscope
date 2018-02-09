@@ -2,7 +2,7 @@ import Immutable from 'immutable';
 import { SvgIcon } from 'material-ui';
 import { AirplanemodeActive, GpsFixed, SignalWifi4Bar, VolumeOff } from 'material-ui-icons';
 import React from 'react';
-import { DRONE, MINE, SILENT, SONAR, TORPEDO } from '../../../common/System';
+import { DRONE, MINE, SILENT, SONAR, TORPEDO } from '../../../common/models/System';
 import MineMarker from '../grid/MineMarker';
 
 export const DroneIcon = () => (
@@ -23,12 +23,10 @@ export const SonarIcon = () => (
   <SignalWifi4Bar nativeColor="#00CC00"/>
 );
 
-// TODO: Torpedo Icon
 export const TorpedoIcon = () => (
   <GpsFixed nativeColor="#FF0000"/>
 );
 
-// TODO: Actual icons for each system
 export function getIconForSystem(system) {
   switch (system) {
     case DRONE:

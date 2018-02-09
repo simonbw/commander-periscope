@@ -1,14 +1,14 @@
 import Immutable, { List } from 'immutable';
-import { EAST, NORTH, SOUTH, WEST } from '../../../src/common/Direction';
 import {
   BREAKDOWNS, GRID, HIT_POINTS, PHASE, SUB_LOCATION, SUB_PATH, SUBSYSTEMS, SURFACED, SYSTEMS, TURN_INFO, WINNER
 } from '../../../src/common/fields/GameFields';
-import { ENDED_PHASE, MAIN_PHASE, PICK_PHASE } from '../../../src/common/GamePhase';
-import { LAND_TILE } from '../../../src/common/Grid';
-import { CHARGE, DIRECTION, DRONE, MINE, SILENT, SONAR, TORPEDO } from '../../../src/common/System';
-import { BLUE, RED } from '../../../src/common/Team';
+import { EAST, NORTH, SOUTH, WEST } from '../../../src/common/models/Direction';
+import { ENDED_PHASE, MAIN_PHASE, PICK_PHASE } from '../../../src/common/models/GamePhase';
+import { LAND_TILE } from '../../../src/common/models/Grid';
+import { CHARGE, DIRECTION, DRONE, MINE, SILENT, SONAR, TORPEDO } from '../../../src/common/models/System';
+import { BLUE, RED } from '../../../src/common/models/Team';
 import { sleep } from '../../../src/common/util/AsyncUtil';
-import { GameStateError } from '../../../src/server/resources/GameAssertions';
+import { GameStateError } from '../../../src/server/GameAssertions';
 import expect from '../../expect';
 import { mockLobby } from '../../mocks';
 

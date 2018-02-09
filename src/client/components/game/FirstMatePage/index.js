@@ -7,7 +7,7 @@ import styles from '../../../../../styles/FirstMatePage.css';
 import { HIT_POINTS, SYSTEMS } from '../../../../common/fields/GameFields';
 import { GAME } from '../../../../common/fields/StateFields';
 import { WAITING_FOR_FIRST_MATE } from '../../../../common/fields/TurnInfoFields';
-import { CHARGE, getSystemType, MAX_CHARGE } from '../../../../common/System';
+import { CHARGE, getSystemType, MAX_CHARGE } from '../../../../common/models/System';
 import { chargeSystem } from '../../../actions/GameActions';
 import { getIconForSystemType } from '../../icons/SystemTypeIcons';
 import ChargeMeter from './ChargeMeter';

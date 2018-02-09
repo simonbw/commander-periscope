@@ -1,9 +1,11 @@
 import Immutable from 'immutable';
+import { TEAMS } from '../../../src/common/fields/CommonFields';
 import { BREAKDOWNS, SUBSYSTEMS, SYSTEMS } from '../../../src/common/fields/GameFields';
-import { TEAMS } from '../../../src/common/fields/LobbyFields';
-import { CAPTAIN, ENGINEER } from '../../../src/common/Role';
-import { CHARGE, CIRCUIT, COMMS, DRONE, MAX_CHARGE, MINE, SYSTEM_TYPE, TORPEDO } from '../../../src/common/System';
-import { BLUE, RED } from '../../../src/common/Team';
+import { CAPTAIN, ENGINEER } from '../../../src/common/models/Role';
+import {
+  CHARGE, CIRCUIT, COMMS, DRONE, MAX_CHARGE, MINE, SYSTEM_TYPE, TORPEDO
+} from '../../../src/common/models/System';
+import { BLUE, RED } from '../../../src/common/models/Team';
 import { canUseSystem, checkEngineOverload, fixCircuits, getPlayerPosition } from '../../../src/common/util/GameUtils';
 import { createStandardSubsystems } from '../../../src/server/factories/SubsystemFactory';
 import expect from '../../expect';
@@ -25,8 +27,6 @@ describe('GameUtils', () => {
     expect(getPlayerPosition(game.get(TEAMS), undefined)).to.equal(undefined);
   });
   
-  // TODO: Test canUseSystem
-  
   it('.canUseSystem', () => {
     const game = mockGame().update(game => game
       .updateIn([RED, SYSTEMS, TORPEDO], system => system.set(CHARGE, system.get(MAX_CHARGE)))
@@ -45,25 +45,22 @@ describe('GameUtils', () => {
   });
   
   it('.fixCircuits', async () => {
-    const brokenGame = mockGame().update(game => game
-      .setIn([RED, BREAKDOWNS], game.get(SUBSYSTEMS).keySeq().toSet()));
+    const subsystems = mockGame().get(SUBSYSTEMS);
+    const oldBreakdowns = subsystems.keySeq().toSet();
     
-    const fixedGame = fixCircuits(brokenGame, RED);
-    const subsystems = fixedGame.get(SUBSYSTEMS);
-    
-    const breakdowns = fixedGame.getIn([RED, BREAKDOWNS]);
+    const fixedBreakdowns = fixCircuits(subsystems, oldBreakdowns);
     
     expect(subsystems
         .toKeyedSeq()
         .filter((s) => s.get(CIRCUIT))
-        .every((s, i) => !breakdowns.includes(i)),
+        .every((s, i) => !fixedBreakdowns.includes(i)),
       'All subsystems on a circuit should be fixed'
     ).to.equal(true);
     
     expect(subsystems
         .toKeyedSeq()
         .filter((s) => s.get(CIRCUIT) === undefined)
-        .every((s, i) => breakdowns.includes(i)),
+        .every((s, i) => fixedBreakdowns.includes(i)),
       'All subsystems not on a circuit should still be broken'
     ).to.equal(true);
   });

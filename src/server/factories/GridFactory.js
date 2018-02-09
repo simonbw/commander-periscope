@@ -1,5 +1,5 @@
 import Immutable from 'immutable/dist/immutable';
-import { LAND_TILE, WATER_TILE } from '../../common/Grid';
+import { LAND_TILE, WATER_TILE } from '../../common/models/Grid';
 
 export function createEmptyGrid() {
   return Immutable.Repeat(Immutable.Repeat(WATER_TILE, 15).toList(), 15).toList();

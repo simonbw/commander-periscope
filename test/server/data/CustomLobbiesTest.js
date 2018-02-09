@@ -1,7 +1,8 @@
 import Immutable from 'immutable';
-import { GAME_ID, PLAYERS, READIED, TEAMS, USERNAMES } from '../../../src/common/fields/LobbyFields';
-import { ALL_ROLES, CAPTAIN, FIRST_MATE } from '../../../src/common/Role';
-import { BLUE, BOTH_TEAMS, RED } from '../../../src/common/Team';
+import { PLAYERS, TEAMS, USERNAMES } from '../../../src/common/fields/CommonFields';
+import { GAME_ID, READIED } from '../../../src/common/fields/LobbyFields';
+import { ALL_ROLES, CAPTAIN, FIRST_MATE } from '../../../src/common/models/Role';
+import { BLUE, BOTH_TEAMS, RED } from '../../../src/common/models/Team';
 import expect from '../../expect';
 
 describe('CustomLobbies', () => {

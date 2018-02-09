@@ -2,8 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { PHASE, ROLE, SURFACED, TEAM, WINNER } from '../../../common/fields/GameFields';
 import { GAME } from '../../../common/fields/StateFields';
-import { ENDED_PHASE, LOADING_PHASE } from '../../../common/GamePhase';
-import * as Role from '../../../common/Role';
+import { ENDED_PHASE, LOADING_PHASE } from '../../../common/models/GamePhase';
+import * as Role from '../../../common/models/Role';
 import { leaveCustomLobby } from '../../actions/CustomLobbyActions';
 import GameOverPage from '../GameOverPage';
 import LoadingPage from '../LoadingPage';
@@ -14,9 +14,9 @@ import RadioOperatorPage from './RadioOperatorPage/index';
 import SurfacedPage from './SurfacedPage';
 
 const UnconnectedGamePage = ({ team, role, gamePhase, winner, surfaced, goToMainMenu }) => {
-  if (gamePhase === LOADING_PHASE) { // TODO: constants
+  if (gamePhase === LOADING_PHASE) {
     return <LoadingPage/>
-  } else if (gamePhase === ENDED_PHASE) { // TODO: constants
+  } else if (gamePhase === ENDED_PHASE) {
     return <GameOverPage isWinner={team === winner} goToMainMenu={goToMainMenu}/>;
   }
   

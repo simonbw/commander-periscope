@@ -2,15 +2,14 @@
  * Assertions to verify the game is in a state where an action can be made.
  */
 
-import { PHASE, SYSTEMS, TURN_INFO } from '../../common/fields/GameFields';
-import { WAITING_FOR_ENGINEER, WAITING_FOR_FIRST_MATE } from '../../common/fields/TurnInfoFields';
-import { MAIN_PHASE } from '../../common/GamePhase';
-import { WATER_TILE } from '../../common/Grid';
-import { CHARGE, MAX_CHARGE } from '../../common/System';
-import { canUseSystem } from '../../common/util/GameUtils';
+import { PHASE, SYSTEMS, TURN_INFO } from '../common/fields/GameFields';
+import { WAITING_FOR_ENGINEER, WAITING_FOR_FIRST_MATE } from '../common/fields/TurnInfoFields';
+import { MAIN_PHASE } from '../common/models/GamePhase';
+import { WATER_TILE } from '../common/models/Grid';
+import { CHARGE, MAX_CHARGE } from '../common/models/System';
+import { canUseSystem } from '../common/util/GameUtils';
 
 export class GameStateError extends Error {
-  // TODO: https://stackoverflow.com/questions/31089801/extending-error-in-javascript-with-es6-syntax-babel
   constructor(message) {
     super(message);
     this.name = this.constructor.name;

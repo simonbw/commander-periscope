@@ -1,24 +1,25 @@
 import Immutable from 'immutable';
-import { getExplosionDamage, getExplosionResult } from '../../common/Explosion';
+import { SURFACE_DURATION } from '../../common/constants';
+import { PLAYERS, TEAMS, USERNAMES } from '../../common/fields/CommonFields';
 import {
   BREAKDOWNS, GRID, HIT_POINTS, MINE_LOCATIONS, NOTIFICATIONS, PHASE, SUB_LOCATION, SUB_PATH, SUBSYSTEMS, SURFACED,
   SYSTEMS, TURN_INFO, WINNER
 } from '../../common/fields/GameFields';
-import { PLAYERS, TEAMS, USERNAMES } from '../../common/fields/LobbyFields';
 import {
   SYSTEM_IS_USED, TURN_NUMBER, WAITING_FOR_ENGINEER, WAITING_FOR_FIRST_MATE
 } from '../../common/fields/TurnInfoFields';
-import { ENDED_PHASE, MAIN_PHASE } from '../../common/GamePhase';
+import { getExplosionDamage, getExplosionResult } from '../../common/models/Explosion';
+import { ENDED_PHASE, MAIN_PHASE } from '../../common/models/GamePhase';
 import {
   getDirection, getGridSize, getLocationFromDirection, getManhattanDistance, isAdjacent, tileToSector
-} from '../../common/Grid';
+} from '../../common/models/Grid';
 import {
   createDetonateMineNotification, createDroneNotification, createDropMineNotification, createMoveNotification,
   createSilentNotification, createSonarNotification, createSurfaceNotification, createTorpedoNotification,
   notificationAdder
-} from '../../common/Notifications';
-import { CHARGE, DIRECTION, DRONE, MAX_CHARGE, MINE, SILENT, SONAR, TORPEDO } from '../../common/System';
-import { BLUE, otherTeam, RED } from '../../common/Team';
+} from '../../common/models/Notifications';
+import { CHARGE, DIRECTION, DRONE, MAX_CHARGE, MINE, SILENT, SONAR, TORPEDO } from '../../common/models/System';
+import { BLUE, otherTeam, RED } from '../../common/models/Team';
 import { sleep } from '../../common/util/AsyncUtil';
 import {
   checkEngineOverload, fixCircuits, generateSonarResult, getLastDirectionMoved
@@ -26,12 +27,10 @@ import {
 import { createGame } from '../factories/GameFactory';
 import {
   assert, assertCanMove, assertCanMoveTo, assertMainPhase, assertNotStarted, assertSystemReady, assertValidStartLocation
-} from './GameAssertions';
+} from '../GameAssertions';
 import Resource from './Resource';
 
 const log = require('debug')('commander-periscope:server');
-
-const SURFACE_DURATION = 22 * 1000;
 
 // TODO: Consider renaming this to GameDAO
 const Games = new Resource('game', 'game', createGame, false);
@@ -235,9 +234,10 @@ Games.trackBreakdown = (gameId, team, breakdownIndex) => {
       `Breakdown must be in direction moved. Expected ${directionMoved}, Actual ${brokenSubsystem.get(DIRECTION)}`
     );
     assert(!game.getIn([team, BREAKDOWNS]).includes(breakdownIndex), `Subsystem already broken: ${breakdownIndex}`);
-    game = game.updateIn([team, BREAKDOWNS], breakdowns => breakdowns.add(breakdownIndex));
     
-    game = fixCircuits(game, team);
+    game = game.updateIn([team, BREAKDOWNS], breakdowns => breakdowns.add(breakdownIndex));
+    game = game.setIn([team, BREAKDOWNS], fixCircuits(game.get(SUBSYSTEMS), game.getIn([team, BREAKDOWNS])));
+    
     if (checkEngineOverload(game.get(SUBSYSTEMS), game.getIn([team, BREAKDOWNS]))) {
       game.setIn([team, BREAKDOWNS], Immutable.List());
       game = causeDamage(game, team, 1);

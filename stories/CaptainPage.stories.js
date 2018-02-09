@@ -8,10 +8,10 @@ import {
   GRID, MINE_LOCATIONS, PHASE, SUB_LOCATION, SUB_PATH, SYSTEMS, TURN_INFO
 } from '../src/common/fields/GameFields';
 import { WAITING_FOR_ENGINEER, WAITING_FOR_FIRST_MATE } from '../src/common/fields/TurnInfoFields';
-import { MAIN_PHASE } from '../src/common/GamePhase';
-import { getLocationFromDirection } from '../src/common/Grid';
-import { CAPTAIN } from '../src/common/Role';
-import { DRONE, MINE, SILENT, SONAR, TORPEDO } from '../src/common/System';
+import { MAIN_PHASE } from '../src/common/models/GamePhase';
+import { getLocationFromDirection } from '../src/common/models/Grid';
+import { CAPTAIN } from '../src/common/models/Role';
+import { DRONE, MINE, SILENT, SONAR, TORPEDO } from '../src/common/models/System';
 import '../styles/main.css';
 import { mockPlayerData } from '../test/mocks';
 import StoryWrapper from './StoryWrapper';

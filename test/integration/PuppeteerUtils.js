@@ -25,7 +25,7 @@ export async function closePageWithContext(browser, page) {
 }
 
 export function initServer() {
-  const server = Server(createApp({ shouldLog: false, devServer: true }));
+  const server = Server(createApp({ shouldLog: false, useDevServer: true }));
   server._io = initSocketServer(server);
   
   server.listen(0, () => {

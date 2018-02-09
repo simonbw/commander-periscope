@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styles from '../../../../../styles/RadioOperatorPage.css';
-import { NOTIFICATION_ID } from '../../../../common/Notifications';
-import { BOTH_TEAMS } from '../../../../common/Team';
+import { NOTIFICATION_ID } from '../../../../common/models/Notifications';
+import { BOTH_TEAMS } from '../../../../common/models/Team';
 import { NotificationListItem } from './NotificationListItem';
 
 const MAX_VISIBLE_NOTIFICATIONS = 10;

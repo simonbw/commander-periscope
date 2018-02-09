@@ -1,7 +1,7 @@
 import { storiesOf } from '@storybook/react';
 import React, { Component } from 'react';
 import { UnconnectedFirstMatePage } from '../src/client/components/game/FirstMatePage/index';
-import { CHARGE, MAX_CHARGE } from '../src/common/System';
+import { CHARGE, MAX_CHARGE } from '../src/common/models/System';
 import { MAX_HIT_POINTS } from '../src/server/factories/GameFactory';
 import '../styles/main.css';
 import { mockSystems } from '../test/mocks';

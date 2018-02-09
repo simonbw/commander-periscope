@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import styles from '../../../styles/ConnectionWarner.css';
 import { CONNECTED } from '../../common/fields/StateFields';
 
-// TODO: Make this more error-looky
 export const UnconnectedConnectionWarner = ({ connected }) => (
   <Snackbar
     anchorOrigin={{ vertical: 'top', horizontal: 'center', }}

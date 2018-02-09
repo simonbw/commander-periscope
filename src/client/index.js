@@ -8,7 +8,6 @@ import Store from './store';
 
 window.addEventListener('DOMContentLoaded', () => {
   
-  // TODO: Maybe clean this up with dependency injection?
   let socket, store;
   socket = Socket(() => store.getState(), (action) => store.dispatch(action));
   store = Store(() => socket);

@@ -2,7 +2,7 @@ import { Button } from 'material-ui';
 import React from 'react';
 import { connect } from 'react-redux';
 import styles from '../../../../styles/CustomLobbyPage.css';
-import { ID } from '../../../common/fields/GameFields';
+import { ID } from '../../../common/fields/CommonFields';
 import { LOBBY, USER_ID } from '../../../common/fields/StateFields';
 import { leaveCustomLobby, selectRole } from '../../actions/CustomLobbyActions';
 import FloatingText from '../FloatingText';

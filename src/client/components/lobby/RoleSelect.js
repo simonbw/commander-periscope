@@ -6,10 +6,11 @@ import {
 import { Clear, Done } from 'material-ui-icons';
 import React, { Component } from 'react';
 import styles from '../../../../styles/RoleSelect.css';
-import { READIED, TEAMS, USERNAMES } from '../../../common/fields/LobbyFields';
-import * as Role from '../../../common/Role';
-import { ALL_ROLES } from '../../../common/Role'; // TODO: Rename this
-import { BLUE, getDisplayName, RED } from '../../../common/Team';
+import { TEAMS, USERNAMES } from '../../../common/fields/CommonFields';
+import { READIED } from '../../../common/fields/LobbyFields';
+import * as Role from '../../../common/models/Role';
+import { ALL_ROLES } from '../../../common/models/Role';
+import { BLUE, getDisplayName, RED } from '../../../common/models/Team';
 import { getAvatarForRole } from '../icons/RoleAvatars';
 
 const RoleSelect = ({ lobby, userId, selectRole }) => {

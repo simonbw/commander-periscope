@@ -1,16 +1,15 @@
 import Immutable from 'immutable';
-import { ALL_DIRECTIONS, EAST, NORTH, SOUTH, WEST } from '../../common/Direction';
-import { ID } from '../../common/fields/GameFields';
+import { ID } from '../../common/fields/CommonFields';
+import { ALL_DIRECTIONS, EAST, NORTH, SOUTH, WEST } from '../../common/models/Direction';
 import {
   CIRCUIT, CIRCUITS, COMMS, DIRECTION, NUCLEAR, SPECIAL, SYSTEM_TYPE, SYSTEM_TYPES, WEAPONS
-} from '../../common/System';
+} from '../../common/models/System';
 
 export function createRandomSubsystems() {
   // TODO: Deterministic random
-  // TODO: Probably some more constraints/balancing
   const circuits = Immutable
     .List(CIRCUITS)
-    .flatMap(circuit => Immutable.Repeat(circuit, 4)) // TODO: Maybe don't hardcode these numbers?
+    .flatMap(circuit => Immutable.Repeat(circuit, 4))
     .sortBy(Math.random);
   return Immutable.List(SYSTEM_TYPES)
     .flatMap(systemType => Immutable.Repeat(systemType, 6))

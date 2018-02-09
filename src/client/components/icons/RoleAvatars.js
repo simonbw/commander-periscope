@@ -1,6 +1,6 @@
 import { Avatar, withStyles } from 'material-ui';
 import React from 'react';
-import { CAPTAIN, ENGINEER, FIRST_MATE, RADIO_OPERATOR } from '../../../common/Role';
+import { CAPTAIN, ENGINEER, FIRST_MATE, RADIO_OPERATOR } from '../../../common/models/Role';
 
 const RoleAvatar = withStyles({
   root: {
@@ -8,13 +8,12 @@ const RoleAvatar = withStyles({
   }
 })(Avatar);
 
-// TODO: Real icons
 export const CaptainAvatar = () => (
   <RoleAvatar>C</RoleAvatar>
 );
 
 export const FirstMateAvatar = () => (
-  <RoleAvatar>F</RoleAvatar>
+  <RoleAvatar>FM</RoleAvatar>
 );
 
 export const EngineerAvatar = () => (
@@ -22,7 +21,7 @@ export const EngineerAvatar = () => (
 );
 
 export const RadioOperatorAvatar = () => (
-  <RoleAvatar>R</RoleAvatar>
+  <RoleAvatar>RO</RoleAvatar>
 );
 
 export const getAvatarForRole = (role) => {

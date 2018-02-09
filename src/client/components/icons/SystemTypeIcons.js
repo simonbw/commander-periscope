@@ -1,7 +1,7 @@
 import { SvgIcon } from 'material-ui';
 import { Clear, GpsFixed, RssFeed, VolumeOff } from 'material-ui-icons';
 import React from 'react';
-import { COMMS, NUCLEAR, SPECIAL, WEAPONS } from '../../../common/System';
+import { COMMS, NUCLEAR, SPECIAL, WEAPONS } from '../../../common/models/System';
 
 export const CommsIcon = () => (
   <RssFeed nativeColor="#00CC00"/>

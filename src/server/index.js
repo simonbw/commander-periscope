@@ -7,9 +7,8 @@ const log = require('debug')('commander-periscope:server');
 
 registerErrorHandlers();
 
-// TODO: Production mode
 const devMode = process.env.NODE_ENV !== 'production';
-const server = Server(createApp({ devServer: devMode }));
+const server = Server(createApp({ useDevServer: devMode }));
 initSocketServer(server);
 
 const port = parseInt(process.env.PORT) || 8080;
@@ -17,5 +16,3 @@ const port = parseInt(process.env.PORT) || 8080;
 server.listen(port, () => {
   log(`commander-periscope server started on port ${port}`);
 });
-
-// GENERAL TODO: Enforce some stricter style standards. Be consistent with the type of function declaration we're using.

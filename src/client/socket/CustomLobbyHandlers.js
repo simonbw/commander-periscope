@@ -1,4 +1,5 @@
-import { CUSTOM_LOBBY_GAME_START_MESSAGE, CUSTOM_LOBBY_JOINED_MESSAGE, JOIN_GAME_MESSAGE } from '../../common/Messages';
+import { JOIN_GAME_MESSAGE } from '../../common/messages/GameMessages';
+import { CUSTOM_LOBBY_GAME_START_MESSAGE, CUSTOM_LOBBY_JOINED_MESSAGE } from '../../common/messages/LobbyMessages';
 import { joinCustomLobby } from '../actions/CustomLobbyActions';
 import { sendMessage } from '../actions/GeneralActions';
 import { getLobbyIdFromUrl, setUrlForLobby } from '../navigation';

@@ -2,6 +2,9 @@ import { storiesOf } from '@storybook/react';
 import { Divider, Paper, Tooltip } from 'material-ui';
 import React from 'react';
 import { DetonateMineIcon, MoveIcon, SurfaceIcon } from '../src/client/components/icons/ActionIcons';
+import {
+  CaptainAvatar, EngineerAvatar, FirstMateAvatar, RadioOperatorAvatar
+} from '../src/client/components/icons/RoleAvatars';
 import { DroneIcon, MineIcon, SilentIcon, SonarIcon, TorpedoIcon } from '../src/client/components/icons/SystemIcons';
 import { CommsIcon, NuclearIcon, SpecialIcon, WeaponsIcon } from '../src/client/components/icons/SystemTypeIcons';
 import '../styles/main.css';
@@ -15,7 +18,6 @@ storiesOf('Components', module)
         display: 'inline-block',
         margin: 40,
         padding: 20,
-        transform: 'scale(1.5) translate(100px, 100px)' // makes it easier to see the icons
       }}
     >
       <IconRow>
@@ -41,6 +43,15 @@ storiesOf('Components', module)
         <IconBox title="Detonate Mine"><DetonateMineIcon/></IconBox>
         <IconBox title="Move"><MoveIcon/></IconBox>
         <IconBox title="Surface"><SurfaceIcon/></IconBox>
+      </IconRow>
+      
+      <Divider/>
+      
+      <IconRow>
+        <IconBox title="Captain"><CaptainAvatar/></IconBox>
+        <IconBox title="Engineer"><EngineerAvatar/></IconBox>
+        <IconBox title="First Mate"><FirstMateAvatar/></IconBox>
+        <IconBox title="Radio Operator"><RadioOperatorAvatar/></IconBox>
       </IconRow>
     </Paper>
   ));

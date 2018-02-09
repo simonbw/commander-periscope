@@ -1,6 +1,7 @@
 import * as Immutable from 'immutable/dist/immutable';
+import { PLAYERS } from '../fields/CommonFields';
 import { BREAKDOWNS } from '../fields/GameFields';
-import { PLAYERS, READIED } from '../fields/LobbyFields';
+import { READIED } from '../fields/LobbyFields';
 
 export function deepFind(root, value, path = Immutable.List()) {
   if (root === value) {

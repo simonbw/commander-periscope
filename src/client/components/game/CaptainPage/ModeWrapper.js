@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react'
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { PICK_PHASE } from '../../../../common/GamePhase';
-import { DRONE, MINE, SILENT, TORPEDO } from '../../../../common/System';
+import { PICK_PHASE } from '../../../../common/models/GamePhase';
+import { DRONE, MINE, SILENT, TORPEDO } from '../../../../common/models/System';
 
 // Modes
 export const DRONE_MODE = 'DRONE_MODE';

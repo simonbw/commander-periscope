@@ -1,4 +1,4 @@
-import { ID } from '../../src/common/fields/GameFields';
+import { ID } from '../../src/common/fields/CommonFields';
 import { extractLobby } from './PageExtractors';
 
 export async function createCustomLobby(page) {

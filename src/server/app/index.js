@@ -7,10 +7,10 @@ import renderIndexView from './renderIndexView';
 
 const log = require('debug')('commander-periscope:server');
 
-export default ({ shouldLog = true, devServer = false }) => {
+export default ({ shouldLog = true, useDevServer = false }) => {
   const app = express();
   
-  if (devServer) {
+  if (useDevServer) {
     log('using webpack-dev-middleware');
     const Webpack = require('webpack');
     const WebpackDevMiddleware = require('webpack-dev-middleware');
@@ -34,7 +34,6 @@ export default ({ shouldLog = true, devServer = false }) => {
   app.use(GuaranteeUserMiddleware);
   
   app.get('/healthcheck', (req, res) => {
-    // TODO: real healthcheck. There are no dependencies, so I don't know what a real healthcheck would be.
     res.send({ status: 'OK' });
   });
   

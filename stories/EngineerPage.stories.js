@@ -2,9 +2,10 @@ import { action } from '@storybook/addon-actions';
 import { storiesOf } from '@storybook/react';
 import React, { Component } from 'react';
 import { UnconnectedEngineerPage } from '../src/client/components/game/EngineerPage';
-import { ALL_DIRECTIONS, NORTH } from '../src/common/Direction';
 import { BREAKDOWNS, SUBSYSTEMS } from '../src/common/fields/GameFields';
-import { RED } from '../src/common/Team';
+import { ALL_DIRECTIONS, NORTH } from '../src/common/models/Direction';
+import { RED } from '../src/common/models/Team';
+import { fixCircuits } from '../src/common/util/GameUtils';
 import '../styles/main.css';
 import { mockGame } from '../test/mocks';
 import StoryWrapper from './StoryWrapper';
@@ -44,10 +45,10 @@ class StateWrapper extends Component {
   trackBreakdown(subsystemIndex) {
     action('trackingBreakdown')(subsystemIndex);
     this.setState({
-      breakdowns: this.state.breakdowns.add(subsystemIndex),
+      breakdowns: fixCircuits(this.state.subsystems, this.state.breakdowns.add(subsystemIndex)),
       directionMoved: ALL_DIRECTIONS[Math.floor(Math.random() * ALL_DIRECTIONS.length)],
       readyToTrack: false
-    }); // TODO: Circuits?
+    });
     setTimeout(() => this.setState({ readyToTrack: true }), 1000);
   }
   
