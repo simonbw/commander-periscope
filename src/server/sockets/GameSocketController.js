@@ -97,7 +97,7 @@ function getRoleHandlers(role, team, gameId) {
         [FIRE_TORPEDO_MESSAGE]: ({ location }) => Games.fireTorpedo(gameId, team, List(location)),
         [DROP_MINE_MESSAGE]: ({ location }) => Games.dropMine(gameId, team, List(location)),
         [DETONATE_MINE_MESSAGE]: ({ location }) => Games.detonateMine(gameId, team, List(location)),
-        [USE_SONAR_MESSAGE]: ({}) => Games.useSonar(gameId, team),
+        [USE_SONAR_MESSAGE]: () => Games.useSonar(gameId, team),
         [USE_DRONE_MESSAGE]: ({ sector }) => Games.useDrone(gameId, team, sector),
         [GO_SILENT_MESSAGE]: ({ location }) => Games.goSilent(gameId, team, List(location)),
         [SURFACE_MESSAGE]: () => Games.surface(gameId, team),
