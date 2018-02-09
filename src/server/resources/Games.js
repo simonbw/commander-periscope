@@ -196,7 +196,7 @@ Games.surface = async (gameId, team, duration = SURFACE_DURATION) => {
     return game
       .setIn([team, SURFACED], false)
       .setIn([team, SUB_PATH], Immutable.List([]))
-      .setIn([team, BREAKDOWNS], Immutable.List([]))
+      .setIn([team, BREAKDOWNS], Immutable.Set([]))
       .setIn([team, TURN_INFO, WAITING_FOR_FIRST_MATE], false)
       .setIn([team, TURN_INFO, WAITING_FOR_ENGINEER], false);
   });
