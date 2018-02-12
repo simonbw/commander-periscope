@@ -6,7 +6,6 @@ import { setUrlForLobby, setUrlForMenu } from '../navigation';
 import { debounceAction } from './ActionUtils';
 import { sendMessage } from './GeneralActions';
 
-export const CUSTOM_LOBBY_UPDATED = 'CUSTOM_LOBBY_UPDATED';
 export const JOIN_CUSTOM_LOBBY = 'joinCustomLobby';
 export const LEAVE_CUSTOM_LOBBY = 'leaveCustomLobby';
 

@@ -1,5 +1,5 @@
 import PubSub from 'pubsub-js';
-import { CUSTOM_LOBBY_UPDATED } from '../../client/actions/CustomLobbyActions';
+import { CUSTOM_LOBBY_UPDATED } from '../../common/messages/LobbyMessages';
 import { ID } from '../../common/fields/CommonFields';
 import {
   CUSTOM_LOBBY_JOINED_MESSAGE, CUSTOM_LOBBY_READY_MESSAGE, CUSTOM_LOBBY_SELECT_ROLE_MESSAGE,

@@ -1,6 +1,6 @@
-import { CUSTOM_LOBBY_JOINED_MESSAGE } from '../../common/messages/LobbyMessages';
+import { CUSTOM_LOBBY_JOINED_MESSAGE, CUSTOM_LOBBY_UPDATED } from '../../common/messages/LobbyMessages';
 import { jsonToImmutable } from '../../common/util/ImmutableUtil';
-import { CUSTOM_LOBBY_UPDATED, JOIN_CUSTOM_LOBBY, LEAVE_CUSTOM_LOBBY } from '../actions/CustomLobbyActions';
+import { JOIN_CUSTOM_LOBBY, LEAVE_CUSTOM_LOBBY } from '../actions/CustomLobbyActions';
 
 export const LOADING_LOBBY = 'loading';
 
