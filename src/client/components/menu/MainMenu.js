@@ -1,9 +1,11 @@
-import { Button } from 'material-ui';
+import { Button, Tooltip } from 'material-ui';
+import { Comment } from 'material-ui-icons';
 import React from 'react';
 import { connect } from 'react-redux';
 import styles from '../../../../styles/MainMenu.css'
 import { joinCustomLobby } from '../../actions/CustomLobbyActions';
 import FloatingText from '../FloatingText';
+import GithubIcon from '../icons/GithubIcon';
 import HowToPlay from './HowToPlay';
 import { JoinCustomGameInput } from './JoinCustomGameInput';
 
@@ -27,7 +29,17 @@ export const UnconnectedMainMenu = ({ createCustomLobby, joinCustomLobby }) => (
     <HowToPlay/>
     
     <FloatingText className={styles.Footer}>
-      <a href="https://goo.gl/forms/WfwLe3GRFqXG8NUo1">Leave Feedback</a>
+      <Tooltip title="Leave Feedback">
+        <a href="https://goo.gl/forms/WfwLe3GRFqXG8NUo1">
+          <Comment/>
+        </a>
+      </Tooltip>
+      {' '}
+      <Tooltip title="Github">
+        <a href="https://github.com/simonbw/commander-periscope">
+          <GithubIcon/>
+        </a>
+      </Tooltip>
     </FloatingText>
   </div>
 );
