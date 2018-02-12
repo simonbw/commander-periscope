@@ -46,12 +46,13 @@ if (process.env.NODE_ENV === 'dev') {
   console.log('THIS IS A TEST BUILD!');
 } else {
   console.log('THIS IS A PROD BUILD!');
+  config.plugins.push(new DefinePlugin({
+    'process.env.NODE_ENV': JSON.stringify('production'),
+    'process.env.SOURCE_HASH': JSON.stringify(process.env.SOURCE_VERSION),
+  }));
   config.plugins.push(new UglifyJsPlugin({
     cache: true,
     parallel: true
-  }));
-  config.plugins.push(new DefinePlugin({
-    'process.env.NODE_ENV': JSON.stringify('production')
   }));
 }
 
