@@ -1,6 +1,3 @@
-import { Server } from 'http';
-import createApp from '../../src/server/app';
-import { initSocketServer } from '../../src/server/sockets';
 import expect from '../expect';
 
 const logServer = require('debug')('commander-periscope:server');
@@ -23,15 +20,3 @@ export async function closePageWithContext(browser, page) {
   }
   await page.close();
 }
-
-export function initServer() {
-  const server = Server(createApp({ shouldLog: false, useDevServer: true }));
-  server._io = initSocketServer(server);
-  
-  server.listen(0, () => {
-    logServer(`commander-periscope server started on port ${server.address().port}`);
-  });
-  
-  return server;
-}
-

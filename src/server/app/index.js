@@ -3,11 +3,12 @@ import express from 'express';
 import * as path from 'path';
 import Favicon from 'serve-favicon';
 import GuaranteeUserMiddleware from './GuaranteeUserMiddleware';
+import Healthcheck from './Healthcheck';
 import renderIndexView from './renderIndexView';
 
 const log = require('debug')('commander-periscope:server');
 
-export default ({ shouldLog = true, useDevServer = false }) => {
+export const createApp = (getIo, { shouldLog = true, useDevServer = false }) => {
   const app = express();
   
   if (useDevServer) {
@@ -25,17 +26,17 @@ export default ({ shouldLog = true, useDevServer = false }) => {
     const staticPath = path.join(__dirname, '../../client');
     app.use(express.static(staticPath));
   }
+  
   if (shouldLog) {
     const morgan = require('morgan');
     app.use(morgan('dev'));
   }
+  
   app.use(Favicon(path.join(__dirname, '../../../favicon.ico')));
   app.use(CookieParser());
   app.use(GuaranteeUserMiddleware);
   
-  app.get('/healthcheck', (req, res) => {
-    res.send({ status: 'OK' });
-  });
+  app.use('/healthcheck', Healthcheck(getIo));
   
   const indexJsUrl = '/index.js';
   app.get(['/', '/:lobbyId'], (req, res) => {
@@ -43,4 +44,4 @@ export default ({ shouldLog = true, useDevServer = false }) => {
   });
   
   return app;
-}
+};

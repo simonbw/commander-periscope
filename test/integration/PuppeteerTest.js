@@ -3,11 +3,12 @@ import { TEAMS } from '../../src/common/fields/CommonFields';
 import { READIED } from '../../src/common/fields/LobbyFields';
 import { sleep } from '../../src/common/util/AsyncUtil';
 import CustomLobbies from '../../src/server/resources/CustomLobbies';
+import { startServer } from '../../src/server/startServer';
 import expect from '../expect';
 import { expectNoErrors, expectTitle } from './PageAssertions';
 import { extractUserId } from './PageExtractors';
 import { clickReadyButton, createCustomLobby, joinCustomLobby, waitForJoinGame } from './PuppeteerActions';
-import { closePageWithContext, initServer, newPageWithContext } from './PuppeteerUtils';
+import { closePageWithContext, newPageWithContext } from './PuppeteerUtils';
 
 // registerErrorHandlers();
 
@@ -22,7 +23,7 @@ describe('Integration', function () {
   before(async () => {
     browser = await puppeteer.launch({});
     log('browser started');
-    server = initServer();
+    server = startServer(0, { shouldLog: false, useDevServer: true });
   });
   
   beforeEach(async () => {
