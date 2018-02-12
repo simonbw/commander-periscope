@@ -38,9 +38,8 @@ export const createApp = (getIo, { shouldLog = true, useDevServer = false }) => 
   
   app.use('/healthcheck', Healthcheck(getIo));
   
-  const indexJsUrl = '/index.js';
   app.get(['/', '/:lobbyId'], (req, res) => {
-    res.send(renderIndexView(indexJsUrl, req.params.lobbyId));
+    res.send(renderIndexView());
   });
   
   return app;

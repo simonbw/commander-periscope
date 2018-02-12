@@ -1,4 +1,4 @@
-export default (scriptUrl, lobbyId) => (
+export default () => (
   `<!DOCTYPE html>
 <html lang="en">
   <head>
@@ -6,12 +6,10 @@ export default (scriptUrl, lobbyId) => (
     <meta name="viewport" content="width=device-width">
     <title>Commander Periscope</title>
     <script>
-      window._servedFromExpress = true;
-      ${lobbyId ? `window._lobbyId = '${lobbyId}';` : ''}
+      window.NODE_ENV = ${JSON.stringify(process.env.NODE_ENV)};
     </script>
-    <script src="${scriptUrl}"></script>
+    <script src="/index.js"></script>
   </head>
-
   <body>
   </body>
 </html>

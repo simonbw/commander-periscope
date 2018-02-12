@@ -9,11 +9,11 @@ import MainMenu from './menu/MainMenu';
 import ThemeProvider from './ThemeProvider';
 
 // The top level component for commander periscope
-const UnconnectedAppContainer = ({ inLobby }) => {
+const UnconnectedAppContainer = ({ isProduction, inLobby }) => {
   return (
     <ThemeProvider>
       <Fragment>
-        <DebugPane/>
+        {!isProduction && <DebugPane/>}
         <ConnectionWarner/>
         {inLobby ? <CustomLobbyContainer/> : <MainMenu/>}
       </Fragment>
@@ -23,7 +23,8 @@ const UnconnectedAppContainer = ({ inLobby }) => {
 
 export default connect(
   (state) => ({
-    inLobby: Boolean(state.get(LOBBY))
+    inLobby: Boolean(state.get(LOBBY)),
+    isProduction: window.NODE_ENV === 'production',
   }),
   () => ({})
 )(UnconnectedAppContainer);
