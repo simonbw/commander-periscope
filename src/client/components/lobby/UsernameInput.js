@@ -5,7 +5,9 @@ import { connect } from 'react-redux';
 import styles from '../../../../styles/CustomLobbyPage.css';
 import { USERNAME } from '../../../common/fields/LobbyFields';
 import { LOBBY } from '../../../common/fields/StateFields';
-import { setUsername } from '../../actions/CustomLobbyActions';
+import { CUSTOM_LOBBY_SET_USERNAME_MESSAGE } from '../../../common/messages/LobbyMessages';
+import { debounceFunction } from '../../actions/ActionUtils';
+import SocketContext from '../SocketContext';
 
 class UnconnectedUsernameInput extends Component {
   static propTypes = {
@@ -41,11 +43,25 @@ class UnconnectedUsernameInput extends Component {
   }
 }
 
+const setUsername = debounceFunction((emit, username) => {
+  emit(CUSTOM_LOBBY_SET_USERNAME_MESSAGE, { username });
+}, 200);
+
 export default connect(
   (state) => ({
     savedUsername: state.getIn([LOBBY, USERNAME])
   }),
-  (dispatch) => ({
-    setUsername: (username) => dispatch(setUsername(username)),
-  })
-)(UnconnectedUsernameInput);
+  () => ({})
+)((stateProps) => (
+  <SocketContext.Consumer>
+    {({ emit }) => (
+      <UnconnectedUsernameInput
+        setUsername={(username) => {
+          window.localStorage.setItem('username', username);
+          setUsername((...args) => emit(...args), username);
+        }}
+        savedUsername={stateProps.savedUsername}
+      />
+    )}
+  </SocketContext.Consumer>
+));

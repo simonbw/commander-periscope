@@ -5,9 +5,8 @@ import ReduxThunk from 'redux-thunk';
 import reducers from '../reducers';
 import { getUserId } from '../user';
 import { LoggingMiddleware } from './LoggingMiddleware';
-import SocketMiddleware from './SocketMiddleware';
 
-export default (getSocket) => {
+export default () => {
   let initialState = Map({
     userId: getUserId()
   });
@@ -20,7 +19,7 @@ export default (getSocket) => {
       LoggingMiddleware,
       ReduxThunk,
       ReduxMulti,
-      SocketMiddleware(getSocket))
+    )
   );
   window._store = store; // For debugging
   return store;

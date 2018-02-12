@@ -6,9 +6,11 @@ import { connect } from 'react-redux';
 import styles from '../../../../styles/CustomLobbyPage.css';
 import { ID, TEAMS } from '../../../common/fields/CommonFields';
 import { LOBBY, USER_ID } from '../../../common/fields/StateFields';
+import { CUSTOM_LOBBY_SELECT_ROLE_MESSAGE, LEAVE_CUSTOM_LOBBY_MESSAGE } from '../../../common/messages/LobbyMessages';
 import { BLUE, RED } from '../../../common/models/Team';
-import { leaveCustomLobby, selectRole } from '../../actions/CustomLobbyActions';
+import { leaveCustomLobby } from '../../actions/CustomLobbyActions';
 import FloatingText from '../FloatingText';
+import SocketContext from '../SocketContext';
 import ReadyButton from './ReadyButton';
 import RoleSelect from './RoleSelect';
 import UsernameInput from './UsernameInput';
@@ -54,10 +56,24 @@ export default connect(
   (state) => ({
     lobbyId: state.getIn([LOBBY, ID]),
     teams: state.getIn([LOBBY, TEAMS]),
-    userId: state.get(USER_ID)
+    userId: state.get(USER_ID),
   }),
   (dispatch) => ({
     goToMainMenu: () => dispatch(leaveCustomLobby()),
-    selectRole: (role, team) => dispatch(selectRole(role, team))
   })
-)(UnconnectedCustomLobbyPage)
+)((stateProps) => (
+  <SocketContext.Consumer>
+    {({ emit }) => (
+      <UnconnectedCustomLobbyPage
+        selectRole={(role, team) => emit(CUSTOM_LOBBY_SELECT_ROLE_MESSAGE, { role, team })}
+        goToMainMenu={() => {
+          stateProps.goToMainMenu();
+          emit(LEAVE_CUSTOM_LOBBY_MESSAGE)
+        }}
+        lobbyId={stateProps.lobbyId}
+        teams={stateProps.teams}
+        userId={stateProps.userId}
+      />
+    )}
+  </SocketContext.Consumer>
+))

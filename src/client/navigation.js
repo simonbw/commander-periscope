@@ -1,3 +1,4 @@
+import { JOIN_CUSTOM_LOBBY_MESSAGE, LEAVE_CUSTOM_LOBBY_MESSAGE } from '../common/messages/LobbyMessages';
 import { joinCustomLobby, leaveCustomLobby } from './actions/CustomLobbyActions';
 
 const CUSTOM_LOBBY_PREFIX = '/';
@@ -26,7 +27,7 @@ export function setUrlForMenu() {
   }
 }
 
-export function initNavigation(getStore) {
+export function initNavigation(store, emit) {
   window.history.replaceState('First Page', undefined); // TODO: Why?
   
   window.addEventListener('popstate', (event) => {
@@ -34,9 +35,11 @@ export function initNavigation(getStore) {
     
     const lobbyId = getLobbyIdFromUrl(window.location.pathname);
     if (lobbyId) {
-      getStore().dispatch(joinCustomLobby(lobbyId));
+      emit(JOIN_CUSTOM_LOBBY_MESSAGE, { lobbyId });
+      store.dispatch(joinCustomLobby(lobbyId));
     } else {
-      getStore().dispatch(leaveCustomLobby());
+      emit(LEAVE_CUSTOM_LOBBY_MESSAGE);
+      store.dispatch(leaveCustomLobby());
     }
   });
 }

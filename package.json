@@ -17,6 +17,7 @@
     "clarify": "^2.1.0",
     "classnames": "^2.2.5",
     "cookie-parser": "^1.4.3",
+    "create-react-context": "^0.1.6",
     "css-loader": "^0.28.7",
     "debug": "^3.1.0",
     "express": "^4.16.2",
@@ -24,6 +25,7 @@
     "hard-source-webpack-plugin": "^0.5.14",
     "immutable": "^4.0.0-rc.9",
     "js-cookie": "^2.2.0",
+    "jss": "latest",
     "material-ui": "^1.0.0-beta.32",
     "material-ui-icons": "^1.0.0-beta.17",
     "morgan": "^1.9.0",
@@ -36,6 +38,7 @@
     "react-dom": "^16.2.0",
     "react-immutable-proptypes": "^2.1.0",
     "react-json-pretty": "^1.7.4",
+    "react-jss": "latest",
     "react-redux": "^5.0.6",
     "redux": "^3.7.2",
     "redux-multi": "^0.1.12",
@@ -48,9 +51,7 @@
     "trace": "^3.1.0",
     "uglifyjs-webpack-plugin": "^1.1.8",
     "webpack": "^3.10.0",
-    "webpack-dev-middleware": "^2.0.3",
-    "react-jss": "latest",
-    "jss": "latest"
+    "webpack-dev-middleware": "^2.0.3"
   },
   "devDependencies": {
     "@storybook/addon-actions": "^3.3.3",

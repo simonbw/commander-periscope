@@ -1,9 +1,9 @@
-export const debounceAction = (f, delay = 1000) => {
+export const debounceFunction = (f, delay = 1000) => {
   let timeOut = null;
-  return (...args) => (dispatch) => {
+  return (...args) => {
     clearTimeout(timeOut);
     timeOut = setTimeout(
-      () => dispatch(f.apply(null, args)),
+      () => f.apply(null, args),
       delay
     );
   }

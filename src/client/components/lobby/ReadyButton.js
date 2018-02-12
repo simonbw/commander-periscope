@@ -4,7 +4,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { IS_READY, TEAM_AND_ROLE } from '../../../common/fields/LobbyFields';
 import { LOBBY } from '../../../common/fields/StateFields';
-import { ready, unready } from '../../actions/CustomLobbyActions';
+import { CUSTOM_LOBBY_READY_MESSAGE, CUSTOM_LOBBY_UNREADY_MESSAGE } from '../../../common/messages/LobbyMessages';
+import SocketContext from '../SocketContext';
 
 const UnconnectedReadyButton = (props) => (
   <Button
@@ -30,8 +31,16 @@ export default connect(
     isReady: Boolean(state.getIn([LOBBY, IS_READY])),
     canReady: Boolean(state.getIn([LOBBY, TEAM_AND_ROLE])),
   }),
-  (dispatch) => ({
-    ready: () => dispatch(ready()),
-    unready: () => dispatch(unready())
-  })
-)(UnconnectedReadyButton);
+  () => ({})
+)((stateProps) => (
+  <SocketContext.Consumer>
+    {({ emit }) => (
+      <UnconnectedReadyButton
+        ready={() => emit(CUSTOM_LOBBY_READY_MESSAGE)}
+        unready={() => emit(CUSTOM_LOBBY_UNREADY_MESSAGE)}
+        isReady={stateProps.isReady}
+        canReady={stateProps.canReady}
+      />
+    )}
+  </SocketContext.Consumer>
+));

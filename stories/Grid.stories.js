@@ -3,7 +3,7 @@ import Immutable from 'immutable';
 import { Fade, FormControlLabel, Paper, Radio, RadioGroup, Switch } from 'material-ui';
 import PropTypes from 'prop-types';
 import React, { Component, Fragment } from 'react';
-import { GridPropType } from '../src/client/components/GamePropTypes';
+import { GridPropType } from '../src/client/GamePropTypes';
 import GridBackground from '../src/client/components/grid/GridBackground';
 import GridContainer from '../src/client/components/grid/GridContainer';
 import GridCrosshairs from '../src/client/components/grid/GridCrosshairs';

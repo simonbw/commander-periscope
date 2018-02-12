@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { GridPropType } from '../../GamePropTypes';
+import { GridPropType } from '../../../GamePropTypes';
 import GridTileSelect from '../../grid/GridTileSelect';
 import MineChooser from '../../grid/MineChooser';
 

@@ -1,7 +1,7 @@
 import { action } from '@storybook/addon-actions';
 import { storiesOf } from '@storybook/react';
 import React, { Component } from 'react';
-import { UnconnectedEngineerPage } from '../src/client/components/game/EngineerPage';
+import { UnconnectedEngineerPage } from '../src/client/components/game/EngineerPage/index';
 import { BREAKDOWNS, SUBSYSTEMS } from '../src/common/fields/GameFields';
 import { ALL_DIRECTIONS, NORTH } from '../src/common/models/Direction';
 import { RED } from '../src/common/models/Team';

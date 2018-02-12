@@ -5,11 +5,11 @@ import { getLobbyHandlers } from './CustomLobbyHandlers';
 
 const ioSocketLocation = window._ioSocketLocation || '';
 
-export default (getState, dispatch) => {
+export default (getState, dispatch, emit) => {
   const socket = SocketIo(ioSocketLocation);
   
   const handlers = [].concat(
-    getLobbyHandlers(getState, dispatch),
+    getLobbyHandlers(getState, dispatch, emit),
     getConnectionHandlers(dispatch),
     getActionHandlers(dispatch)
   );

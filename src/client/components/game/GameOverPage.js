@@ -1,8 +1,8 @@
 import { Button } from 'material-ui';
 import PropTypes from 'prop-types';
 import React from 'react';
-import styles from '../../../styles/GameOverPage.css';
-import FloatingText from './FloatingText';
+import styles from '../../../../styles/GameOverPage.css';
+import FloatingText from '../FloatingText';
 
 const GameOverPage = ({ isWinner, goToMainMenu }) => (
   <div className={styles.GameOverPage}>

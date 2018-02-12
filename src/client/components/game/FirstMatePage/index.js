@@ -1,44 +1,45 @@
-import classnames from 'classnames';
 import Immutable from 'immutable';
-import { Button, Tooltip } from 'material-ui';
+import { Button } from 'material-ui';
+import PropTypes from 'prop-types';
 import React from 'react';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import styles from '../../../../../styles/FirstMatePage.css';
 import { HIT_POINTS, SYSTEMS } from '../../../../common/fields/GameFields';
 import { GAME } from '../../../../common/fields/StateFields';
 import { WAITING_FOR_FIRST_MATE } from '../../../../common/fields/TurnInfoFields';
-import { CHARGE, getSystemType, MAX_CHARGE } from '../../../../common/models/System';
-import { chargeSystem } from '../../../actions/GameActions';
-import { getIconForSystemType } from '../../icons/SystemTypeIcons';
-import ChargeMeter from './ChargeMeter';
+import { CHARGE_SYSTEM_MESSAGE } from '../../../../common/messages/GameMessages';
+import { CHARGE, MAX_CHARGE } from '../../../../common/models/System';
+import SocketContext from '../../SocketContext';
 import HitPointMeter from './HitPointMeter';
+import SystemCard from './SystemCard';
 
-export const UnconnectedFirstMatePage = ({ systems, readyToCharge, hitPoints, chargeSystem, skipCharging }) => {
+export const UnconnectedFirstMatePage = (props) => {
   return (
     <div id="first-mate-page" className={styles.FirstMatePage}>
       <div className={styles.HitPointMeterBox}>
-        <HitPointMeter hitPoints={hitPoints}/>
+        <HitPointMeter hitPoints={props.hitPoints}/>
       </div>
       <div className={styles.SystemPanels}>
-        {(systems || Immutable.Map())
+        {(props.systems || Immutable.Map()) // TODO: When do we not have systems?
           .map((system, name) => system.set('name', name))
           .toIndexedSeq() // TODO: Is there an easier way to do this? Also, guarantee order.
           .map((system, i) => (
-            <System
+            <SystemCard
               charge={system.get(CHARGE)}
-              chargeSystem={chargeSystem}
+              chargeSystem={props.chargeSystem}
               key={i}
               maxCharge={system.get(MAX_CHARGE)}
               name={system.get('name')}
-              readyToCharge={readyToCharge}
+              readyToCharge={props.readyToCharge}
             />
           ))
         }
         <Button
           className={styles.SkipChargingButton}
           color="secondary"
-          disabled={!readyToCharge}
-          onClick={skipCharging}
+          disabled={!props.readyToCharge}
+          onClick={props.skipCharging}
           variant="raised"
         >
           Skip Charging
@@ -48,26 +49,12 @@ export const UnconnectedFirstMatePage = ({ systems, readyToCharge, hitPoints, ch
   );
 };
 
-const System = ({ name, charge, maxCharge, chargeSystem, readyToCharge }) => {
-  const systemType = getSystemType(name);
-  return (
-    <Button
-      className={classnames(styles.SystemPanel, { [styles.charged]: charge === maxCharge })}
-      disabled={!readyToCharge || charge === maxCharge}
-      onClick={() => chargeSystem(name)}
-      variant="raised"
-    >
-      <div className={styles.SystemPanelPaper}>
-        <ChargeMeter charge={charge} maxCharge={maxCharge}/>
-        <div className={styles.SystemPanelRight}>
-          <div className={styles.SystemName}>{name}</div>
-          <Tooltip title={systemType} placement="right" enterDelay={300}>
-            {getIconForSystemType(systemType)}
-          </Tooltip>
-        </div>
-      </div>
-    </Button>
-  );
+UnconnectedFirstMatePage.propTypes = {
+  chargeSystem: PropTypes.func.isRequired,
+  hitPoints: PropTypes.number.isRequired,
+  readyToCharge: PropTypes.bool.isRequired,
+  skipCharging: PropTypes.func.isRequired,
+  systems: ImmutablePropTypes.map.isRequired,
 };
 
 export default connect(
@@ -76,8 +63,17 @@ export default connect(
     hitPoints: state.getIn([GAME, HIT_POINTS]),
     readyToCharge: state.getIn([GAME, WAITING_FOR_FIRST_MATE])
   }),
-  (dispatch) => ({
-    chargeSystem: (systemName) => dispatch(chargeSystem(systemName)),
-    skipCharging: () => dispatch(chargeSystem())
-  })
-)(UnconnectedFirstMatePage);
+  () => ({})
+)((stateProps) => (
+  <SocketContext.Consumer>
+    {({ emit }) => (
+      <UnconnectedFirstMatePage
+        chargeSystem={(systemName) => emit(CHARGE_SYSTEM_MESSAGE, { systemName })}
+        skipCharging={() => emit(CHARGE_SYSTEM_MESSAGE, { systemName: null })}
+        readyToCharge={stateProps.readyToCharge}
+        hitPoints={stateProps.hitPoints}
+        systems={stateProps.systems}
+      />
+    )}
+  </SocketContext.Consumer>
+));

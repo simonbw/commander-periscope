@@ -8,7 +8,7 @@ export default (state, action) => {
   state = state || null;
   switch (action.type) {
     case JOIN_CUSTOM_LOBBY:
-      return LOADING_LOBBY; // TODO: Something better than this
+      return LOADING_LOBBY;
     case LEAVE_CUSTOM_LOBBY:
       return null;
     case CUSTOM_LOBBY_JOINED_MESSAGE:

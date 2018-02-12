@@ -9,11 +9,13 @@ import {
 } from '../../../../common/fields/GameFields';
 import { GAME } from '../../../../common/fields/StateFields';
 import { WAITING_FOR_ENGINEER, WAITING_FOR_FIRST_MATE } from '../../../../common/fields/TurnInfoFields';
-import { getMineOptions, getMoveOptions, getSilentOptions, getTorpedoOptions } from '../../../../common/util/GameUtils';
 import {
-  detonateMine, dropMine, fireTorpedo, goSilent, headInDirection, setStartLocation, surface, useDrone, useSonar
-} from '../../../actions/GameActions';
-import { GridPropType, LocationListPropType, LocationPropType } from '../../GamePropTypes';
+  DETONATE_MINE_MESSAGE, DROP_MINE_MESSAGE, FIRE_TORPEDO_MESSAGE, GO_SILENT_MESSAGE, HEAD_IN_DIRECTION_MESSAGE,
+  SET_START_LOCATION_MESSAGE, SURFACE_MESSAGE, USE_DRONE_MESSAGE, USE_SONAR_MESSAGE
+} from '../../../../common/messages/GameMessages';
+import { getMineOptions, getMoveOptions, getSilentOptions, getTorpedoOptions } from '../../../../common/util/GameUtils';
+import { GridPropType, LocationListPropType, LocationPropType } from '../../../GamePropTypes';
+import SocketContext from '../../SocketContext';
 import CaptainGridContainer from './CaptainGridContainer';
 import DetonateMineMode from './DetonateMineMode';
 import DroneMode from './DroneMode';
@@ -195,15 +197,30 @@ export default connect(
     waitingForEngineer: state.getIn([GAME, TURN_INFO, WAITING_FOR_ENGINEER]),
     waitingForFirstMate: state.getIn([GAME, TURN_INFO, WAITING_FOR_FIRST_MATE]),
   }),
-  (dispatch) => ({
-    detonateMine: (location) => dispatch(detonateMine(location)),
-    dropMine: (location) => dispatch(dropMine(location)),
-    fireTorpedo: (location) => dispatch(fireTorpedo(location)),
-    goSilent: (direction) => dispatch(goSilent(direction)),
-    headInDirection: (direction) => dispatch(headInDirection(direction)),
-    setStartLocation: (location) => dispatch(setStartLocation(location)),
-    surface: () => dispatch(surface()),
-    useDrone: (location) => dispatch(useDrone(location)),
-    useSonar: (location) => dispatch(useSonar(location)),
-  })
-)(UnconnectedCaptainContainer);
+  () => ({})
+)((stateProps) => (
+  <SocketContext.Consumer>
+    {({ emit }) => (
+      <UnconnectedCaptainContainer
+        detonateMine={(location) => emit(DETONATE_MINE_MESSAGE, { location })}
+        dropMine={(location) => emit(DROP_MINE_MESSAGE, { location })}
+        fireTorpedo={(location) => emit(FIRE_TORPEDO_MESSAGE, { location })}
+        goSilent={(location) => emit(GO_SILENT_MESSAGE, { location })}
+        headInDirection={(direction) => emit(HEAD_IN_DIRECTION_MESSAGE, { direction })}
+        setStartLocation={(location) => emit(SET_START_LOCATION_MESSAGE, { location })}
+        surface={() => emit(SURFACE_MESSAGE)}
+        useDrone={(sector) => emit(USE_DRONE_MESSAGE, { sector })}
+        useSonar={() => emit(USE_SONAR_MESSAGE)}
+        
+        gamePhase={stateProps.gamePhase}
+        grid={stateProps.grid}
+        mines={stateProps.mines}
+        subLocation={stateProps.subLocation}
+        subPath={stateProps.subPath}
+        systems={stateProps.systems}
+        waitingForEngineer={stateProps.waitingForEngineer}
+        waitingForFirstMate={stateProps.waitingForFirstMate}
+      />
+    )}
+  </SocketContext.Consumer>
+));

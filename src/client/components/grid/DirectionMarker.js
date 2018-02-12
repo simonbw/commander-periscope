@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { directionToAngle } from '../../../common/models/Direction';
-import { DirectionPropType, LocationPropType } from '../GamePropTypes';
+import { DirectionPropType, LocationPropType } from '../../GamePropTypes';
 
 const DirectionMarker = ({ location, direction, color = "#000000" }) => (
   <polyline

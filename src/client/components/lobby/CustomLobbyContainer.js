@@ -22,5 +22,5 @@ export default connect(
     loading: state.get(LOBBY) === LOADING_LOBBY,
     inGame: Boolean(state.getIn([LOBBY, GAME_ID]))
   }),
-  (dispatch) => ({})
+  () => ({})
 )(UnconnectedCustomLobbyContainer);
