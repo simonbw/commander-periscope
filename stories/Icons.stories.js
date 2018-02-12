@@ -1,12 +1,13 @@
 import { storiesOf } from '@storybook/react';
 import { Divider, Paper, Tooltip } from 'material-ui';
 import React from 'react';
-import { DetonateMineIcon, MoveIcon, SurfaceIcon } from '../src/client/components/icons/ActionIcons';
+import { DetonateMineIcon, getMoveIcon, MoveIcon, SurfaceIcon } from '../src/client/components/icons/ActionIcons';
 import {
   CaptainAvatar, EngineerAvatar, FirstMateAvatar, RadioOperatorAvatar
 } from '../src/client/components/icons/RoleAvatars';
 import { DroneIcon, MineIcon, SilentIcon, SonarIcon, TorpedoIcon } from '../src/client/components/icons/SystemIcons';
 import { CommsIcon, NuclearIcon, SpecialIcon, WeaponsIcon } from '../src/client/components/icons/SystemTypeIcons';
+import { EAST, NORTH, SOUTH, WEST } from '../src/common/models/Direction';
 import '../styles/main.css';
 import StoryWrapper from './StoryWrapper';
 
@@ -43,6 +44,10 @@ storiesOf('Components', module)
         <IconBox title="Detonate Mine"><DetonateMineIcon/></IconBox>
         <IconBox title="Move"><MoveIcon/></IconBox>
         <IconBox title="Surface"><SurfaceIcon/></IconBox>
+        <IconBox title="North">{getMoveIcon(NORTH)}</IconBox>
+        <IconBox title="East">{getMoveIcon(EAST)}</IconBox>
+        <IconBox title="South">{getMoveIcon(SOUTH)}</IconBox>
+        <IconBox title="West">{getMoveIcon(WEST)}</IconBox>
       </IconRow>
       
       <Divider/>

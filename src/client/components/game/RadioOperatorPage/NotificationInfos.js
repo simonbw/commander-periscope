@@ -1,14 +1,12 @@
 import { ListItemText } from 'material-ui';
 import React, { Fragment } from 'react';
-import { getDirectionArrow } from '../../../../common/models/Direction';
 import { getHitDisplayName } from '../../../../common/models/Explosion';
 import { COLUMN_LABELS, ROW_LABELS, SECTOR_LABELS } from '../../../../common/models/Grid';
 import {
   NOTIFICATION_DIRECTION, NOTIFICATION_DRONE_RESULT, NOTIFICATION_HIT_RESULT, NOTIFICATION_LOCATION,
   NOTIFICATION_SECTOR, NOTIFICATION_SONAR_RESULT, NOTIFICATION_TEAM
 } from '../../../../common/models/Notifications';
-import { DetonateMineIcon, SurfaceIcon } from '../../icons/ActionIcons';
-import AvatarIcon from '../../icons/AvatarIcon';
+import { DetonateMineIcon, getMoveIcon, SurfaceIcon } from '../../icons/ActionIcons';
 import { DroneIcon, MineIcon, SilentIcon, SonarIcon, TorpedoIcon } from '../../icons/SystemIcons';
 
 function formatLocation(location) {
@@ -19,9 +17,7 @@ export const MoveNotification = ({ notification }) => {
   const direction = notification.get(NOTIFICATION_DIRECTION);
   return (
     <Fragment>
-      <AvatarIcon>
-        {getDirectionArrow(direction)}
-      </AvatarIcon>
+      {getMoveIcon(direction)}
       <ListItemText primary={direction}/>
     </Fragment>
   );
