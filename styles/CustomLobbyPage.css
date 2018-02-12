@@ -16,6 +16,13 @@
     padding: 10px;
 }
 
+.RoleSelectContainer {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    margin: 10px -10px;
+}
+
 .ButtonBar {
     display: flex;
     flex-flow: row wrap;

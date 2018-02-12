@@ -1,10 +1,12 @@
+import { GAME_ID } from '../../common/fields/LobbyFields';
+import { LOBBY } from '../../common/fields/StateFields';
 import { JOIN_GAME_MESSAGE } from '../../common/messages/GameMessages';
-import { CUSTOM_LOBBY_GAME_START_MESSAGE, CUSTOM_LOBBY_JOINED_MESSAGE } from '../../common/messages/LobbyMessages';
+import { CUSTOM_LOBBY_JOINED_MESSAGE } from '../../common/messages/LobbyMessages';
 import { joinCustomLobby } from '../actions/CustomLobbyActions';
 import { sendMessage } from '../actions/GeneralActions';
 import { getLobbyIdFromUrl, setUrlForLobby } from '../navigation';
 
-export function getLobbyHandlers(dispatch) {
+export function getLobbyHandlers(getState, dispatch) {
   return [[
     'connect', () => {
       const lobbyId = getLobbyIdFromUrl(window.location.pathname);
@@ -14,29 +16,18 @@ export function getLobbyHandlers(dispatch) {
     }
   ], [
     'action', (action) => { // TODO: Don't have 'action' message, just use messages
-      switch (action.type) {
-        case CUSTOM_LOBBY_GAME_START_MESSAGE: {
-          const gameId = action.gameId;
-          return dispatch([
-            sendMessage(JOIN_GAME_MESSAGE, { gameId }),
-          ]);
-        }
-        case CUSTOM_LOBBY_JOINED_MESSAGE: {
-          setUrlForLobby(action.lobby.id);
-          
-          const gameId = action.lobby.gameId; // TODO: Always deal with games and lobbies as immutable objects
-          if (gameId) {
-            return dispatch([
-              action,
-              sendMessage(JOIN_GAME_MESSAGE, { gameId }),
-            ]);
-          }
-          return dispatch(action);
-        }
-        default: {
-          return dispatch(action);
-        }
+      const lobby = action.lobby;
+      
+      // Join games if we're not already in one
+      if (lobby && lobby.gameId && lobby.gameId !== getState().getIn([LOBBY, GAME_ID])) {
+        dispatch(sendMessage(JOIN_GAME_MESSAGE, { gameId: lobby.gameId }));
       }
+      
+      if (action.type === CUSTOM_LOBBY_JOINED_MESSAGE) {
+        setUrlForLobby(lobby.id);
+      }
+      
+      dispatch(action);
     }
   ]];
 }

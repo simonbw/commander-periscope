@@ -20,9 +20,7 @@ export async function clickReadyButton(page) {
   await page.click('#ready-button');
   await page.waitForFunction(/* istanbul ignore next */() => {
     // Cannot use constants here, cuz we're in browser scope
-    return window._store.getState()
-      .getIn(['lobby', 'readied'])
-      .includes(window._store.getState().get('userId'));
+    return window._store.getState().getIn(['lobby', 'isReady']);
   });
 }
 
@@ -31,15 +29,4 @@ export async function waitForJoinGame(page) {
     // Cannot use constants here, cuz we're in browser scope
     return window._store.getState().get('game') != null;
   }, { timeout: 500 });
-}
-
-export async function waitForGameStarted(page) {
-  try {
-    await page.waitForFunction(/* istanbul ignore next */() => {
-      // Cannot use constants here, cuz we're in browser scope
-      return window._store.getState().getIn(['game', 'common', 'started']);
-    }, { timeout: 500 });
-  } catch (e) {
-    throw new Error('Game not started');
-  }
 }

@@ -6,7 +6,7 @@ import { CAPTAIN, ENGINEER, FIRST_MATE, RADIO_OPERATOR } from '../src/common/mod
 import { BLUE, RED } from '../src/common/models/Team';
 import { createGame } from '../src/server/factories/GameFactory';
 import { createBravoGrid } from '../src/server/factories/GridFactory';
-import { getDataForUser } from '../src/server/transforms/UserGameTransform';
+import { transformGameForUser } from '../src/server/transforms/GameTransform';
 
 export function mockGrid() {
   return createBravoGrid();
@@ -50,7 +50,7 @@ export function mockSystems() {
 export function mockPlayerData(role = CAPTAIN, team = RED) {
   const game = mockGame();
   const userId = game.getIn([TEAMS, team, role]);
-  return getDataForUser(game, userId);
+  return transformGameForUser(game, userId);
 }
 
 export function mockLobby(id = 'lobbyId') {

@@ -13,7 +13,7 @@ import {
 } from '../models/System';
 import { deepFind } from './ImmutableUtil';
 
-export function getPlayerPosition(teams, playerId) {
+export function getTeamAndRole(teams, playerId) {
   const path = deepFind(teams, playerId);
   if (path) {
     const [team, role] = path.toArray();

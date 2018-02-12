@@ -1,7 +1,7 @@
 import { MAX_USERNAME_LENGTH } from '../../common/constants';
 import { ID, PLAYERS, TEAMS, USERNAMES } from '../../common/fields/CommonFields';
 import { GAME_ID, READIED } from '../../common/fields/LobbyFields';
-import { getPlayerPosition } from '../../common/util/GameUtils';
+import { getTeamAndRole } from '../../common/util/GameUtils';
 import { shouldStartGame } from '../CustomLobbyUtils';
 import { createCustomLobby } from '../factories/LobbyFactory';
 import Games from './Games';
@@ -54,7 +54,7 @@ CustomLobbies.selectRole = (lobbyId, playerId, team, role) => (
       throw new Error(`That position is already taken ${team} ${role} by ${currentPlayer}`);
     }
     
-    const position = getPlayerPosition(lobby.get(TEAMS), playerId);
+    const position = getTeamAndRole(lobby.get(TEAMS), playerId);
     if (position) {
       lobby = lobby.setIn([TEAMS, position.team, position.role], null);
     }
@@ -73,7 +73,7 @@ CustomLobbies.selectRole = (lobbyId, playerId, team, role) => (
 
 CustomLobbies.ready = (lobbyId, playerId) => (
   CustomLobbies.update(lobbyId, 'player_readied', { playerId }, (lobby) => {
-    if (!getPlayerPosition(lobby.get(TEAMS), playerId)) {
+    if (!getTeamAndRole(lobby.get(TEAMS), playerId)) {
       throw new Error('Cannot ready without a role');
     }
     log(`${playerId} readied`);

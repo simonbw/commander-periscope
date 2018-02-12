@@ -6,7 +6,7 @@ import {
   CHARGE, CIRCUIT, COMMS, DRONE, MAX_CHARGE, MINE, SYSTEM_TYPE, TORPEDO
 } from '../../../src/common/models/System';
 import { BLUE, RED } from '../../../src/common/models/Team';
-import { canUseSystem, checkEngineOverload, fixCircuits, getPlayerPosition } from '../../../src/common/util/GameUtils';
+import { canUseSystem, checkEngineOverload, fixCircuits, getTeamAndRole } from '../../../src/common/util/GameUtils';
 import { createStandardSubsystems } from '../../../src/server/factories/SubsystemFactory';
 import expect from '../../expect';
 import { mockGame } from '../../mocks';
@@ -20,11 +20,11 @@ describe('GameUtils', () => {
   
   it('.getPlayerPosition', () => {
     const game = mockGame();
-    expect(getPlayerPosition(game.get(TEAMS), 'p1')).to.deep.equal({ team: RED, role: CAPTAIN });
-    expect(getPlayerPosition(game.get(TEAMS), 'p8')).to.deep.equal({ team: BLUE, role: ENGINEER });
-    expect(getPlayerPosition(game.get(TEAMS), 'waldo')).to.equal(undefined);
-    expect(getPlayerPosition(undefined, 'waldo')).to.equal(undefined);
-    expect(getPlayerPosition(game.get(TEAMS), undefined)).to.equal(undefined);
+    expect(getTeamAndRole(game.get(TEAMS), 'p1')).to.deep.equal({ team: RED, role: CAPTAIN });
+    expect(getTeamAndRole(game.get(TEAMS), 'p8')).to.deep.equal({ team: BLUE, role: ENGINEER });
+    expect(getTeamAndRole(game.get(TEAMS), 'waldo')).to.equal(undefined);
+    expect(getTeamAndRole(undefined, 'waldo')).to.equal(undefined);
+    expect(getTeamAndRole(game.get(TEAMS), undefined)).to.equal(undefined);
   });
   
   it('.canUseSystem', () => {

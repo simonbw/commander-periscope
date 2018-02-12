@@ -2,14 +2,14 @@ import { List } from 'immutable';
 import PubSub from 'pubsub-js';
 import { ID, TEAMS } from '../../common/fields/CommonFields';
 import {
-  CHARGE_SYSTEM_MESSAGE, DETONATE_MINE_MESSAGE, DROP_MINE_MESSAGE, FIRE_TORPEDO_MESSAGE, GO_SILENT_MESSAGE,
-  HEAD_IN_DIRECTION_MESSAGE, JOIN_GAME_MESSAGE, SET_START_LOCATION_MESSAGE, SURFACE_MESSAGE, TRACK_BREAKDOWN_MESSAGE,
-  USE_DRONE_MESSAGE, USE_SONAR_MESSAGE
+  CHARGE_SYSTEM_MESSAGE, DETONATE_MINE_MESSAGE, DROP_MINE_MESSAGE, FIRE_TORPEDO_MESSAGE, GAME_JOINED_MESSAGE,
+  GAME_UPDATED_MESSAGE, GO_SILENT_MESSAGE, HEAD_IN_DIRECTION_MESSAGE, JOIN_GAME_MESSAGE, SET_START_LOCATION_MESSAGE,
+  SURFACE_MESSAGE, TRACK_BREAKDOWN_MESSAGE, USE_DRONE_MESSAGE, USE_SONAR_MESSAGE
 } from '../../common/messages/GameMessages';
 import { CAPTAIN, ENGINEER, FIRST_MATE, RADIO_OPERATOR } from '../../common/models/Role';
-import { getPlayerPosition } from '../../common/util/GameUtils';
+import { getTeamAndRole } from '../../common/util/GameUtils';
 import Games from '../resources/Games';
-import { getDataForUser } from '../transforms/UserGameTransform';
+import { transformGameForUser } from '../transforms/GameTransform';
 
 const log = require('debug')('commander-periscope:server');
 
@@ -31,13 +31,13 @@ export default () => (socket, next) => {
       socket.gameId = game.get(ID);
       
       const playerId = socket.userId;
-      const position = getPlayerPosition(game.get(TEAMS), playerId);
+      const position = getTeamAndRole(game.get(TEAMS), playerId);
       const pubsubToken = attachPubsubHandlers(socket, game.get(ID), position);
       listenToSocketMessages(socket, game.get(ID), pubsubToken, position);
       
       socket.emit('action', {
-        type: 'game_joined', // TODO: Constant
-        game: getDataForUser(game, playerId)
+        type: GAME_JOINED_MESSAGE,
+        game: transformGameForUser(game, playerId)
       });
     } catch (e) { // Could not load game
       joiningGame = false;
@@ -52,9 +52,6 @@ function attachPubsubHandlers(socket, gameId, position) {
   return PubSub.subscribe(
     Games.getPubSubTopic(gameId),
     (message, data) => {
-      const eventName = message.split('.').pop();
-      const actionType = `game_${eventName}`;
-      
       // TODO: Real message handlers
       // Try to send less information over the wire.
       // We don't need to send everyone their full game state on every action.
@@ -62,8 +59,8 @@ function attachPubsubHandlers(socket, gameId, position) {
       // TODO: Check old and new game state and only send if different
       
       socket.emit('action', {
-        type: 'game_update',
-        game: getDataForUser(data.game, socket.userId)
+        type: GAME_UPDATED_MESSAGE,
+        game: transformGameForUser(data.game, socket.userId)
       });
     }
   );

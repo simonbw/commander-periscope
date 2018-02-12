@@ -6,16 +6,11 @@ import {
 } from '../../common/fields/GameFields';
 import { LAST_DIRECTION_MOVED, WAITING_FOR_ENGINEER, WAITING_FOR_FIRST_MATE } from '../../common/fields/TurnInfoFields';
 import { ENDED_PHASE } from '../../common/models/GamePhase';
-import {
-  DETONATE_MINE_NOTIFICATION, DRONE_NOTIFICATION, DROP_MINE_NOTIFICATION, MOVE_NOTIFICATION, NOTIFICATION_LOCATION,
-  NOTIFICATION_TEAM, NOTIFICATION_TYPE, SILENT_NOTIFICATION, SONAR_NOTIFICATION, SURFACE_NOTIFICATION,
-  TORPEDO_NOTIFICATION
-} from '../../common/models/Notifications';
 import { CAPTAIN, ENGINEER, FIRST_MATE, RADIO_OPERATOR } from '../../common/models/Role';
-import { otherTeam } from '../../common/models/Team';
-import { canUseSystem, getLastDirectionMoved, getPlayerPosition } from '../../common/util/GameUtils';
+import { canUseSystem, getLastDirectionMoved, getTeamAndRole } from '../../common/util/GameUtils';
+import { transformNotificationForRadioOperator } from './NotificationTransform';
 
-export const getDataForUser = (game, userId) => {
+export function transformGameForUser(game, userId) {
   let data = Immutable.Map({})
     .set(ID, game.get(ID))
     .set(PHASE, game.get(PHASE))
@@ -26,7 +21,7 @@ export const getDataForUser = (game, userId) => {
     data = data.set(WINNER, game.get(WINNER));
   }
   
-  const position = getPlayerPosition(game.get(TEAMS), userId);
+  const position = getTeamAndRole(game.get(TEAMS), userId);
   if (!position) {
     throw new Error(`Cannot get data for user: ${userId}`);
   }
@@ -75,30 +70,5 @@ export const getDataForUser = (game, userId) => {
   }
   
   return data;
-};
+}
 
-export const transformNotificationForRadioOperator = (playerTeam) => (notification) => {
-  if (notification.get(NOTIFICATION_TEAM) === otherTeam(playerTeam)) {
-    switch (notification.get(NOTIFICATION_TYPE)) {
-      // don't need to remove data
-      case MOVE_NOTIFICATION:
-      case TORPEDO_NOTIFICATION:
-      case DETONATE_MINE_NOTIFICATION:
-      case SURFACE_NOTIFICATION:
-        return notification;
-      // need to remove data
-      case DROP_MINE_NOTIFICATION:
-      case SILENT_NOTIFICATION:
-        return notification.remove(NOTIFICATION_LOCATION);
-    }
-  } else { // player team did something
-    switch (notification.get(NOTIFICATION_TYPE)) {
-      case SONAR_NOTIFICATION:
-      case DRONE_NOTIFICATION:
-      case TORPEDO_NOTIFICATION:
-      case DETONATE_MINE_NOTIFICATION:
-        return notification
-    }
-  }
-  return null;
-};

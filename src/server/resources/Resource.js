@@ -47,7 +47,7 @@ export default class Resource {
       if (this._createOnNotFound) {
         return this.create(id);
       } else {
-        throw new Error(`${this._resourceName} with id ${id} not found`);
+        throw new Error(`${this._pubsubName} with id ${id} not found`);
       }
     }
     if (waitForUpdate) {
@@ -72,7 +72,7 @@ export default class Resource {
         throw new Error(`updater returned ${instance}, ${this._resourceName} ${action}`);
       }
       this._instances.set(id, instance);
-      this.publish(instance, action, actionData); // TODO: Do we really need to auto-publish?
+      this.publish(instance, action, actionData); // TODO: Do we really need to auto-publish? We could simplify this signature
       return instance;
     })();
     this._lastUpdates.set(id, updatePromise);

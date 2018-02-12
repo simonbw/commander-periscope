@@ -9,7 +9,7 @@ export default (state, action) => {
   switch (action.type) {
     case GAME_JOINED_MESSAGE:
     case GAME_UPDATED_MESSAGE:
-      return jsonToImmutable(action.game);
+      return jsonToImmutable(action.game); // TODO: Don't just always replace everything
   }
   return state;
 }

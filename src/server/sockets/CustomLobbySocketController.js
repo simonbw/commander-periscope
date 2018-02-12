@@ -1,4 +1,5 @@
 import PubSub from 'pubsub-js';
+import { CUSTOM_LOBBY_UPDATED } from '../../client/actions/CustomLobbyActions';
 import { ID } from '../../common/fields/CommonFields';
 import {
   CUSTOM_LOBBY_JOINED_MESSAGE, CUSTOM_LOBBY_READY_MESSAGE, CUSTOM_LOBBY_SELECT_ROLE_MESSAGE,
@@ -6,6 +7,7 @@ import {
 } from '../../common/messages/LobbyMessages';
 import { sleep } from '../../common/util/AsyncUtil';
 import CustomLobby from '../resources/CustomLobbies';
+import { transformLobby } from '../transforms/LobbyTransform';
 
 const log = require('debug')('commander-periscope:server');
 
@@ -42,7 +44,7 @@ export default () => (socket, next) => {
     
     socket.emit('action', {
       type: CUSTOM_LOBBY_JOINED_MESSAGE,
-      lobby
+      lobby: transformLobby(lobby, socket.userId)
     });
   });
   
@@ -53,12 +55,9 @@ const attachPubsubHandlers = (socket, lobbyId) => {
   return PubSub.subscribe(
     CustomLobby.getPubSubTopic(lobbyId),
     (message, data) => {
-      const eventName = message.split('.').pop();
-      const actionType = `custom_lobby_${eventName}`; // TODO: Something better than this
-      
       socket.emit('action', {
-        type: actionType,
-        ...data
+        type: CUSTOM_LOBBY_UPDATED,
+        lobby: transformLobby(data.lobby, socket.userId)
       });
     }
   );

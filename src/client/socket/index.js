@@ -9,7 +9,7 @@ export default (getState, dispatch) => {
   const socket = SocketIo(ioSocketLocation);
   
   const handlers = [].concat(
-    getLobbyHandlers(dispatch),
+    getLobbyHandlers(getState, dispatch),
     getConnectionHandlers(dispatch),
     getActionHandlers(dispatch)
   );

@@ -1,38 +1,34 @@
 import { Button } from 'material-ui';
-import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { connect } from 'react-redux';
-import { TEAMS } from '../../../common/fields/CommonFields';
-import { READIED } from '../../../common/fields/LobbyFields';
-import { LOBBY, USER_ID } from '../../../common/fields/StateFields';
-import { getPlayerPosition } from '../../../common/util/GameUtils';
+import { IS_READY, TEAM_AND_ROLE } from '../../../common/fields/LobbyFields';
+import { LOBBY } from '../../../common/fields/StateFields';
 import { ready, unready } from '../../actions/CustomLobbyActions';
 
-class UnconnectedReadyButton extends Component {
-  constructor(props) {
-    super(props);
-    // TODO: Make button visibly update immediately to avoid double clicks
-  }
-  
-  render() {
-    const { ready, unready, userIsReady, userHasRole } = this.props;
-    return (
-      <Button
-        variant="raised"
-        onClick={userIsReady ? unready : ready}
-        id="ready-button"
-        color={userIsReady ? 'secondary' : 'primary'}
-        disabled={!userHasRole}
-      >
-        {userIsReady ? 'Unready' : 'Ready'}
-      </Button>
-    );
-  }
-}
+const UnconnectedReadyButton = (props) => (
+  <Button
+    variant="raised"
+    onClick={props.isReady ? props.unready : props.ready}
+    id="ready-button"
+    color={props.isReady ? 'secondary' : 'primary'}
+    disabled={!props.canReady}
+  >
+    {props.isReady ? 'Unready' : 'Ready'}
+  </Button>
+);
+
+UnconnectedReadyButton.propTypes = {
+  canReady: PropTypes.bool.isRequired,
+  isReady: PropTypes.bool.isRequired,
+  ready: PropTypes.func.isRequired,
+  unready: PropTypes.func.isRequired,
+};
 
 export default connect(
   (state) => ({
-    userIsReady: state.hasIn([LOBBY, READIED, state.get(USER_ID)]),
-    userHasRole: Boolean(getPlayerPosition(state.getIn([LOBBY, TEAMS]), state.get(USER_ID)))
+    isReady: Boolean(state.getIn([LOBBY, IS_READY])),
+    canReady: Boolean(state.getIn([LOBBY, TEAM_AND_ROLE])),
   }),
   (dispatch) => ({
     ready: () => dispatch(ready()),

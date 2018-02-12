@@ -15,7 +15,7 @@ const config = {
       use: {
         loader: 'babel-loader',
         options: {
-          // cacheDirectory: true
+          cacheDirectory: true
         }
       },
       exclude: /node_modules/,
@@ -39,9 +39,11 @@ const config = {
   devtool: "source-map"
 };
 
-if (process.env.NODE_ENV === 'dev' || process.env.NODE_ENV === 'test') {
+if (process.env.NODE_ENV === 'dev') {
   console.log('THIS IS A DEV BUILD!');
   config.plugins.push(new HardSourceWebpackPlugin());
+} else if (process.env.NODE_ENV === 'test') {
+  console.log('THIS IS A TEST BUILD!');
 } else {
   console.log('THIS IS A PROD BUILD!');
   config.plugins.push(new UglifyJsPlugin({
