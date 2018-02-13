@@ -2,15 +2,16 @@ import { Button } from 'material-ui';
 import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { connect } from 'react-redux';
+import { State } from 'statty';
 import styles from '../../../../styles/CustomLobbyPage.css';
 import { ID, TEAMS } from '../../../common/fields/CommonFields';
 import { LOBBY, USER_ID } from '../../../common/fields/StateFields';
 import { CUSTOM_LOBBY_SELECT_ROLE_MESSAGE, LEAVE_CUSTOM_LOBBY_MESSAGE } from '../../../common/messages/LobbyMessages';
 import { BLUE, RED } from '../../../common/models/Team';
-import { leaveCustomLobby } from '../../actions/CustomLobbyActions';
+import { setUrlForMenu } from '../../navigation';
+import { leaveLobbyUpdater } from '../../Updaters';
 import FloatingText from '../FloatingText';
-import SocketContext from '../SocketContext';
+import { EmitterContext } from '../SocketProvider/SocketProvider';
 import ReadyButton from './ReadyButton';
 import RoleSelect from './RoleSelect';
 import UsernameInput from './UsernameInput';
@@ -52,28 +53,31 @@ UnconnectedCustomLobbyPage.propTypes = {
   userId: PropTypes.string.isRequired,
 };
 
-export default connect(
-  (state) => ({
-    lobbyId: state.getIn([LOBBY, ID]),
-    teams: state.getIn([LOBBY, TEAMS]),
-    userId: state.get(USER_ID),
-  }),
-  (dispatch) => ({
-    goToMainMenu: () => dispatch(leaveCustomLobby()),
-  })
-)((stateProps) => (
-  <SocketContext.Consumer>
-    {({ emit }) => (
-      <UnconnectedCustomLobbyPage
-        selectRole={(role, team) => emit(CUSTOM_LOBBY_SELECT_ROLE_MESSAGE, { role, team })}
-        goToMainMenu={() => {
-          stateProps.goToMainMenu();
-          emit(LEAVE_CUSTOM_LOBBY_MESSAGE)
-        }}
-        lobbyId={stateProps.lobbyId}
-        teams={stateProps.teams}
-        userId={stateProps.userId}
-      />
+const ConnectedCustomLobbyPage = () => (
+  <State
+    select={(state) => ({
+      lobbyId: state.getIn([LOBBY, ID]),
+      teams: state.getIn([LOBBY, TEAMS]),
+      userId: state.get(USER_ID),
+    })}
+    render={(stateProps, update) => (
+      <EmitterContext.Consumer>
+        {({ emit }) => (
+          <UnconnectedCustomLobbyPage
+            selectRole={(role, team) => emit(CUSTOM_LOBBY_SELECT_ROLE_MESSAGE, { role, team })}
+            goToMainMenu={() => {
+              setUrlForMenu();
+              update(leaveLobbyUpdater);
+              emit(LEAVE_CUSTOM_LOBBY_MESSAGE)
+            }}
+            lobbyId={stateProps.lobbyId}
+            teams={stateProps.teams}
+            userId={stateProps.userId}
+          />
+        )}
+      </EmitterContext.Consumer>
     )}
-  </SocketContext.Consumer>
-))
+  />
+);
+
+export default ConnectedCustomLobbyPage;

@@ -1,5 +1,5 @@
 import PubSub from 'pubsub-js';
-import { CUSTOM_LOBBY_UPDATED } from '../../common/messages/LobbyMessages';
+import { CUSTOM_LOBBY_UPDATED_MESSAGE } from '../../common/messages/LobbyMessages';
 import { ID } from '../../common/fields/CommonFields';
 import {
   CUSTOM_LOBBY_JOINED_MESSAGE, CUSTOM_LOBBY_READY_MESSAGE, CUSTOM_LOBBY_SELECT_ROLE_MESSAGE,
@@ -56,7 +56,7 @@ const attachPubsubHandlers = (socket, lobbyId) => {
     CustomLobby.getPubSubTopic(lobbyId),
     (message, data) => {
       socket.emit('action', {
-        type: CUSTOM_LOBBY_UPDATED,
+        type: CUSTOM_LOBBY_UPDATED_MESSAGE,
         lobby: transformLobby(data.lobby, socket.userId)
       });
     }

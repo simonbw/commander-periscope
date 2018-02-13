@@ -1,9 +1,12 @@
 import { Snackbar } from 'material-ui';
+
+import PropTypes from 'prop-types';
 import React from 'react';
-import { connect } from 'react-redux';
+import { State } from 'statty';
 import styles from '../../../styles/ConnectionWarner.css';
 import { CONNECTED } from '../../common/fields/StateFields';
 
+// TODO: Make this not show up at the beginning
 export const UnconnectedConnectionWarner = ({ connected }) => (
   <Snackbar
     anchorOrigin={{ vertical: 'top', horizontal: 'center', }}
@@ -13,9 +16,19 @@ export const UnconnectedConnectionWarner = ({ connected }) => (
   />
 );
 
-export default connect(
-  (state) => ({
-    connected: state.get(CONNECTED),
-  }),
-  () => ({})
-)(UnconnectedConnectionWarner);
+UnconnectedConnectionWarner.propTypes = {
+  connected: PropTypes.bool.isRequired,
+};
+
+const ConnectedConnectionWarner = () => (
+  <State
+    select={(state) => ({
+      connected: state.get(CONNECTED),
+    })}
+    render={({ connected }) => (
+      <UnconnectedConnectionWarner connected={connected}/>
+    )}
+  />
+);
+
+export default ConnectedConnectionWarner;

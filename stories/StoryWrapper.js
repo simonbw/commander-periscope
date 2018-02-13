@@ -1,30 +1,17 @@
-import { Map } from "immutable";
 import React from 'react';
-import { Provider } from 'react-redux';
-import { createStore } from 'redux';
-import SocketContext from '../src/client/components/SocketContext';
+import { Provider } from 'statty';
+import { EmitterContext } from '../src/client/components/SocketProvider/SocketProvider';
 import ThemeProvider from '../src/client/components/ThemeProvider';
-import reducers from '../src/client/reducers';
-
-const makeStore = () => {
-  
-  const initialState = Map({
-    userId: 'mockUserId'
-  });
-  return createStore(
-    reducers,
-    reducers(initialState, { type: 'initialize' })
-  );
-};
+import { initialState } from '../src/client/InitialState';
+import { inspect } from '../src/client/Inspector';
 
 const StoryWrapper = (story) => {
-  const store = makeStore();
   return (
-    <Provider store={store}>
+    <Provider state={initialState} inspect={inspect}>
       <ThemeProvider>
-        <SocketContext.Provider value={{ emit: action('emit') }}>
+        <EmitterContext.Provider value={{ emit: action('emit') }}>
           {story(store)}
-        </SocketContext.Provider>
+        </EmitterContext.Provider>
       </ThemeProvider>
     </Provider>
   );

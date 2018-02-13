@@ -124,13 +124,13 @@ describe('Integration', function () {
     
     await Promise.all([
       redTeam[0].waitForSelector('#captain-page', { timeout: 500 }),
-      // redTeam[1].waitForSelector('#first-mate-page', { timeout: 500 }),
-      // redTeam[2].waitForSelector('#engineer-page', { timeout: 500 }),
-      // redTeam[3].waitForSelector('#radio-operator-page', { timeout: 500 }),
-      // blueTeam[0].waitForSelector('#captain-page', { timeout: 500 }),
-      // blueTeam[1].waitForSelector('#first-mate-page', { timeout: 500 }),
-      // blueTeam[2].waitForSelector('#engineer-page', { timeout: 500 }),
-      // blueTeam[3].waitForSelector('#radio-operator-page', { timeout: 500 }),
+      redTeam[1].waitForSelector('#first-mate-page', { timeout: 500 }),
+      redTeam[2].waitForSelector('#engineer-page', { timeout: 500 }),
+      redTeam[3].waitForSelector('#radio-operator-page', { timeout: 500 }),
+      blueTeam[0].waitForSelector('#captain-page', { timeout: 500 }),
+      blueTeam[1].waitForSelector('#first-mate-page', { timeout: 500 }),
+      blueTeam[2].waitForSelector('#engineer-page', { timeout: 500 }),
+      blueTeam[3].waitForSelector('#radio-operator-page', { timeout: 500 }),
     ]);
     
     expectNoErrors(pages);

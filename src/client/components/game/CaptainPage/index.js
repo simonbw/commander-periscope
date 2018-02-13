@@ -2,7 +2,7 @@ import Immutable from 'immutable';
 import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { connect } from 'react-redux';
+import { State } from 'statty';
 import styles from '../../../../../styles/CaptainPage.css';
 import {
   GRID, MINE_LOCATIONS, PHASE, SUB_LOCATION, SUB_PATH, SYSTEMS, TURN_INFO
@@ -15,7 +15,7 @@ import {
 } from '../../../../common/messages/GameMessages';
 import { getMineOptions, getMoveOptions, getSilentOptions, getTorpedoOptions } from '../../../../common/util/GameUtils';
 import { GridPropType, LocationListPropType, LocationPropType } from '../../../GamePropTypes';
-import SocketContext from '../../SocketContext';
+import { EmitterContext } from '../../SocketProvider/SocketProvider';
 import CaptainGridContainer from './CaptainGridContainer';
 import DetonateMineMode from './DetonateMineMode';
 import DroneMode from './DroneMode';
@@ -38,7 +38,7 @@ export class UnconnectedCaptainContainer extends React.Component { // export for
     fireTorpedo: PropTypes.func.isRequired,
     gamePhase: PropTypes.number.isRequired,
     goSilent: PropTypes.func.isRequired,
-    grid: GridPropType,
+    grid: GridPropType.isRequired,
     headInDirection: PropTypes.func.isRequired,
     mines: LocationListPropType.isRequired,
     setStartLocation: PropTypes.func.isRequired,
@@ -186,41 +186,38 @@ export class UnconnectedCaptainContainer extends React.Component { // export for
   }
 }
 
-export default connect(
-  (state) => ({
-    gamePhase: state.getIn([GAME, PHASE]),
-    grid: state.getIn([GAME, GRID]),
-    mines: state.getIn([GAME, MINE_LOCATIONS]),
-    subLocation: state.getIn([GAME, SUB_LOCATION]),
-    subPath: state.getIn([GAME, SUB_PATH]),
-    systems: state.getIn([GAME, SYSTEMS]),
-    waitingForEngineer: state.getIn([GAME, TURN_INFO, WAITING_FOR_ENGINEER]),
-    waitingForFirstMate: state.getIn([GAME, TURN_INFO, WAITING_FOR_FIRST_MATE]),
-  }),
-  () => ({})
-)((stateProps) => (
-  <SocketContext.Consumer>
-    {({ emit }) => (
-      <UnconnectedCaptainContainer
-        detonateMine={(location) => emit(DETONATE_MINE_MESSAGE, { location })}
-        dropMine={(location) => emit(DROP_MINE_MESSAGE, { location })}
-        fireTorpedo={(location) => emit(FIRE_TORPEDO_MESSAGE, { location })}
-        goSilent={(location) => emit(GO_SILENT_MESSAGE, { location })}
-        headInDirection={(direction) => emit(HEAD_IN_DIRECTION_MESSAGE, { direction })}
-        setStartLocation={(location) => emit(SET_START_LOCATION_MESSAGE, { location })}
-        surface={() => emit(SURFACE_MESSAGE)}
-        useDrone={(sector) => emit(USE_DRONE_MESSAGE, { sector })}
-        useSonar={() => emit(USE_SONAR_MESSAGE)}
-        
-        gamePhase={stateProps.gamePhase}
-        grid={stateProps.grid}
-        mines={stateProps.mines}
-        subLocation={stateProps.subLocation}
-        subPath={stateProps.subPath}
-        systems={stateProps.systems}
-        waitingForEngineer={stateProps.waitingForEngineer}
-        waitingForFirstMate={stateProps.waitingForFirstMate}
-      />
+const ConnectedCaptainContainer = () => (
+  <State
+    select={(state) => ({
+      gamePhase: state.getIn([GAME, PHASE]),
+      grid: state.getIn([GAME, GRID]),
+      mines: state.getIn([GAME, MINE_LOCATIONS]),
+      subLocation: state.getIn([GAME, SUB_LOCATION]),
+      subPath: state.getIn([GAME, SUB_PATH]),
+      systems: state.getIn([GAME, SYSTEMS]),
+      waitingForEngineer: state.getIn([GAME, TURN_INFO, WAITING_FOR_ENGINEER]),
+      waitingForFirstMate: state.getIn([GAME, TURN_INFO, WAITING_FOR_FIRST_MATE]),
+    })}
+    render={(stateProps) => (
+      <EmitterContext.Consumer>
+        {({ emit }) => (
+          <UnconnectedCaptainContainer
+            detonateMine={(location) => emit(DETONATE_MINE_MESSAGE, { location })}
+            dropMine={(location) => emit(DROP_MINE_MESSAGE, { location })}
+            fireTorpedo={(location) => emit(FIRE_TORPEDO_MESSAGE, { location })}
+            goSilent={(location) => emit(GO_SILENT_MESSAGE, { location })}
+            headInDirection={(direction) => emit(HEAD_IN_DIRECTION_MESSAGE, { direction })}
+            setStartLocation={(location) => emit(SET_START_LOCATION_MESSAGE, { location })}
+            surface={() => emit(SURFACE_MESSAGE)}
+            useDrone={(sector) => emit(USE_DRONE_MESSAGE, { sector })}
+            useSonar={() => emit(USE_SONAR_MESSAGE)}
+            
+            {...stateProps}
+          />
+        )}
+      </EmitterContext.Consumer>
     )}
-  </SocketContext.Consumer>
-));
+  />
+);
+
+export default ConnectedCaptainContainer;

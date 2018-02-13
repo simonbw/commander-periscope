@@ -1,15 +1,19 @@
+import PropTypes from 'prop-types';
 import React from 'react';
-import { connect } from 'react-redux';
+import { State } from 'statty';
 import { PHASE, ROLE, SURFACED, TEAM, WINNER } from '../../../common/fields/GameFields';
 import { GAME } from '../../../common/fields/StateFields';
-import { ENDED_PHASE, LOADING_PHASE } from '../../../common/models/GamePhase';
+import { ALL_PHASES, ENDED_PHASE, LOADING_PHASE } from '../../../common/models/GamePhase';
 import * as Role from '../../../common/models/Role';
-import { leaveCustomLobby } from '../../actions/CustomLobbyActions';
-import GameOverPage from './GameOverPage';
+import { ALL_ROLES } from '../../../common/models/Role';
+import { BOTH_TEAMS } from '../../../common/models/Team';
+import { setUrlForMenu } from '../../navigation';
+import { leaveLobbyUpdater } from '../../Updaters';
 import LoadingPage from '../LoadingPage';
 import CaptainPage from './CaptainPage';
 import EngineerPage from './EngineerPage/index';
 import FirstMatePage from './FirstMatePage/index';
+import GameOverPage from './GameOverPage';
 import RadioOperatorPage from './RadioOperatorPage/index';
 import SurfacedPage from './SurfacedPage';
 
@@ -42,17 +46,38 @@ const UnconnectedGamePage = ({ team, role, gamePhase, winner, surfaced, goToMain
   }
 };
 
-export default connect(
-  (state) => {
-    return {
+UnconnectedGamePage.propTypes = {
+  gamePhase: PropTypes.oneOf(ALL_PHASES).isRequired,
+  goToMainMenu: PropTypes.func.isRequired,
+  role: PropTypes.oneOf(ALL_ROLES),
+  surfaced: PropTypes.bool.isRequired,
+  team: PropTypes.oneOf(BOTH_TEAMS),
+  winner: PropTypes.oneOf(BOTH_TEAMS),
+};
+
+const ConnectedGamePage = () => (
+  <State
+    select={(state) => ({
       gamePhase: state.getIn([GAME, PHASE]),
       role: state.getIn([GAME, ROLE]),
       surfaced: state.getIn([GAME, SURFACED]),
       team: state.getIn([GAME, TEAM]),
       winner: state.getIn([GAME, WINNER]),
-    };
-  },
-  (dispatch) => ({
-    goToMainMenu: () => dispatch(leaveCustomLobby())
-  })
-)(UnconnectedGamePage);
+    })}
+    render={({ gamePhase, role, surfaced, team, winner }, update) => (
+      <UnconnectedGamePage
+        gamePhase={gamePhase}
+        goToMainMenu={() => {
+          setUrlForMenu();
+          update(leaveLobbyUpdater);
+        }}
+        role={role}
+        surfaced={surfaced}
+        team={team}
+        winner={winner}
+      />
+    )}
+  />
+);
+
+export default ConnectedGamePage;

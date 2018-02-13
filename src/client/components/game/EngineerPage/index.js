@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { connect } from 'react-redux';
+import { State } from 'statty';
 import styles from '../../../../../styles/EngineerPage.css';
 import { BREAKDOWNS, SUBSYSTEMS } from '../../../../common/fields/GameFields';
 import { GAME } from '../../../../common/fields/StateFields';
@@ -9,7 +9,7 @@ import { LAST_DIRECTION_MOVED, WAITING_FOR_ENGINEER } from '../../../../common/f
 import { TRACK_BREAKDOWN_MESSAGE } from '../../../../common/messages/GameMessages';
 import { ALL_DIRECTIONS } from '../../../../common/models/Direction';
 import { DIRECTION } from '../../../../common/models/System';
-import SocketContext from '../../SocketContext';
+import { EmitterContext } from '../../SocketProvider/SocketProvider';
 import DirectionPane from './DirectionPane';
 
 export const UnconnectedEngineerPage = ({ subsystems, breakdowns, directionMoved, trackBreakdown, readyToTrack }) => {
@@ -39,25 +39,29 @@ UnconnectedEngineerPage.propTypes = {
   trackBreakdown: PropTypes.func.isRequired,
 };
 
-export default connect(
-  (state) => ({
-    breakdowns: state.getIn([GAME, BREAKDOWNS]),
-    directionMoved: state.getIn([GAME, LAST_DIRECTION_MOVED]),
-    subsystems: state.getIn([GAME, SUBSYSTEMS]),
-    readyToTrack: state.getIn([GAME, WAITING_FOR_ENGINEER])
-  }),
-  () => ({})
-)((stateProps) => (
-  <SocketContext.Consumer>
-    {({ emit }) => (
-      <UnconnectedEngineerPage
-        trackBreakdown={(breakdownIndex => emit(TRACK_BREAKDOWN_MESSAGE, { breakdownIndex }))}
-        
-        breakdowns={stateProps.breakdowns}
-        directionMoved={stateProps.directionMoved}
-        readyToTrack={stateProps.readyToTrack}
-        subsystems={stateProps.subsystems}
-      />
+const ConnectedEngineerPage = () => (
+  <State
+    select={(state) => ({
+      breakdowns: state.getIn([GAME, BREAKDOWNS]),
+      directionMoved: state.getIn([GAME, LAST_DIRECTION_MOVED]),
+      subsystems: state.getIn([GAME, SUBSYSTEMS]),
+      readyToTrack: state.getIn([GAME, WAITING_FOR_ENGINEER])
+    })}
+    render={(stateProps) => (
+      <EmitterContext.Consumer>
+        {({ emit }) => (
+          <UnconnectedEngineerPage
+            trackBreakdown={(breakdownIndex => emit(TRACK_BREAKDOWN_MESSAGE, { breakdownIndex }))}
+            
+            breakdowns={stateProps.breakdowns}
+            directionMoved={stateProps.directionMoved}
+            readyToTrack={stateProps.readyToTrack}
+            subsystems={stateProps.subsystems}
+          />
+        )}
+      </EmitterContext.Consumer>
     )}
-  </SocketContext.Consumer>
-));
+  />
+);
+
+export default ConnectedEngineerPage;

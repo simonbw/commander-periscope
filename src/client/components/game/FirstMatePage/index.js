@@ -3,14 +3,14 @@ import { Button } from 'material-ui';
 import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { connect } from 'react-redux';
+import { State } from 'statty';
 import styles from '../../../../../styles/FirstMatePage.css';
 import { HIT_POINTS, SYSTEMS } from '../../../../common/fields/GameFields';
 import { GAME } from '../../../../common/fields/StateFields';
 import { WAITING_FOR_FIRST_MATE } from '../../../../common/fields/TurnInfoFields';
 import { CHARGE_SYSTEM_MESSAGE } from '../../../../common/messages/GameMessages';
 import { CHARGE, MAX_CHARGE } from '../../../../common/models/System';
-import SocketContext from '../../SocketContext';
+import { EmitterContext } from '../../SocketProvider/SocketProvider';
 import HitPointMeter from './HitPointMeter';
 import SystemCard from './SystemCard';
 
@@ -57,23 +57,28 @@ UnconnectedFirstMatePage.propTypes = {
   systems: ImmutablePropTypes.map.isRequired,
 };
 
-export default connect(
-  (state) => ({
-    systems: state.getIn([GAME, SYSTEMS]),
-    hitPoints: state.getIn([GAME, HIT_POINTS]),
-    readyToCharge: state.getIn([GAME, WAITING_FOR_FIRST_MATE])
-  }),
-  () => ({})
-)((stateProps) => (
-  <SocketContext.Consumer>
-    {({ emit }) => (
-      <UnconnectedFirstMatePage
-        chargeSystem={(systemName) => emit(CHARGE_SYSTEM_MESSAGE, { systemName })}
-        skipCharging={() => emit(CHARGE_SYSTEM_MESSAGE, { systemName: null })}
-        readyToCharge={stateProps.readyToCharge}
-        hitPoints={stateProps.hitPoints}
-        systems={stateProps.systems}
-      />
+const ConnectedFirstMatePage = () => (
+  <State
+    select={(state) => ({
+      systems: state.getIn([GAME, SYSTEMS]),
+      hitPoints: state.getIn([GAME, HIT_POINTS]),
+      readyToCharge: state.getIn([GAME, WAITING_FOR_FIRST_MATE])
+    })}
+    render={(stateProps) => (
+      <EmitterContext.Consumer>
+        {({ emit }) => (
+          <UnconnectedFirstMatePage
+            chargeSystem={(systemName) => emit(CHARGE_SYSTEM_MESSAGE, { systemName })}
+            skipCharging={() => emit(CHARGE_SYSTEM_MESSAGE, { systemName: null })}
+            
+            readyToCharge={stateProps.readyToCharge}
+            hitPoints={stateProps.hitPoints}
+            systems={stateProps.systems}
+          />
+        )}
+      </EmitterContext.Consumer>
     )}
-  </SocketContext.Consumer>
-));
+  />
+);
+
+export default ConnectedFirstMatePage;
