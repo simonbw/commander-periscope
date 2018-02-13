@@ -26,7 +26,7 @@
     "immutable": "^4.0.0-rc.9",
     "js-cookie": "^2.2.0",
     "jss": "latest",
-    "material-ui": "^1.0.0-beta.32",
+    "material-ui": "^1.0.0-beta.33",
     "material-ui-icons": "^1.0.0-beta.17",
     "morgan": "^1.9.0",
     "nyc": "^11.4.1",

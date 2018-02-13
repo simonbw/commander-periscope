@@ -40,28 +40,27 @@ storiesOf('Components', module)
             }}
           >
             <LayerToggles toggleLayer={toggleLayer} layers={layers}/>
-            
             <GridContainer style={{ margin: '10px' }}>
               <Fragment>
                 <Fade in={layers.get('background')}>
-                  <GridBackground height={15} width={15}/>
+                  <g><GridBackground height={15} width={15}/></g>
                 </Fade>
                 <Fade in={layers.get('sectors')}>
-                  <GridSectors/>
+                  <g><GridSectors/></g>
                 </Fade>
                 <Fade in={layers.get('tiles')}>
-                  <GridTiles grid={grid}/>
+                  <g><GridTiles grid={grid}/></g>
                 </Fade>
                 <Fade in={layers.get('path')}>
-                  <GridPath path={path.push(subLocation)}/>
+                  <g><GridPath path={path.push(subLocation)}/></g>
                 </Fade>
                 <Fade in={layers.get('mines')}>
-                  <GridMines mines={mines}/>
+                  <g><GridMines mines={mines}/></g>
                 </Fade>
                 <GridSectorSelect>
                   {(sector) => (
                     <Fade in={layers.get('sectorSelect')}>
-                      <GridSectors selected={sector}/>
+                      <g><GridSectors selected={sector}/></g>
                     </Fade>
                   )}
                 </GridSectorSelect>
@@ -69,25 +68,25 @@ storiesOf('Components', module)
                   {(tile) => (
                     <Fragment>
                       <Fade in={layers.get('labels')}>
-                        <GridLabels
+                        <g><GridLabels
                           width={15}
                           height={15}
                           selectedX={tile && layers.get('tileSelect') ? tile.get(0) : undefined}
                           selectedY={tile && layers.get('tileSelect') ? tile.get(1) : undefined}
-                        />
+                        /></g>
                       </Fade>
                       <Fade in={layers.get('tileSelect')}>
-                        <GridCrosshairs tile={tile}/>
+                        <g><GridCrosshairs tile={tile}/></g>
                       </Fade>
                       <Fade in={layers.get('moveChooser')}>
-                        <GridMoveChooser
+                        <g><GridMoveChooser
                           subLocation={subLocation}
                           mouseTile={tile}
                           moveOptions={getMoveOptions(subLocation, grid, path, mines)}
-                        />
+                        /></g>
                       </Fade>
                       <Fade in={layers.get('subLocation')}>
-                        <SubMarker location={subLocation}/>
+                        <g><SubMarker location={subLocation}/></g>
                       </Fade>
                     </Fragment>
                   )}
@@ -153,14 +152,15 @@ const GridToggle = ({ grid, setGrid }) => {
       }}
     >
       <RadioGroup
-        value={GRIDS.indexOf(grid)}
+        value={String(GRIDS.indexOf(grid))}
         onChange={(e, value) => setGrid(GRIDS[value])}
       >
         {GRIDS.map((_, i) => (
           <FormControlLabel
             control={<Radio/>}
+            key={i}
             label={GRID_NAMES[i]}
-            value={i}
+            value={String(i)}
           />
         ))}
       </RadioGroup>
