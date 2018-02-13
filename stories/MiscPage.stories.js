@@ -1,8 +1,8 @@
 import { action } from '@storybook/addon-actions';
 import { storiesOf } from '@storybook/react';
 import React from 'react';
-import SurfacedPage from '../src/client/components/game/SurfacedPage';
 import GameOverPage from '../src/client/components/game/GameOverPage';
+import SurfacedPage from '../src/client/components/game/SurfacedPage';
 import LoadingPage from '../src/client/components/LoadingPage';
 import '../styles/main.css';
 import StoryWrapper from './StoryWrapper';

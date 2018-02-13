@@ -1,9 +1,9 @@
 import PubSub from 'pubsub-js';
-import { CUSTOM_LOBBY_UPDATED_MESSAGE } from '../../common/messages/LobbyMessages';
 import { ID } from '../../common/fields/CommonFields';
 import {
   CUSTOM_LOBBY_JOINED_MESSAGE, CUSTOM_LOBBY_READY_MESSAGE, CUSTOM_LOBBY_SELECT_ROLE_MESSAGE,
-  CUSTOM_LOBBY_SET_USERNAME_MESSAGE, CUSTOM_LOBBY_UNREADY_MESSAGE, JOIN_CUSTOM_LOBBY_MESSAGE, LEAVE_CUSTOM_LOBBY_MESSAGE
+  CUSTOM_LOBBY_SET_USERNAME_MESSAGE, CUSTOM_LOBBY_UNREADY_MESSAGE, CUSTOM_LOBBY_UPDATED_MESSAGE,
+  JOIN_CUSTOM_LOBBY_MESSAGE, LEAVE_CUSTOM_LOBBY_MESSAGE
 } from '../../common/messages/LobbyMessages';
 import { sleep } from '../../common/util/AsyncUtil';
 import CustomLobby from '../resources/CustomLobbies';

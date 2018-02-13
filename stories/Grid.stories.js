@@ -3,7 +3,6 @@ import Immutable from 'immutable';
 import { Fade, FormControlLabel, Paper, Radio, RadioGroup, Switch } from 'material-ui';
 import PropTypes from 'prop-types';
 import React, { Component, Fragment } from 'react';
-import { GridPropType } from '../src/client/GamePropTypes';
 import GridBackground from '../src/client/components/grid/GridBackground';
 import GridContainer from '../src/client/components/grid/GridContainer';
 import GridCrosshairs from '../src/client/components/grid/GridCrosshairs';
@@ -16,6 +15,7 @@ import GridSectorSelect from '../src/client/components/grid/GridSectorSelect';
 import GridTiles from '../src/client/components/grid/GridTiles';
 import GridTileSelect from '../src/client/components/grid/GridTileSelect';
 import SubMarker from '../src/client/components/grid/SubMarker';
+import { GridPropType } from '../src/client/GamePropTypes';
 import { getMoveOptions } from '../src/common/util/GameUtils';
 import {
   createAlphaGrid, createBravoGrid, createCharlieGrid, createEmptyGrid

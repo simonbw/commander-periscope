@@ -1,4 +1,4 @@
-import { GAME, LOBBY, USER_ID } from '../../src/common/fields/StateFields';
+import { LOBBY, USER_ID } from '../../src/common/fields/StateFields';
 import { jsonToImmutable } from '../../src/common/util/ImmutableUtil';
 
 export async function extractUserId(page) {
