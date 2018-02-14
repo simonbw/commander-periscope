@@ -1,5 +1,3 @@
-import { joinCustomLobby, leaveCustomLobby } from './actions/CustomLobbyActions';
-
 const CUSTOM_LOBBY_PREFIX = '/';
 
 export function getUrlForLobby(lobbyId) {
@@ -24,19 +22,4 @@ export function setUrlForMenu() {
     console.log('leaving lobby', getLobbyIdFromUrl(window.location.pathname.length));
     window.history.pushState('Main Menu', undefined, '/');
   }
-}
-
-export function initNavigation(getStore) {
-  window.history.replaceState('First Page', undefined); // TODO: Why?
-  
-  window.addEventListener('popstate', (event) => {
-    console.log('popstate:', event.state);
-    
-    const lobbyId = getLobbyIdFromUrl(window.location.pathname);
-    if (lobbyId) {
-      getStore().dispatch(joinCustomLobby(lobbyId));
-    } else {
-      getStore().dispatch(leaveCustomLobby());
-    }
-  });
 }

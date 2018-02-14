@@ -1,5 +1,5 @@
 import React from 'react';
-import { LocationListPropType, LocationPropType } from '../GamePropTypes';
+import { LocationListPropType, LocationPropType } from '../../GamePropTypes';
 import TorpedoMarker from './TorpedoMarker';
 
 // TODO: This should probably be a PureComponent

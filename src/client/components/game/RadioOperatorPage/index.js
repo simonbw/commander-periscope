@@ -1,8 +1,12 @@
+import PropTypes from 'prop-types';
 import React from 'react';
-import { connect } from 'react-redux';
+import ImmutablePropTypes from 'react-immutable-proptypes';
+import { State } from 'statty';
 import styles from '../../../../../styles/RadioOperatorPage.css';
 import { GRID, NOTIFICATIONS, TEAM } from '../../../../common/fields/GameFields';
 import { GAME } from '../../../../common/fields/StateFields';
+import { BOTH_TEAMS } from '../../../../common/models/Team';
+import { GridPropType } from '../../../GamePropTypes';
 import GridBackground from '../../grid/GridBackground';
 import GridContainer from '../../grid/GridContainer';
 import GridLabels from '../../grid/GridLabels';
@@ -24,11 +28,27 @@ export const UnconnectedRadioOperatorPage = ({ grid, notifications, team }) => (
   </div>
 );
 
-export default connect(
-  (state) => ({
-    grid: state.getIn([GAME, GRID]),
-    notifications: state.getIn([GAME, NOTIFICATIONS]),
-    team: state.getIn([GAME, TEAM])
-  }),
-  (dispatch) => ({})
-)(UnconnectedRadioOperatorPage);
+UnconnectedRadioOperatorPage.propTypes = {
+  grid: GridPropType.isRequired,
+  notifications: ImmutablePropTypes.list.isRequired,
+  team: PropTypes.oneOf(BOTH_TEAMS).isRequired,
+};
+
+const ConnectedRadioOperatorPage = () => (
+  <State
+    select={(state) => ({
+      grid: state.getIn([GAME, GRID]),
+      notifications: state.getIn([GAME, NOTIFICATIONS]),
+      team: state.getIn([GAME, TEAM])
+    })}
+    render={({ grid, notifications, team }) => (
+      <UnconnectedRadioOperatorPage
+        grid={grid}
+        notifications={notifications}
+        team={team}
+      />
+    )}
+  />
+);
+
+export default ConnectedRadioOperatorPage;

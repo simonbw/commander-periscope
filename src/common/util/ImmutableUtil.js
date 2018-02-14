@@ -1,4 +1,4 @@
-import * as Immutable from 'immutable/dist/immutable';
+import Immutable from 'immutable';
 import { PLAYERS } from '../fields/CommonFields';
 import { BREAKDOWNS } from '../fields/GameFields';
 import { READIED } from '../fields/LobbyFields';

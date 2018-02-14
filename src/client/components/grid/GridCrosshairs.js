@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import styles from '../../../../styles/Grid/GridCrosshairs.css';
-import { LocationPropType } from '../GamePropTypes';
+import { LocationPropType } from '../../GamePropTypes';
 
 const GridCrosshairs = ({ tile, color = "#FFFFFFDD" }) => {
   if (!tile) {

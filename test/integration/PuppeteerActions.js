@@ -1,4 +1,6 @@
 import { ID } from '../../src/common/fields/CommonFields';
+import { IS_READY } from '../../src/common/fields/LobbyFields';
+import { GAME, LOBBY } from '../../src/common/fields/StateFields';
 import { extractLobby } from './PageExtractors';
 
 export async function createCustomLobby(page) {
@@ -18,15 +20,13 @@ export async function joinCustomLobby(page, lobbyId) {
 
 export async function clickReadyButton(page) {
   await page.click('#ready-button');
-  await page.waitForFunction(/* istanbul ignore next */() => {
-    // Cannot use constants here, cuz we're in browser scope
-    return window._store.getState().getIn(['lobby', 'isReady']);
-  });
+  await page.waitForFunction(/* istanbul ignore next */(LOBBY, IS_READY) => {
+    return window._state.getIn([LOBBY, IS_READY]);
+  }, {}, LOBBY, IS_READY);
 }
 
 export async function waitForJoinGame(page) {
-  await page.waitForFunction(/* istanbul ignore next */() => {
-    // Cannot use constants here, cuz we're in browser scope
-    return window._store.getState().get('game') != null;
-  }, { timeout: 500 });
+  await page.waitForFunction(/* istanbul ignore next */(GAME) => {
+    return window._state.get(GAME) != null;
+  }, { timeout: 500 }, GAME);
 }

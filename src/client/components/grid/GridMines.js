@@ -1,5 +1,5 @@
 import React from 'react';
-import { LocationListPropType } from '../GamePropTypes';
+import { LocationListPropType } from '../../GamePropTypes';
 import MineMarker from './MineMarker';
 
 const GridMines = ({ mines }) => {

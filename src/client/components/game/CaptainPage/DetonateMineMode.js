@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { LocationListPropType } from '../../GamePropTypes';
+import { LocationListPropType } from '../../../GamePropTypes';
 import GridCrosshairs from '../../grid/GridCrosshairs';
 import GridTileSelect from '../../grid/GridTileSelect';
 

@@ -1,30 +1,27 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
+import { Provider } from 'statty';
 import AppContainer from './components/AppContainer';
-import { initNavigation } from './navigation';
-import Socket from './socket';
-import Store from './store';
+import NavigationWrapper from './components/NavigationWrapper';
+import SocketProvider from './components/SocketProvider/SocketProvider';
+import ThemeProvider from './components/ThemeProvider';
+import { initialState } from './InitialState';
+import { inspect } from './Inspector';
 
 window.addEventListener('DOMContentLoaded', () => {
-  
-  let socket, store;
-  socket = Socket(() => store.getState(), (action) => store.dispatch(action));
-  store = Store(() => socket);
-  
-  initNavigation(() => store);
-  
-  render(store);
-});
-
-const render = function (store) {
   const root = document.createElement('div');
   document.body.appendChild(root);
   
   ReactDOM.render(
-    <Provider store={store}>
-      <AppContainer/>
+    <Provider state={initialState} inspect={inspect}>
+      <ThemeProvider>
+        <SocketProvider>
+          <NavigationWrapper>
+            <AppContainer/>
+          </NavigationWrapper>
+        </SocketProvider>
+      </ThemeProvider>
     </Provider>,
     root
   );
-};
+});
