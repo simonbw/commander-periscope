@@ -28,10 +28,12 @@ export function transformGameForUser(game, userId) {
   const { team, role } = position;
   const teamInfo = game.get(team);
   
+  // Stuff everyone should know
   data = data
-    .set(SURFACED, teamInfo.get(SURFACED))
     .set(ROLE, role)
-    .set(TEAM, team);
+    .set(TEAM, team)
+    .set(HIT_POINTS, teamInfo.get(HIT_POINTS))
+    .set(SURFACED, teamInfo.get(SURFACED));
   
   switch (role) {
     case CAPTAIN:
@@ -47,8 +49,7 @@ export function transformGameForUser(game, userId) {
     case FIRST_MATE:
       data = data
         .set(SYSTEMS, teamInfo.get(SYSTEMS))
-        .set(WAITING_FOR_FIRST_MATE, teamInfo.getIn([TURN_INFO, WAITING_FOR_FIRST_MATE]))
-        .set(HIT_POINTS, teamInfo.get(HIT_POINTS));
+        .set(WAITING_FOR_FIRST_MATE, teamInfo.getIn([TURN_INFO, WAITING_FOR_FIRST_MATE]));
       break;
     case ENGINEER:
       data = data

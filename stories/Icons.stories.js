@@ -8,11 +8,10 @@ import {
 import { DroneIcon, MineIcon, SilentIcon, SonarIcon, TorpedoIcon } from '../src/client/components/icons/SystemIcons';
 import { CommsIcon, NuclearIcon, SpecialIcon, WeaponsIcon } from '../src/client/components/icons/SystemTypeIcons';
 import { EAST, NORTH, SOUTH, WEST } from '../src/common/models/Direction';
-import '../styles/main.css';
 import StoryWrapper from './StoryWrapper';
 
 storiesOf('Components', module)
-  .addDecorator(StoryWrapper)
+  .addDecorator(StoryWrapper())
   .add('Icons', () => (
     <Paper
       style={{

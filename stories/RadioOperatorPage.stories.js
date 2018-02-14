@@ -13,12 +13,11 @@ import {
 } from '../src/common/models/Notifications';
 import { BLUE, RED } from '../src/common/models/Team';
 import { generateSonarResult } from '../src/common/util/GameUtils';
-import '../styles/main.css';
 import { mockGame } from '../test/mocks';
 import StoryWrapper from './StoryWrapper';
 
 storiesOf('Components', module)
-  .addDecorator(StoryWrapper)
+  .addDecorator(StoryWrapper())
   .add('RadioOperator Adding', () => {
     const grid = mockGame().get(GRID);
     return (

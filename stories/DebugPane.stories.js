@@ -3,12 +3,11 @@ import Immutable from 'immutable';
 import React from 'react';
 import DebugPane, { UnconnectedDebugPane } from '../src/client/components/DebugPane';
 import { GRID } from '../src/common/fields/GameFields';
-import '../styles/main.css';
 import { mockGame } from '../test/mocks';
 import StoryWrapper from './StoryWrapper';
 
 storiesOf('Components', module)
-  .addDecorator(StoryWrapper)
+  .addDecorator(StoryWrapper())
   .add('DebugPane', () => (
     <UnconnectedDebugPane
       initiallyOpen

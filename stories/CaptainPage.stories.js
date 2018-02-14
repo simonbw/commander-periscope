@@ -12,12 +12,11 @@ import { MAIN_PHASE } from '../src/common/models/GamePhase';
 import { getLocationFromDirection } from '../src/common/models/Grid';
 import { CAPTAIN } from '../src/common/models/Role';
 import { DRONE, MINE, SILENT, SONAR, TORPEDO } from '../src/common/models/System';
-import '../styles/main.css';
 import { mockPlayerData } from '../test/mocks';
 import StoryWrapper from './StoryWrapper';
 
 storiesOf('Components', module)
-  .addDecorator(StoryWrapper)
+  .addDecorator(StoryWrapper())
   .add('Captain Page', () => {
     return (
       <StateWrapper>

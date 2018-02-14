@@ -2,6 +2,7 @@ import Immutable from 'immutable/dist/immutable';
 import { PLAYERS, TEAMS, USERNAMES } from '../src/common/fields/CommonFields';
 import { GRID, SYSTEMS } from '../src/common/fields/GameFields';
 import { READIED } from '../src/common/fields/LobbyFields';
+import { CONNECTED, GAME, LOBBY, USER_ID } from '../src/common/fields/StateFields';
 import { CAPTAIN, ENGINEER, FIRST_MATE, RADIO_OPERATOR } from '../src/common/models/Role';
 import { BLUE, RED } from '../src/common/models/Team';
 import { createGame } from '../src/server/factories/GameFactory';
@@ -51,6 +52,15 @@ export function mockPlayerData(role = CAPTAIN, team = RED) {
   const game = mockGame();
   const userId = game.getIn([TEAMS, team, role]);
   return transformGameForUser(game, userId);
+}
+
+export function mockAppState(userId = 'userId') {
+  return Immutable.Map({
+    [CONNECTED]: false,
+    [LOBBY]: null,
+    [GAME]: null,
+    [USER_ID]: userId,
+  });
 }
 
 export function mockLobby(id = 'lobbyId') {

@@ -6,12 +6,11 @@ import { BREAKDOWNS, SUBSYSTEMS } from '../src/common/fields/GameFields';
 import { ALL_DIRECTIONS, NORTH } from '../src/common/models/Direction';
 import { RED } from '../src/common/models/Team';
 import { fixCircuits } from '../src/common/util/GameUtils';
-import '../styles/main.css';
 import { mockGame } from '../test/mocks';
 import StoryWrapper from './StoryWrapper';
 
 storiesOf('Components', module)
-  .addDecorator(StoryWrapper)
+  .addDecorator(StoryWrapper())
   .add('EngineerPage', () => {
     return (
       <StateWrapper>

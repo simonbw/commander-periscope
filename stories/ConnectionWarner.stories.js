@@ -2,11 +2,10 @@ import { storiesOf } from '@storybook/react';
 import { FormControl, FormLabel, Paper, Switch } from 'material-ui';
 import React, { Component } from 'react';
 import { UnconnectedConnectionWarner } from '../src/client/components/ConnectionWarner';
-import '../styles/main.css';
 import StoryWrapper from './StoryWrapper';
 
 storiesOf('Components', module)
-  .addDecorator(StoryWrapper)
+  .addDecorator(StoryWrapper())
   .add('ConnectionWarner', () => {
     return (
       <StateWrapper

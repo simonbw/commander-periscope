@@ -4,11 +4,10 @@ import React from 'react';
 import GameOverPage from '../src/client/components/game/GameOverPage';
 import SurfacedPage from '../src/client/components/game/SurfacedPage';
 import LoadingPage from '../src/client/components/LoadingPage';
-import '../styles/main.css';
 import StoryWrapper from './StoryWrapper';
 
 storiesOf('Components', module)
-  .addDecorator(StoryWrapper)
+  .addDecorator(StoryWrapper())
   .add('LoadingPage', () => (
     <LoadingPage/>
   ))

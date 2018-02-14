@@ -20,12 +20,11 @@ import { getMoveOptions } from '../src/common/util/GameUtils';
 import {
   createAlphaGrid, createBravoGrid, createCharlieGrid, createEmptyGrid
 } from '../src/server/factories/GridFactory';
-import '../styles/main.css';
 import { mockMines, mockPath } from '../test/mocks';
 import StoryWrapper from './StoryWrapper';
 
 storiesOf('Components', module)
-  .addDecorator(StoryWrapper)
+  .addDecorator(StoryWrapper())
   .add('Grid', () => {
     return (
       <StateWrapper>
