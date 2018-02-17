@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { Fragment } from 'react';
 import { State } from 'statty';
 import { PHASE, ROLE, SURFACED, TEAM, WINNER } from '../../../common/fields/GameFields';
 import { GAME } from '../../../common/fields/StateFields';
@@ -11,6 +11,7 @@ import { setUrlForMenu } from '../../navigation';
 import { leaveLobbyUpdater } from '../../Updaters';
 import LoadingPage from '../LoadingPage';
 import CaptainPage from './CaptainPage';
+import DamageFlash from './DamageFlash';
 import EngineerPage from './EngineerPage/index';
 import FirstMatePage from './FirstMatePage/index';
 import GameOverPage from './GameOverPage';
@@ -28,6 +29,15 @@ const UnconnectedGamePage = ({ team, role, gamePhase, winner, surfaced, goToMain
     return <SurfacedPage/>
   }
   
+  return (
+    <Fragment>
+      <DamageFlash/>
+      {getRolePage(role)}
+    </Fragment>
+  )
+};
+
+const getRolePage = (role) => {
   switch (role) {
     case Role.CAPTAIN:
       return <CaptainPage/>;
