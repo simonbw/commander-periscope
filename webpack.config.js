@@ -2,6 +2,7 @@ const path = require('path');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const DefinePlugin = require('webpack').DefinePlugin;
+const CompressionPlugin = require("compression-webpack-plugin");
 
 const config = {
   entry: "./src/client/index.js",
@@ -54,6 +55,11 @@ if (process.env.NODE_ENV === 'dev') {
     cache: true,
     parallel: true
   }));
+  config.plugins.push(new UglifyJsPlugin({
+    cache: true,
+    parallel: true
+  }));
+  config.plugins.push(new CompressionPlugin({}));
 }
 
 module.exports = config;

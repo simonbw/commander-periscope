@@ -24,7 +24,8 @@ export const createApp = (getIo, { shouldLog = true, useDevServer = false }) => 
     }));
   } else { // prod
     const staticPath = path.join(__dirname, '../../client');
-    app.use(express.static(staticPath));
+    const expressStaticGzip = require("express-static-gzip");
+    app.use(expressStaticGzip(staticPath, {}));
   }
   
   if (shouldLog) {
