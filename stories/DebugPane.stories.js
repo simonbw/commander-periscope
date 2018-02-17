@@ -1,19 +1,17 @@
 import { storiesOf } from '@storybook/react';
-import Immutable from 'immutable';
 import React from 'react';
-import DebugPane, { UnconnectedDebugPane } from '../src/client/components/DebugPane';
-import { GRID } from '../src/common/fields/GameFields';
-import { mockGame } from '../test/mocks';
+import DebugPane from '../src/client/components/DebugPane';
+import { GAME } from '../src/common/fields/StateFields';
+import { FIRST_MATE } from '../src/common/models/Role';
+import { mockAppState, mockPlayerData } from '../test/mocks';
 import StoryWrapper from './StoryWrapper';
 
+const initialState = mockAppState()
+  .set(GAME, mockPlayerData(FIRST_MATE)
+    .set('randomPropertyWithALongName',
+      'a value for a property with a long name that is even longer than the property name'));
 storiesOf('Components', module)
-  .addDecorator(StoryWrapper())
+  .addDecorator(StoryWrapper(initialState))
   .add('DebugPane', () => (
-    <UnconnectedDebugPane
-      initiallyOpen
-      data={mockGame()
-        .set(GRID, Immutable.List())
-        .set('randomPropertyWithALongName',
-          'a value for a property with a long name that is even longer than the property name')}
-    />
+    <DebugPane/>
   ));

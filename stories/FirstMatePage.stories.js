@@ -1,56 +1,51 @@
+import { action } from '@storybook/addon-actions';
 import { storiesOf } from '@storybook/react';
-import React, { Component } from 'react';
-import { UnconnectedFirstMatePage } from '../src/client/components/game/FirstMatePage/index';
+import React, { Fragment } from 'react';
+import DebugPane from '../src/client/components/DebugPane';
+import FirstMatePage from '../src/client/components/game/FirstMatePage/index';
+import { SYSTEMS } from '../src/common/fields/GameFields';
+import { GAME } from '../src/common/fields/StateFields';
+import { WAITING_FOR_FIRST_MATE } from '../src/common/fields/TurnInfoFields';
+import { CHARGE_SYSTEM_MESSAGE } from '../src/common/messages/GameMessages';
+import { FIRST_MATE } from '../src/common/models/Role';
 import { CHARGE, MAX_CHARGE } from '../src/common/models/System';
-import { MAX_HIT_POINTS } from '../src/server/factories/GameFactory';
-import { mockSystems } from '../test/mocks';
+import { mockAppState, mockPlayerData } from '../test/mocks';
 import StoryWrapper from './StoryWrapper';
 
+const initialState = mockAppState()
+  .set(GAME, mockPlayerData(FIRST_MATE))
+  .setIn([GAME, WAITING_FOR_FIRST_MATE], true);
+
+const emitAction = action('emit');
+
+const emit = (update) => (message, data) => {
+  switch (message) {
+    case CHARGE_SYSTEM_MESSAGE:
+      update(state => {
+        const systemName = data.systemName;
+        state = state.setIn([GAME, WAITING_FOR_FIRST_MATE], false);
+        if (systemName) {
+          state = state.updateIn([GAME, SYSTEMS, systemName], system =>
+            system.set(CHARGE, Math.min(system.get(CHARGE) + 1, system.get(MAX_CHARGE))));
+        }
+        return state;
+      });
+      setTimeout(() => update(state => state
+        .setIn([GAME, WAITING_FOR_FIRST_MATE], true)
+      ), 1500);
+      break;
+    default:
+      emitAction(message, data);
+  }
+};
+
 storiesOf('Components', module)
-  .addDecorator(StoryWrapper())
+  .addDecorator(StoryWrapper(initialState, emit))
   .add('FirstMatePage', () => {
     return (
-      <StateWrapper>
-        {({ systems, chargeSystem, hitPoints, skipCharging, readyToCharge }) => (
-          <UnconnectedFirstMatePage
-            chargeSystem={chargeSystem}
-            hitPoints={hitPoints}
-            readyToCharge={readyToCharge}
-            skipCharging={skipCharging}
-            systems={systems}
-          />
-        )}
-      </StateWrapper>
+      <Fragment>
+        <DebugPane/>
+        <FirstMatePage/>
+      </Fragment>
     );
   });
-
-class StateWrapper extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      systems: mockSystems(),
-      hitPoints: MAX_HIT_POINTS - 1,
-      readyToCharge: true
-    }
-  }
-  
-  chargeSystem(systemName) {
-    const systems = this.state.systems;
-    this.setState({
-      systems: systemName ?
-        systems.update(systemName, system =>
-          system.set(CHARGE, Math.min(system.get(CHARGE) + 1, system.get(MAX_CHARGE))))
-        : systems,
-      readyToCharge: false
-    });
-    setTimeout(() => this.setState({ readyToCharge: true }), 1000);
-  }
-  
-  render() {
-    return this.props.children({
-      chargeSystem: (system) => this.chargeSystem(system),
-      skipCharging: () => this.chargeSystem(null),
-      ...this.state,
-    })
-  }
-}

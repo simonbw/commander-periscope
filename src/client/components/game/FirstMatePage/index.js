@@ -1,4 +1,3 @@
-import Immutable from 'immutable';
 import { Button } from 'material-ui';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -21,16 +20,16 @@ export const UnconnectedFirstMatePage = (props) => {
         <HitPointMeter hitPoints={props.hitPoints}/>
       </div>
       <div className={styles.SystemPanels}>
-        {(props.systems || Immutable.Map()) // TODO: When do we not have systems?
+        {(props.systems) // TODO: When do we not have systems?
           .map((system, name) => system.set('name', name))
           .toIndexedSeq() // TODO: Is there an easier way to do this? Also, guarantee order.
           .map((system, i) => (
             <SystemCard
               charge={system.get(CHARGE)}
-              chargeSystem={props.chargeSystem}
               key={i}
               maxCharge={system.get(MAX_CHARGE)}
               name={system.get('name')}
+              onCharge={() => props.chargeSystem(system.get('name'))}
               readyToCharge={props.readyToCharge}
             />
           ))

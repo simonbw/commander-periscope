@@ -55,7 +55,7 @@ UnconnectedMainMenu.propTypes = {
 
 const ConnectedMainMenu = () => (
   <State
-    render={(stateProps, update) => (
+    render={(state, update) => (
       <EmitterContext.Consumer>
         {({ emit }) => (
           <UnconnectedMainMenu

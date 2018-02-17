@@ -15,13 +15,13 @@ const SystemCard = (props) => {
     <Button
       className={classnames(styles.SystemPanel, { [styles.charged]: charge === maxCharge })}
       disabled={!props.readyToCharge || charge === maxCharge}
-      onClick={() => chargeSystem(name)}
+      onClick={props.onCharge}
       variant="raised"
     >
       <div className={styles.SystemPanelPaper}>
         <ChargeMeter charge={charge} maxCharge={maxCharge}/>
         <div className={styles.SystemPanelRight}>
-          <div className={styles.SystemName}>{name}</div>
+          <div className={styles.SystemName}>{props.name}</div>
           <Tooltip title={systemType} placement="right" enterDelay={300}>
             {getIconForSystemType(systemType)}
           </Tooltip>
@@ -35,7 +35,7 @@ SystemCard.propTypes = {
   name: PropTypes.string.isRequired,
   charge: PropTypes.number.isRequired,
   maxCharge: PropTypes.number.isRequired,
-  chargeSystem: PropTypes.func.isRequired,
+  onCharge: PropTypes.func.isRequired,
   readyToCharge: PropTypes.bool.isRequired,
 };
 
