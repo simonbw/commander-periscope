@@ -20,10 +20,11 @@ export const UnconnectedMainMenu = ({ createCustomLobby, joinCustomLobby }) => (
     </FloatingText>
     
     <Button
-      variant="raised"
-      id="create-custom-game-button"
-      onClick={createCustomLobby}
       fullWidth
+      id="create-custom-game-button"
+      name="Create Lobby Button"
+      onClick={createCustomLobby}
+      variant="raised"
     >
       Create Lobby
     </Button>
@@ -34,13 +35,13 @@ export const UnconnectedMainMenu = ({ createCustomLobby, joinCustomLobby }) => (
     
     <FloatingText className={styles.Footer}>
       <Tooltip title="Leave Feedback">
-        <a href="https://goo.gl/forms/WfwLe3GRFqXG8NUo1">
+        <a name="Feedback Link" href="https://goo.gl/forms/WfwLe3GRFqXG8NUo1">
           <Comment/>
         </a>
       </Tooltip>
       {' '}
       <Tooltip title="Github">
-        <a href="https://github.com/simonbw/commander-periscope">
+        <a name="Github Link" href="https://github.com/simonbw/commander-periscope">
           <GithubIcon/>
         </a>
       </Tooltip>

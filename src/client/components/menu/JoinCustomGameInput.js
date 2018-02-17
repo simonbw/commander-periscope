@@ -82,6 +82,7 @@ export class JoinCustomGameInput extends Component {
             error={Boolean(error)}
             fullWidth
             id="custom-game-input"
+            name="Lobby Id Input"
             onChange={(event) => this.onChange(event.target.value)}
             inputRef={(inputRef) => this._inputRef = inputRef}
             spellCheck={false}
@@ -106,6 +107,7 @@ export class JoinCustomGameInput extends Component {
     return (
       <Button
         id="join-custom-game-button"
+        name="Join Lobby Button"
         onClick={() => {
           this.setState({ open: true, error: null });
           setTimeout(() => {

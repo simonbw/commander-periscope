@@ -32,7 +32,12 @@ class HowToPlay extends Component {
     return (
       <Paper className={styles.HowToPlay}>
         <Collapse in={step < 0} timeout={'auto'}>
-          <Button disabled={step >= 0} fullWidth onClick={() => this.setState({ step: 0 })}>
+          <Button
+            disabled={step >= 0}
+            fullWidth
+            name="How To Play Button"
+            onClick={() => this.setState({ step: 0 })}
+          >
             How To Play
           </Button>
         </Collapse>
@@ -44,22 +49,24 @@ class HowToPlay extends Component {
             position="static"
             steps={steps.length}
             variant="dots"
-            nextButton={
-              <Button
-                size="small"
-                onClick={() => this.nextStep()}
-              >
-                {step === steps.length - 1 ? 'Done' : 'Next'}
-                <KeyboardArrowRight/>
-              </Button>
-            }
             backButton={
               <Button
-                size="small"
+                name="Instructions Back Button"
                 onClick={() => this.previousStep()}
+                size="small"
               >
                 <KeyboardArrowLeft/>
                 Back
+              </Button>
+            }
+            nextButton={
+              <Button
+                name="Instructions Next Button"
+                onClick={() => this.nextStep()}
+                size="small"
+              >
+                {step === steps.length - 1 ? 'Done' : 'Next'}
+                <KeyboardArrowRight/>
               </Button>
             }
           />
