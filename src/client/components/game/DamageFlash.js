@@ -37,7 +37,7 @@ const DamageFlash = () => (
     select={(state) => ({
       hitPoints: state.getIn([GAME, HIT_POINTS])
     })}
-    render={(hitPoints) => (
+    render={({ hitPoints }) => (
       <UnconnectedDamageFlash hitPoints={hitPoints}/>
     )}
   />
