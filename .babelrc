@@ -1,12 +1,25 @@
 {
   "presets": [
     "react",
-    "env"
+    [
+      "env",
+      {
+        "targets": {
+          "node": "current",
+          "browsers": "last 2 Chrome versions"
+        }
+      }
+    ]
   ],
   "plugins": [
     "transform-class-properties",
     "transform-object-rest-spread",
-    "transform-react-jsx"
-  ],
-  "sourceMaps": "inline"
+    "transform-react-jsx",
+    [
+      "direct-import",
+      [
+        "material-ui"
+      ]
+    ]
+  ]
 }
