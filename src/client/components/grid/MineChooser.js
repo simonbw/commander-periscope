@@ -2,7 +2,6 @@ import React from 'react';
 import { LocationListPropType, LocationPropType } from '../../GamePropTypes';
 import MineMarker from './MineMarker';
 
-// TODO: This should probably be a PureComponent
 const MineChooser = ({ mineOptions, mouseTile }) => {
   return (
     <g>

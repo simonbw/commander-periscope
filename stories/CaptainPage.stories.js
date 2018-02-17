@@ -48,7 +48,7 @@ storiesOf('Components', module)
     );
   });
 
-const ROUND_TRIP_TIME = 500;
+const ROUND_TRIP_TIME = 300;
 
 class StateWrapper extends Component {
   constructor(props) {
@@ -92,14 +92,14 @@ class StateWrapper extends Component {
             .update(SYSTEMS, systems => systems.map(() => true))
             .setIn([TURN_INFO, WAITING_FOR_ENGINEER], false)
         }))
-      }, Math.random() * 2000 + 1500);
+      }, Math.random() * 1000 + 500);
       
       setTimeout(() => {
         this.setState((state) => ({
           game: state.game
             .setIn([TURN_INFO, WAITING_FOR_FIRST_MATE], false)
         }))
-      }, Math.random() * 2000 + 1500);
+      }, Math.random() * 1000 + 500);
     }, ROUND_TRIP_TIME)
   }
   

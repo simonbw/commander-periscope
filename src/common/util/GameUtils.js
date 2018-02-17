@@ -3,7 +3,7 @@ import Random from 'random-js';
 import { BREAKDOWNS, SUBSYSTEMS, SYSTEMS } from '../fields/GameFields';
 import { ALL_DIRECTIONS } from '../models/Direction';
 import {
-  getGridSize, getLocationFromDirection, getLocationList, getManhattanDistance, isInGrid, tileToSector, WATER_TILE
+  fillFromTile, getGridSize, getLocationFromDirection, isInGrid, tileToSector, WATER_TILE
 } from '../models/Grid';
 import {
   MOVE_NOTIFICATION, NOTIFICATION_DIRECTION, NOTIFICATION_TEAM, NOTIFICATION_TYPE
@@ -120,12 +120,8 @@ export function getMineOptions(subLocation, grid, path, mines) {
   return getMoveOptions(subLocation, grid, path, mines);
 }
 
-// TODO: This is slightly incorrect. We want to do a flood fill on water tiles from this location
 export function getTorpedoOptions(subLocation, grid) {
-  return getLocationList(grid)
-    .filter(location => isInGrid(location, getGridSize(grid)))
-    .filter(location => grid.getIn(location) === WATER_TILE)
-    .filter(tile => Immutable.Range(1, 4).includes(getManhattanDistance(tile, subLocation)));
+  return fillFromTile(grid, subLocation, 4).toList();
 }
 
 const r = Random();

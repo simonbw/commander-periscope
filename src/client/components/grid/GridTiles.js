@@ -2,7 +2,6 @@ import React from 'react';
 import { WATER_TILE } from '../../../common/models/Grid';
 import { GridPropType } from '../../GamePropTypes';
 
-// TODO: This should probably be a PureComponent
 const GridTiles = ({ grid }) => (
   <g>
     <g shapeRendering="crispEdges">

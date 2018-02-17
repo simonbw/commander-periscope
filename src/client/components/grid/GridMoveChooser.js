@@ -6,7 +6,6 @@ import { LocationListPropType, LocationPropType } from '../../GamePropTypes';
 import DirectionMarker from './DirectionMarker';
 import SubMarker from './SubMarker';
 
-// TODO: This should probably be a PureComponent
 const GridMoveChooser = ({ subLocation, moveOptions, mouseTile }) => {
   return (
     <g>

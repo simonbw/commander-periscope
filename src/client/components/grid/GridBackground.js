@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import styles from '../../../../styles/Grid/GridBackground.css'
 
-// TODO: This should probably be a PureComponent
 const GridBackground = ({ width, height }) => (
   <g>
     <rect

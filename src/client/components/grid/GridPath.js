@@ -4,7 +4,6 @@ import { getDirection } from '../../../common/models/Grid';
 import { LocationListPropType } from '../../GamePropTypes';
 import DirectionMarker from './DirectionMarker';
 
-// TODO: This should probably be a PureComponent
 const GridPath = ({ path, showDirection = true }) => {
   if (path.isEmpty()) {
     return null;

@@ -5,7 +5,6 @@ import React from 'react';
 import styles from '../../../../styles/Grid/GridLabels.css';
 import { COLUMN_LABELS, ROW_LABELS } from '../../../common/models/Grid';
 
-// TODO: This should probably be a PureComponent
 const GridLabels = ({ height, width, selectedX, selectedY }) => (
   <g>
     {Immutable.Range(0, width).map((x) => (

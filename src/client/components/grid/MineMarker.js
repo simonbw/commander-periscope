@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { LocationPropType } from '../../GamePropTypes';
 
-// TODO: This should probably be a PureComponent
 const MineMarker = ({ location, color = "#CC0000", ...otherProps }) => {
   return (
     <g transform={`translate(${location.get(0) + 0.5},${location.get(1) + 0.5})`} {...otherProps}>

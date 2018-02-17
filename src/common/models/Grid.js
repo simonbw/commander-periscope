@@ -4,7 +4,7 @@
 // [1, 0] is one tile East of [0, 0], while [0, 1] is one tile South of [0, 0].
 
 import Immutable from 'immutable/dist/immutable';
-import { EAST, NORTH, SOUTH, WEST } from './Direction';
+import { ALL_DIRECTIONS, EAST, NORTH, SOUTH, WEST } from './Direction';
 
 export const COLUMN_LABELS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 export const ROW_LABELS = Immutable.Range(1, 16).toArray();
@@ -64,6 +64,10 @@ export function isAdjacent(a, b) {
     && (Math.abs(a.get(1) - b.get(1)) <= 1)
 }
 
+export function getAdjacent(tile) {
+  return Immutable.List(ALL_DIRECTIONS).map((direction) => getLocationFromDirection(tile, direction));
+}
+
 export function getLocationList(grid) {
   return grid.flatMap((column, x) => column.map((tile, y) => Immutable.List([x, y])))
 }
@@ -81,3 +85,19 @@ export const isInGrid = (location, gridSize) => (
   && location.get(0) <= gridSize.get(0)
   && location.get(1) <= gridSize.get(1)
 );
+
+export function fillFromTile(grid, point, distance) {
+  return Immutable.Set().withMutations((result) => {
+    const gridSize = getGridSize(grid);
+    const toVisit = [[point, 0]];
+    while (toVisit.length > 0) {
+      const [p, d] = toVisit.shift();
+      if (d <= distance && isInGrid(p, gridSize) && !result.includes(p) && grid.getIn(p) === WATER_TILE) {
+        result.add(p);
+        for (const adjacent of getAdjacent(p)) {
+          toVisit.push([adjacent, d + 1]);
+        }
+      }
+    }
+  });
+}
