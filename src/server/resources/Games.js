@@ -44,7 +44,6 @@ Games.createFromLobby = (lobby, id = null) => {
 };
 
 /// Captain ///
-// TODO: Surfacing
 
 Games.setStartLocation = (gameId, team, location) => (
   Games.update(gameId, 'start_location_set', {}, (game) => {
@@ -52,7 +51,6 @@ Games.setStartLocation = (gameId, team, location) => (
     assertNotStarted(game);
     assertValidStartLocation(location, game.get(GRID));
     game = game.setIn([team, SUB_LOCATION], location);
-    // TODO: Don't allow starting on water
     if (game.getIn([RED, SUB_LOCATION]) && game.getIn([BLUE, SUB_LOCATION])) {
       game = game.set(PHASE, MAIN_PHASE);
       Games.publish(game, 'started');

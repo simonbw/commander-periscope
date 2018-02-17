@@ -1,11 +1,10 @@
 .GridLabel {
+    alignment-baseline: middle;
     fill: #FFFFFF;
     font-family: 'Audiowide', sans-serif;
     font-size: 0.5px;
     transition: font-size, fill 0.2s ease;
     user-select: none;
-
-    /* TODO: align middle */
 }
 
 .GridLabel.selected {

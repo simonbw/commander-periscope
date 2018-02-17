@@ -14,7 +14,7 @@ const GridLabels = ({ height, width, selectedX, selectedY }) => (
         stroke="none"
         textAnchor="middle"
         x={x + 0.5}
-        y={-0.333} /* TODO: Why? */
+        y={-0.5}
       >
         {COLUMN_LABELS[x]}
       </text>
@@ -26,7 +26,7 @@ const GridLabels = ({ height, width, selectedX, selectedY }) => (
         stroke="none"
         textAnchor="middle"
         x={-0.5}
-        y={y + 0.6666} /* TODO: Why is this 0.6666? */
+        y={y + 0.5}
       >
         {ROW_LABELS[y]}
       </text>
