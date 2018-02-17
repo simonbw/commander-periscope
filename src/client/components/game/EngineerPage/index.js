@@ -22,6 +22,7 @@ export const UnconnectedEngineerPage = ({ subsystems, breakdowns, directionMoved
             active={readyToTrack && direction === directionMoved}
             breakdowns={breakdowns}
             direction={direction}
+            key={direction}
             subsystems={subsystems.filter(s => s.get(DIRECTION) === direction)}
             trackBreakdown={trackBreakdown}
           />

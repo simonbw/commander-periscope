@@ -10,9 +10,8 @@ import { CIRCUIT } from '../../../../common/models/System';
 import SubsystemButton from './SubsystemButton';
 
 const DirectionPane = ({ active, breakdowns, direction, subsystems, trackBreakdown }) => {
-  const symbols = subsystems
-    .sortBy(s => s.get(CIRCUIT) != null ? -s.get(CIRCUIT) : -10)
-    .reverse()
+  const subsystemButtons = subsystems
+    .sortBy(s => s.get(CIRCUIT) != null ? s.get(CIRCUIT) : Infinity)
     .map(subsystem => (
       <SubsystemButton
         active={active}
@@ -29,13 +28,13 @@ const DirectionPane = ({ active, breakdowns, direction, subsystems, trackBreakdo
     >
       <h2>{direction} {getDirectionArrow(direction)}</h2>
       <Divider/>
-      <div className={styles.ButtonRow}>
-        {symbols.slice(0, 3)}
-      </div>
+      <section className={styles.ButtonRow}>
+        {subsystemButtons.slice(0, 3)}
+      </section>
       <Divider/>
-      <div className={styles.ButtonRow}>
-        {symbols.slice(3)}
-      </div>
+      <section className={styles.ButtonRow}>
+        {subsystemButtons.slice(3)}
+      </section>
     </Paper>
   );
 };
