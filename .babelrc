@@ -18,7 +18,8 @@
     [
       "direct-import",
       [
-        "material-ui"
+        "material-ui",
+        "material-ui-icons"
       ]
     ]
   ]

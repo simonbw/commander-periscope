@@ -1,8 +1,4 @@
 const path = require('path');
-const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-const DefinePlugin = require('webpack').DefinePlugin;
-const CompressionPlugin = require("compression-webpack-plugin");
 
 const config = {
   entry: "./src/client/index.js",
@@ -39,27 +35,5 @@ const config = {
   plugins: [],
   devtool: "source-map"
 };
-
-if (process.env.NODE_ENV === 'dev') {
-  console.log('THIS IS A DEV BUILD!');
-  config.plugins.push(new HardSourceWebpackPlugin());
-} else if (process.env.NODE_ENV === 'test') {
-  console.log('THIS IS A TEST BUILD!');
-} else {
-  console.log('THIS IS A PROD BUILD!');
-  config.plugins.push(new DefinePlugin({
-    'process.env.NODE_ENV': JSON.stringify('production'),
-    'process.env.SOURCE_HASH': JSON.stringify(process.env.SOURCE_VERSION),
-  }));
-  config.plugins.push(new UglifyJsPlugin({
-    cache: true,
-    parallel: true
-  }));
-  config.plugins.push(new UglifyJsPlugin({
-    cache: true,
-    parallel: true
-  }));
-  config.plugins.push(new CompressionPlugin({}));
-}
 
 module.exports = config;

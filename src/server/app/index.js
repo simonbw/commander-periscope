@@ -15,7 +15,12 @@ export const createApp = (getIo, { shouldLog = true, useDevServer = false }) => 
     log('using webpack-dev-middleware');
     const Webpack = require('webpack');
     const WebpackDevMiddleware = require('webpack-dev-middleware');
-    const webpackOptions = require('../../../webpack.config');
+    let webpackOptions;
+    if (process.env.NODE_ENV === 'test') {
+      webpackOptions = require('../../../webpack.test.config');
+    } else {
+      webpackOptions = require('../../../webpack.dev.config');
+    }
     const compiler = Webpack(webpackOptions);
     app.use(WebpackDevMiddleware(compiler, {
       progress: false,
