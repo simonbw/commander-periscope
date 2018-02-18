@@ -1,4 +1,4 @@
-import { List } from 'immutable';
+import Immutable, { List } from 'immutable';
 import PubSub from 'pubsub-js';
 import { ID, TEAMS } from '../../common/fields/CommonFields';
 import {
@@ -56,12 +56,16 @@ function attachPubsubHandlers(socket, gameId, position) {
       // Try to send less information over the wire.
       // We don't need to send everyone their full game state on every action.
       
-      // TODO: Check old and new game state and only send if different
+      const game = transformGameForUser(data.game, socket.userId);
+      // Only send update if data has changed
+      if (!Immutable.is(game, socket.lastSentGame)) {
+        socket.lastSentGame = game;
+        socket.emit('action', {
+          type: GAME_UPDATED_MESSAGE,
+          game: game
+        });
+      }
       
-      socket.emit('action', {
-        type: GAME_UPDATED_MESSAGE,
-        game: transformGameForUser(data.game, socket.userId)
-      });
     }
   );
 }
