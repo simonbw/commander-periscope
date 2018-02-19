@@ -146,6 +146,7 @@ Games.goSilent = (gameId, team, destination) => (
     assert(getManhattanDistance(startLocation, destination) <= 3, 'Cannot move more than 3 spaces while silent');
     assert(startLocation.zip(destination).some(([c1, c2]) => c1 === c2), 'Must move in a straight line');
     
+    game = game.updateIn([team, SUB_PATH], path => path.push(startLocation));
     if (!startLocation.equals(destination)) {
       const direction = getDirection(startLocation, destination);
       let current = startLocation;
