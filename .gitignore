@@ -4,3 +4,7 @@ dist/
 yarn.lock
 .nyc_output/
 coverage/
+
+# Convex
+convex/_generated/
+.env.local

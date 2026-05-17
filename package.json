@@ -5,6 +5,8 @@
   "license": "MIT",
   "repository": "https://github.com/simonbw/commander-periscope",
   "dependencies": {
+    "@auth/core": "0.37.0",
+    "@convex-dev/auth": "^0.0.92",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
@@ -18,6 +20,7 @@
     "clarify": "^2.1.0",
     "classnames": "^2.2.5",
     "compression-webpack-plugin": "^1.1.7",
+    "convex": "^1.17.0",
     "cookie-parser": "^1.4.3",
     "create-react-context": "^0.1.6",
     "css-loader": "^0.28.7",
@@ -26,6 +29,7 @@
     "express-static-gzip": "^0.3.2",
     "glob": "^7.1.2",
     "hard-source-webpack-plugin": "^0.5.14",
+    "immer": "^10.1.1",
     "immutable": "^4.0.0-rc.9",
     "js-cookie": "^2.2.0",
     "jss": "latest",
@@ -58,12 +62,15 @@
     "@storybook/addon-actions": "^3.3.3",
     "@storybook/addon-links": "^3.3.3",
     "@storybook/react": "^3.3.3",
+    "@types/node": "^22.10.2",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "chai-immutable": "^2.0.0-alpha.1",
     "mocha": "^4.0.1",
     "nodemon": "^1.13.3",
     "puppeteer": "^0.13.0",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8",
     "webpack-bundle-analyzer": "^2.10.0"
   },
   "nyc": {
@@ -82,13 +89,15 @@
     "build-client": "webpack --config webpack.prod.config.js",
     "build-server": "babel src/server/ -d dist/server; babel src/common/ -d dist/common",
     "build-storybook": "build-storybook -o docs",
-    "postinstall": "$npm_execpath run build",
     "start": "NODE_ENV=production node dist/server/index.js",
     "dev": "NODE_ENV=dev DEBUG=commander-periscope:* nodemon src/server/index.js --exec babel-node",
     "start-inspect": "NODE_ENV=dev DEBUG=commander-periscope:* nodemon --inspect $NODE_DEBUG_OPTION src/server/index.js --exec babel-node",
     "storybook": "start-storybook -p 6006",
-    "test": "NODE_ENV=test mocha --exit --require babel-register --recursive test",
-    "test-unit": "NODE_ENV=test mocha --exit --require babel-register --recursive test/server test/client test/common",
-    "test-integration": "NODE_ENV=test mocha --exit --require babel-register --recursive test/integration"
+    "test:legacy": "NODE_ENV=test mocha --exit --require babel-register --recursive test",
+    "test-integration": "NODE_ENV=test mocha --exit --require babel-register --recursive test/integration",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "convex": "convex dev"
   }
 }
