@@ -101,6 +101,10 @@ test.describe("full game", () => {
     // proves the game reached the main phase.
     const engineerButtons = redEngineer.locator("#engineer-page button:not([disabled])");
     await expect(engineerButtons).toHaveCount(0);
+    // Wait until red's grid is in move mode: against a deployed backend the
+    // main-phase update can lag the blue captain's start pick, and a click in
+    // start-location mode is silently ignored.
+    await expect(redCaptain.locator('#captain-page [class^="MoveOption-"]').first()).toBeAttached();
     await clickTile(redCaptain, next);
 
     // The enemy radio operator hears the move.
