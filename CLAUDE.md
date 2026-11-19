@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Commander Periscope is an online multiplayer submarine combat game (a digital "Captain Sonar"). A full game has **8 players** split into two teams (`red`, `blue`), each with four roles: `captain`, `first_mate`, `engineer`, `radio_operator`. Players create or join a lobby by short code, pick roles, ready up, and the lobby becomes a game.
 
-Hosted on **Vercel** (static Vite-built frontend, Vercel project `commander-periscope`, live at https://commander-periscope.vercel.app) + **Convex** (database, realtime, server functions; production deployment `hip-wolf-221`, provisioned via the Vercel Marketplace integration). There is no server process of our own. Migration history and design rationale: `docs/convex-migration-plan.md`.
+Hosted on **Vercel** (static Vite-built frontend, Vercel project `commander-periscope`, live at https://periscope.simonbw.com; pushes to `master` deploy to production, other branches don't deploy) + **Convex** (database, realtime, server functions; production deployment `hip-wolf-221`, provisioned via the Vercel Marketplace integration). There is no server process of our own. Migration history and design rationale: `docs/convex-migration-plan.md`.
 
 ## Commands
 
@@ -16,7 +16,7 @@ Package manager is **npm**.
 - `npm run dev:local` — same, against a **local anonymous Convex backend** (no login; state in `.env.local`, backend on port 3212).
 - `npm run typecheck` — `tsc` for the app (`tsconfig.json`) and for Convex (`convex/tsconfig.json`). Vite does **not** type-check; run this to verify changes.
 - `npm test` — Vitest: pure game logic (`shared/*.test.ts`) and Convex functions via `convex-test` (`convex/*.test.ts`).
-- `npm run e2e` — Playwright: 8 isolated browser contexts play a game end to end (`e2e/`). Starts a local Convex backend + Vite itself (or reuses running ones). `E2E_BASE_URL=https://commander-periscope.vercel.app npm run e2e` smoke-tests a deployed site instead.
+- `npm run e2e` — Playwright: 8 isolated browser contexts play a game end to end (`e2e/`). Starts a local Convex backend + Vite itself (or reuses running ones). `E2E_BASE_URL=https://periscope.simonbw.com npm run e2e` smoke-tests a deployed site instead.
 - `npm run storybook` — Storybook (Vite builder) on port 6006; stories in `stories/`.
 - `npm run build` — client build to `dist/`. On Vercel the build command is `npx convex deploy --cmd 'npm run build'` (see `vercel.json`), which deploys Convex and injects `VITE_CONVEX_URL`.
 

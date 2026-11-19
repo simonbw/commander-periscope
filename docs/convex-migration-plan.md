@@ -1,10 +1,8 @@
 # Commander Periscope — Convex Migration & Modernization Plan
 
-**Status:** Phases 0–4 done (2026-11-10). Phase 5 mostly done (2026-11-18):
-live at https://commander-periscope.vercel.app on Convex `hip-wolf-221`; the
-e2e suite passes against it. Open: preview deploy key, merging to `master`,
-the custom domain (lapsed — see Phase 5). Revised 2026-11-10 after comparing with
-the completed `saladbowl-js`, `ChatDnD` and `concept` migrations (see §13).
+**Status:** Complete (2026-11-18). Live at https://periscope.simonbw.com
+(Vercel project `commander-periscope`, Convex `hip-wolf-221`); the Heroku app
+is deleted.
 
 > **Implementation notes (2026-11-10)** — where the build differs from this design:
 > - Phases 1 and 4 were done together: each component was ported straight to
@@ -489,21 +487,21 @@ de-risk. Recommended order:
   at the Convex connection state.
 - At the end of this phase the game is **fully playable on Convex**.
 
-### Phase 5 — Deploy & decommission ⏳ mostly done (2026-11-18)
-- ✅ Vercel project `commander-periscope` created and linked to the GitHub
-  repo; Convex provisioned through the Marketplace integration (Free plan),
-  which set `CONVEX_DEPLOY_KEY` for Production.
-- ✅ Production deployed (`vercel deploy --prod` from `convex-migration`) and
-  smoke-tested: `E2E_BASE_URL=https://commander-periscope.vercel.app npm run e2e`
-  passes.
-- ⏳ No Preview `CONVEX_DEPLOY_KEY` yet (the integration only set Production),
-  so branch preview builds will fail until one is generated in the Convex
-  dashboard (Project Settings → Preview Deploy Key) and added in Vercel.
-- ⏳ Merge to `master` so git pushes drive production deploys.
-- ⏳ DNS: `commanderperiscope.com` (the Heroku app's custom domain) is no
-  longer registered. Re-register it and add it to the Vercel project, or skip.
-- ⏳ Heroku app `commander-periscope` already has no dynos (stack `heroku-16`,
-  serves 503) — delete it with `heroku apps:destroy commander-periscope`.
+### Phase 5 — Deploy & decommission ✅ done (2026-11-18)
+- Vercel project `commander-periscope`, linked to the GitHub repo; Convex
+  provisioned through the Marketplace integration (Free plan), which set
+  `CONVEX_DEPLOY_KEY` for Production. Pushes to `master` deploy production.
+- Smoke-tested: `E2E_BASE_URL=https://periscope.simonbw.com npm run e2e` passes.
+- Domain: `periscope.simonbw.com` (served by the `*.simonbw.com` wildcard in
+  Vercel DNS); `commanderperiscope.simonbw.com` 308-redirects to it. The old
+  `commanderperiscope.com` had lapsed.
+- Heroku app `commander-periscope` destroyed.
+- No preview deployments: the Marketplace integration only creates a
+  Production deploy key, and the local Convex CLI login is for a different
+  team, so `vercel.json` limits git deploys to `master`. To enable previews,
+  generate a Preview Deploy Key in the Convex dashboard (project settings),
+  add it in Vercel as `CONVEX_DEPLOY_KEY` for Preview, and drop the `git`
+  block from `vercel.json`.
 
 ---
 

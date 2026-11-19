@@ -3,5 +3,16 @@
   "framework": null,
   "buildCommand": "npx convex deploy --cmd 'npm run build'",
   "outputDirectory": "dist",
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ],
+  "git": {
+    "deploymentEnabled": {
+      "*": false,
+      "master": true
+    }
+  }
 }
