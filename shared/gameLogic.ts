@@ -8,6 +8,7 @@ import {
   assert,
   assertCanMove,
   assertCanMoveTo,
+  assertCanSurface,
   assertMainPhase,
   assertNotStarted,
   assertSystemReady,
@@ -266,6 +267,7 @@ export function detonateMine(
  */
 export function surfaceStart(game: Game, team: Team): Game {
   return produce(game, (draft) => {
+    assertCanSurface(draft, team);
     const ts = draft.teamState[team];
     const sector = tileToSector(ts.subLocation, getGridSize(draft.grid));
     ts.surfaced = true;

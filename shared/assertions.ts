@@ -27,9 +27,15 @@ export function assertValidStartLocation(location: Location, grid: Grid): void {
 
 export function assertCanMove(game: Game, team: Team): void {
   assertMainPhase(game);
+  assert(!game.teamState[team].surfaced, "Cannot move while surfaced");
   const turnInfo = game.teamState[team].turnInfo;
   assert(!turnInfo.waitingForFirstMate, "Cannot move. Waiting for First Mate");
   assert(!turnInfo.waitingForEngineer, "Cannot move. Waiting for Engineer");
+}
+
+export function assertCanSurface(game: Game, team: Team): void {
+  assertMainPhase(game);
+  assert(!game.teamState[team].surfaced, "Already surfaced");
 }
 
 export function assertCanMoveTo(

@@ -485,10 +485,7 @@ describe("surface", () => {
     expect((await viewFor(t, gameId, RED_ENGINEER)).breakdowns).toEqual([]);
   });
 
-  // BUG (shared/gameLogic.ts surfaceStart, ~line 263): surfaceStart performs no
-  // assertions, so a captain can surface before the game starts (PICK_PHASE,
-  // with no sub location — the notification falls back to sector 0).
-  it.fails("rejects surfacing before the game has started", async () => {
+  it("rejects surfacing before the game has started", async () => {
     const t = newTest();
     const { gameId } = await startGame(t);
     await expect(
@@ -496,10 +493,7 @@ describe("surface", () => {
     ).rejects.toBeInstanceOf(ConvexError);
   });
 
-  // BUG (shared/gameLogic.ts surfaceStart): surfacing while already surfaced
-  // is allowed and schedules a second endSurface, so overlapping surfaces end
-  // at the first timer and each one broadcasts another SURFACE notification.
-  it.fails("rejects surfacing while already surfaced", async () => {
+  it("rejects surfacing while already surfaced", async () => {
     const { t, gameId } = await mainPhaseGame();
     await t.mutation(api.games.surface, { playerId: RED_CAPTAIN, gameId });
     await expect(
@@ -507,10 +501,7 @@ describe("surface", () => {
     ).rejects.toBeInstanceOf(ConvexError);
   });
 
-  // BUG (shared/assertions.ts assertCanMove, ~line 28): there is no surfaced
-  // check, so a surfaced sub can keep moving (and the move is later wiped
-  // from subPath by surfaceEnd).
-  it.fails("rejects moving while surfaced", async () => {
+  it("rejects moving while surfaced", async () => {
     const { t, gameId } = await mainPhaseGame();
     await t.mutation(api.games.surface, { playerId: RED_CAPTAIN, gameId });
     await expect(
