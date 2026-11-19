@@ -1,10 +1,12 @@
-node_modules/
+.DS_Store
 .idea/
+node_modules/
 dist/
-yarn.lock
-.nyc_output/
 coverage/
+storybook-static/
+test-results/
+playwright-report/
 
-# Convex
-convex/_generated/
-.env.local
+# Local env (Convex deployment URL etc.) and Vercel link
+.env*
+.vercel

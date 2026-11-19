@@ -1,37 +1,44 @@
 Commander Periscope
 ===================
 
+An online multiplayer submarine combat game for 8 players. Frontend on Vercel, backend on [Convex](https://convex.dev).
 
 ### Setup
 
-**Prerequisite:** You will need to have [yarn](https://yarnpkg.com/en/docs/install) installed.
+Requires Node 24+.
 
-```$bash
+```bash
 git clone https://github.com/simonbw/commander-periscope
 cd commander-periscope
-yarn
-yarn dev
+npm install
+npm run dev:local   # local Convex backend + Vite, no account needed
 ```
 
+Then open http://localhost:8080. In development every browser tab is a separate player, so you can play a whole game by opening 8 tabs on the same lobby.
+
+`npm run dev` does the same against a cloud Convex dev deployment (requires `npx convex login`).
+
+### Testing
+
+```bash
+npm run typecheck   # app + Convex functions
+npm test            # game logic + Convex functions (Vitest, convex-test)
+npm run e2e         # 8 browsers play a game (Playwright)
+```
 
 ### Storybook
 
-We use [storybook](https://storybook.js.org/) to test individual pages and components.
-To start the storybook server run:
-```$bash
-yarn storybook
+We use [Storybook](https://storybook.js.org/) to develop individual pages and components without a backend:
+
+```bash
+npm run storybook
 ```
 
-We also publish the storybook for the code on master to the web. You can view that [here](https://simonbw.github.io/commander-periscope/index.html).
+### Deployment
 
+Pushes deploy through Vercel's Convex integration: the build runs `npx convex deploy --cmd 'npm run build'`, which deploys the Convex functions and builds the frontend against them. Preview branches get their own Convex preview backend.
 
 ### Contributing
 
 There are a number of open issues. Feel free to comment on one you're interested in and start working on it.
 When you think you're finished and the tests are passing, submit a pull request.
-
-If you're working on react components, you'll probably want to use storybook so you don't have to spin up the full server and try to the state you want to test.
-Look in [stories](/stories) for some examples.
-
-If you're working on server code, you will likely find [integration testing](/test/integration) to be helpful, since testing the game manually requires spinning up 8 clients.
-We use [puppeteer](https://github.com/GoogleChrome/puppeteer) to spin up multiple clients in parallel to play through a game.

@@ -1,4 +1,3 @@
-import { authTables } from "@convex-dev/auth/server";
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
@@ -110,9 +109,6 @@ const notification = v.union(
 // --- Schema ----------------------------------------------------------------
 
 export default defineSchema({
-  // Tables required by Convex Auth (users, auth sessions, etc.).
-  ...authTables,
-
   lobbies: defineTable({
     code: v.string(),
     created: v.number(),

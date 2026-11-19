@@ -1,6 +1,26 @@
 # Commander Periscope — Convex Migration & Modernization Plan
 
-**Status:** Draft for review
+**Status:** Phases 0–4 done (2026-11-10); Phase 5 (deploy) needs the Vercel
+project + Convex integration set up. Revised 2026-11-10 after comparing with
+the completed `saladbowl-js`, `ChatDnD` and `concept` migrations (see §13).
+
+> **Implementation notes (2026-11-10)** — where the build differs from this design:
+> - Phases 1 and 4 were done together: each component was ported straight to
+>   TSX + MUI v9 + Convex hooks (keeping the presentational `Unconnected*` /
+>   connected split), rather than upgrading MUI against the old socket app first.
+> - Versions landed: React 19, MUI 9, Vite 8, TypeScript 7, react-router 7,
+>   Vitest 5, Storybook 10, Playwright. npm (with a committed lockfile)
+>   replaced yarn.
+> - `leaveLobby` never deletes a lobby — a leave immediately followed by a
+>   rejoin (refresh, React StrictMode) would otherwise find it gone. The cron
+>   sweeps empty lobbies after 30 minutes, everything after 6 hours.
+> - `getGame` returns `{ notInGame: true }` for someone who isn't seated
+>   (e.g. opening the lobby link after the game started) instead of throwing.
+> - Failed actions now show their `ConvexError` message in a toast; the old
+>   app dropped them silently.
+> - The Playwright e2e goes further than the old Puppeteer test: through start
+>   locations, a captain move, the enemy radio operator hearing it, a charge
+>   and a breakdown.
 **Author:** Generated with Claude Code
 **Date:** 2026-05-16
 
@@ -69,7 +89,8 @@ port to TS almost verbatim.
                                 └──────────────────────────┘
 ```
 
-- **Vercel** hosts only the static client bundle. The Vercel ↔ Convex
+- **Vercel** hosts only the static client bundle. `engines.node` is `>=24`
+  (Vercel dropped 20.x; the sister projects now build on 26.x). The Vercel ↔ Convex
   Marketplace integration sets the build command to
   `npx convex deploy --cmd 'npm run build'`, which deploys the Convex backend
   and injects `VITE_CONVEX_URL` into the frontend build. Preview deployments
@@ -201,9 +222,9 @@ Each `Games.*` / `CustomLobbies.*` method becomes a Convex mutation. Example:
 ```ts
 // convex/games.ts
 export const fireTorpedo = mutation({
-  args: { gameId: v.id("games"), target: v.array(v.number()) },
-  handler: async (ctx, { gameId, target }) => {
-    const playerId = await requirePlayer(ctx);          // see §6
+  args: { gameId: v.id("games"), playerId: v.string(), target: v.array(v.number()) },
+  handler: async (ctx, { gameId, playerId, target }) => {
+    // playerId is passed by the client (see §6)
     const game = await ctx.db.get(gameId);
     const team = requireRole(game, playerId, "captain"); // throws if not captain
     const next = applyFireTorpedo(game, team, target as Location); // pure, from shared/
@@ -230,9 +251,8 @@ export const fireTorpedo = mutation({
 ```ts
 // convex/games.ts
 export const getGame = query({
-  args: { gameId: v.id("games") },
-  handler: async (ctx, { gameId }) => {
-    const playerId = await requirePlayer(ctx);
+  args: { gameId: v.id("games"), playerId: v.string() },
+  handler: async (ctx, { gameId, playerId }) => {
     const game = await ctx.db.get(gameId);
     return transformGameForPlayer(game, playerId); // pure, from shared/
   },
@@ -276,21 +296,29 @@ The existing `// TODO: Garbage collection` in `Resource.js` finally gets done.
 
 ---
 
-## 6. Identity / auth *(decided)*
+## 6. Identity *(decided — revised 2026-11-10)*
 
 Today there is no real auth: `GuaranteeUserMiddleware` sets a random `shortid`
 `userId` cookie, and `SocketUserAttacher` trusts it. It is fully spoofable
 already.
 
-**Decision: Convex Auth with the anonymous provider.** Every browser gets a
-stable identity via `ctx.auth.getUserIdentity()` with no login UI, and the door
-stays open to adding real accounts later without reworking the data model. A
-single `requirePlayer(ctx)` helper reads the identity and is called at the top
-of every query and mutation; the rest of the backend never touches auth
-directly. The `playerId` strings stored in `lobbies`/`games`
-(`players`, `usernames`, `teams` rosters) become the Convex Auth subject id.
+**Decision: a client-generated player id, passed as an argument.** This is what
+all three sister migrations did (`saladbowl-js/js/web/backend/userId.ts`). The
+client generates an id once (`crypto.randomUUID()`, falling back to
+`getRandomValues` on insecure LAN origins), stores it, and passes it as
+`playerId` to every query and mutation. No Convex Auth, no JWT keys, no
+`/api/auth` HTTP routes.
 
----
+- **In dev the id lives in `sessionStorage`, in production `localStorage`.**
+  Each dev tab is therefore a separate player, so a full 8-player game can be
+  played in one browser window — this replaces `test-in-chrome.sh`.
+- Exactly as spoofable as the old cookie, which is fine for a
+  friends-and-family game. Real accounts could be added later.
+
+*Superseded:* the original plan used Convex Auth with the anonymous provider.
+It was dropped because it adds setup (JWT keys, `npx @convex-dev/auth`) and,
+more importantly, shares one identity across all tabs, which makes single-
+browser playtesting impossible.
 
 ## 7. Frontend
 
@@ -344,8 +372,10 @@ presence.**
 
 The accepted downside: if someone closes the tab and the `beforeunload` fire is
 missed, their slot stays occupied until GC. For a friends-and-family game this
-is fine; a `lastSeen` heartbeat presence system can be added later if it
-becomes annoying in practice.
+is fine. If it becomes annoying, copy `saladbowl-js`'s presence design: a
+**separate `presence` table** (so a heartbeat doesn't re-push the whole game
+doc to every subscriber) plus a scheduled per-user `checkPresence` that marks
+a player disconnected even when nothing else changes.
 
 ### 7.5 React, Material UI, styling
 
@@ -419,14 +449,14 @@ The backend rewrite can't run half-on-Convex / half-on-Socket.IO, so the
 cut-over is discrete. But the work *leading up to it* can be sequenced to
 de-risk. Recommended order:
 
-### Phase 0 — Scaffolding
+### Phase 0 — Scaffolding ✅ done
 - New branch. Add `tsconfig.json`, Vite, Convex (`npx convex dev`), Vitest,
   Playwright, modern Storybook (Vite builder). Set up the `convex/` +
   `shared/` + `src/` skeleton.
 - Wire the Vercel ↔ Convex Marketplace integration against a throwaway
   preview so deployment is proven early.
 
-### Phase 1 — React + Material UI upgrade
+### Phase 1 — React + Material UI upgrade ✅ done
 - Upgrade React 16 → 19 and Material UI `beta` → current (`@mui/material`,
   emotion styling); migrate `react-jss` usages to `styled` / `sx`.
 - Convert components to TS, replacing `prop-types` / `GamePropTypes.js` with
@@ -436,20 +466,20 @@ de-risk. Recommended order:
 - Done early (right after build tooling) per decision: the launch ships on
   modern MUI, not old.
 
-### Phase 2 — Port the pure logic to `shared/` (TS, no Immutable)
+### Phase 2 — Port the pure logic to `shared/` (TS, no Immutable) ✅ done
 - Convert `Grid`, `Explosion`, `Notifications`, `GameUtils`, the models, and
   the `Games.*` / `CustomLobbies.*` mutator bodies into pure TS functions over
   plain objects (Immer for updates).
 - Port the Mocha tests for these to Vitest as you go. **This phase is fully
   testable without any platform** and contains the bulk of the risk.
 
-### Phase 3 — Convex backend
-- `schema.ts`, then Convex Auth (anonymous provider) + `requirePlayer`.
+### Phase 3 — Convex backend ✅ done
+- `schema.ts`, then the `playerId` argument convention (§6).
 - Queries (`getGame`, `getLobby`) and mutations wrapping the Phase 2 logic.
   Add `requireRole`, the surface scheduler, and the GC cron.
 - Test with `convex-test`.
 
-### Phase 4 — Frontend data layer
+### Phase 4 — Frontend data layer ✅ done
 - `ConvexProvider`, swap socket handlers for `useQuery`/`useMutation`, delete
   `statty` / `SocketProvider` / `messages/`. Add `react-router`
   (`/lobby/:code`).
@@ -457,7 +487,7 @@ de-risk. Recommended order:
   at the Convex connection state.
 - At the end of this phase the game is **fully playable on Convex**.
 
-### Phase 5 — Deploy & decommission
+### Phase 5 — Deploy & decommission ⏳ needs manual setup (Vercel project + Convex integration)
 - Ship to Vercel + Convex production. Smoke-test with the Playwright e2e suite.
 - Repoint DNS. Monitor. Decommission the Heroku app.
 
@@ -477,7 +507,8 @@ de-risk. Recommended order:
 
 ### Resolved decisions
 
-1. **Auth** — Convex Auth, anonymous provider (§6).
+1. **Identity** — client-generated `playerId` in session/localStorage, passed
+   as an argument (§6). *(Revised; originally Convex Auth.)*
 2. **Disconnect handling** — explicit `leaveLobby` mutation + `beforeunload`,
    abandoned lobbies swept by GC. No heartbeat presence (§7.4).
 3. **MUI / React upgrade** — done before launch, early, as Phase 1 right after
@@ -497,3 +528,26 @@ dropping Immutable) is largely mechanical once that logic is ported and
 re-tested in Phase 2. The MUI upgrade is the largest open-ended chunk and is
 deliberately tackled first (Phase 1), so its uncertainty is burned down before
 the backend rewrite begins rather than discovered at the end.
+
+---
+
+## 13. Lessons from the sister migrations *(added 2026-11-10)*
+
+`saladbowl-js`, `ChatDnD` and `concept` all completed the same Heroku → Vercel +
+Convex move. Conventions adopted from them:
+
+| Convention | Source |
+|---|---|
+| Client-generated `playerId`; `sessionStorage` in dev for one-player-per-tab (§6) | all three; saladbowl's `userId.ts` |
+| **Commit `convex/_generated/`** so typecheck/tests work on a fresh checkout without a deployment | all three (`concept` 1bca3e2) |
+| Local dev against an **anonymous local Convex backend** — no login: `CONVEX_AGENT_MODE=anonymous npx convex dev` | all three |
+| `"dev": "convex dev --start vite"` — one command runs backend + frontend | saladbowl, ChatDnD |
+| `"typecheck": "tsc --noEmit && tsc --noEmit -p convex"` | saladbowl, ChatDnD |
+| Throw **`ConvexError`** for errors players should see — plain `Error` messages are redacted in production | ChatDnD, saladbowl |
+| `vercel.json`: `"framework": null`, `buildCommand: npx convex deploy --cmd 'npm run build'`, SPA rewrite; `.vercelignore` for `.env*`, `.vercel`, `dist`, `node_modules` | all three |
+| `convex-test` for backend tests, with `server.deps.inline: ["convex-test"]` in Vitest | saladbowl |
+| Node ≥24 on Vercel (20.x was discontinued; sister projects now run 26.x) | concept (dc59399) |
+| Convex provisioned through the Vercel Marketplace integration into the existing Vercel-managed Convex team (Vercel → Storage → Convex) | all three |
+
+Considered but not adopted: saladbowl's heartbeat presence table (see §7.4 —
+kept as the fallback if explicit-leave proves annoying).

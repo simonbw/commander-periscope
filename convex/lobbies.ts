@@ -1,8 +1,7 @@
-import { v } from "convex/values";
+import { ConvexError, v } from "convex/values";
 import { createGame, createLobby as makeLobby } from "../shared/gameFactory";
 import {
   addPlayer,
-  isLobbyEmpty,
   ready,
   removePlayer,
   selectRole as selectRoleLogic,
@@ -14,7 +13,7 @@ import { transformLobbyForPlayer } from "../shared/transforms";
 import type { Lobby } from "../shared/types";
 import type { Doc, Id } from "./_generated/dataModel";
 import { mutation, type MutationCtx, query, type QueryCtx } from "./_generated/server";
-import { requirePlayer } from "./helpers";
+import { playerIdArg } from "./helpers";
 
 const teamArg = v.union(v.literal("red"), v.literal("blue"));
 const roleArg = v.union(
@@ -47,7 +46,7 @@ async function generateUniqueCode(ctx: MutationCtx): Promise<string> {
       return code;
     }
   }
-  throw new Error("Could not generate a unique lobby code");
+  throw new ConvexError("Could not generate a unique lobby code");
 }
 
 /** A Convex lobby document carries `_id`/`_creationTime`; this is a safe view. */
@@ -64,7 +63,7 @@ async function loadLobbyByCode(
     .withIndex("by_code", (q) => q.eq("code", code))
     .unique();
   if (!lobby) {
-    throw new Error("Lobby not found");
+    throw new ConvexError("Lobby not found");
   }
   return lobby;
 }
@@ -103,9 +102,8 @@ async function saveLobby(
 // --- Query -----------------------------------------------------------------
 
 export const getLobby = query({
-  args: { code: v.string() },
-  handler: async (ctx, { code }) => {
-    const playerId = await requirePlayer(ctx);
+  args: { playerId: playerIdArg, code: v.string() },
+  handler: async (ctx, { playerId, code }) => {
     const doc = await ctx.db
       .query("lobbies")
       .withIndex("by_code", (q) => q.eq("code", code))
@@ -121,47 +119,45 @@ export const getLobby = query({
 
 /** Create a fresh lobby, seat the creator, and return the shareable code. */
 export const createLobby = mutation({
-  args: { username: v.optional(v.string()) },
-  handler: async (ctx, { username }): Promise<string> => {
-    const playerId = await requirePlayer(ctx);
+  args: { playerId: playerIdArg, username: v.optional(v.string()) },
+  handler: async (ctx, { playerId, username }): Promise<string> => {
     const code = await generateUniqueCode(ctx);
     const lobby = addPlayer(makeLobby(code), playerId, username);
-    await ctx.db.insert("lobbies", lobby);
+    await ctx.db.insert("lobbies", { ...lobby, gameId: null });
     return code;
   },
 });
 
 export const joinLobby = mutation({
-  args: { code: v.string(), username: v.optional(v.string()) },
-  handler: async (ctx, { code, username }) => {
-    const playerId = await requirePlayer(ctx);
+  args: { playerId: playerIdArg, code: v.string(), username: v.optional(v.string()) },
+  handler: async (ctx, { playerId, code, username }) => {
     const doc = await loadLobbyByCode(ctx, code);
     await saveLobby(ctx, doc._id, addPlayer(asLobby(doc), playerId, username));
   },
 });
 
 /**
- * Explicit leave (a "Leave" button / beforeunload handler). Lobbies left
- * abandoned without this are swept by the GC cron — see convex/crons.ts.
+ * Explicit leave (on navigating away / closing the tab). Empty lobbies are
+ * not deleted here — a leave immediately followed by a rejoin (page refresh,
+ * React StrictMode) would then find the lobby gone. The GC cron sweeps them.
  */
 export const leaveLobby = mutation({
-  args: { code: v.string() },
-  handler: async (ctx, { code }) => {
-    const playerId = await requirePlayer(ctx);
-    const doc = await loadLobbyByCode(ctx, code);
-    const next = removePlayer(asLobby(doc), playerId);
-    if (isLobbyEmpty(next)) {
-      await ctx.db.delete(doc._id);
-    } else {
-      await saveLobby(ctx, doc._id, next);
+  args: { playerId: playerIdArg, code: v.string() },
+  handler: async (ctx, { playerId, code }) => {
+    const doc = await ctx.db
+      .query("lobbies")
+      .withIndex("by_code", (q) => q.eq("code", code))
+      .unique();
+    if (!doc) {
+      return;
     }
+    await saveLobby(ctx, doc._id, removePlayer(asLobby(doc), playerId));
   },
 });
 
 export const setLobbyUsername = mutation({
-  args: { code: v.string(), username: v.string() },
-  handler: async (ctx, { code, username }) => {
-    const playerId = await requirePlayer(ctx);
+  args: { playerId: playerIdArg, code: v.string(), username: v.string() },
+  handler: async (ctx, { playerId, code, username }) => {
     const doc = await loadLobbyByCode(ctx, code);
     await saveLobby(ctx, doc._id, setUsername(asLobby(doc), playerId, username));
   },
@@ -169,12 +165,12 @@ export const setLobbyUsername = mutation({
 
 export const selectRole = mutation({
   args: {
+    playerId: playerIdArg,
     code: v.string(),
     team: v.union(teamArg, v.null()),
     role: v.union(roleArg, v.null()),
   },
-  handler: async (ctx, { code, team, role }) => {
-    const playerId = await requirePlayer(ctx);
+  handler: async (ctx, { playerId, code, team, role }) => {
     const doc = await loadLobbyByCode(ctx, code);
     await saveLobby(
       ctx,
@@ -185,18 +181,16 @@ export const selectRole = mutation({
 });
 
 export const readyUp = mutation({
-  args: { code: v.string() },
-  handler: async (ctx, { code }) => {
-    const playerId = await requirePlayer(ctx);
+  args: { playerId: playerIdArg, code: v.string() },
+  handler: async (ctx, { playerId, code }) => {
     const doc = await loadLobbyByCode(ctx, code);
     await saveLobby(ctx, doc._id, ready(asLobby(doc), playerId));
   },
 });
 
 export const unreadyUp = mutation({
-  args: { code: v.string() },
-  handler: async (ctx, { code }) => {
-    const playerId = await requirePlayer(ctx);
+  args: { playerId: playerIdArg, code: v.string() },
+  handler: async (ctx, { playerId, code }) => {
     const doc = await loadLobbyByCode(ctx, code);
     await saveLobby(ctx, doc._id, unready(asLobby(doc), playerId));
   },
